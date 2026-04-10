@@ -1,0 +1,508 @@
+{% extends "base.html" %}
+
+{% block title %}Créer mon portfolio - NumStore{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-noir py-8 px-4">
+    <div class="max-w-2xl mx-auto">
+        <div class="text-center mb-6">
+            <h1 class="text-2xl font-heading font-semibold text-white">Création de Portfolio</h1>
+            {% if product %}
+            <p class="text-sm text-zinc-500">{{ product.name }}</p>
+            {% endif %}
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-3">
+                <div class="step-indicator step-1 active w-10 h-10 flex items-center justify-center bg-champagne text-noir">
+                    <i data-lucide="user" class="w-4 h-4"></i>
+                </div>
+                <div class="step-indicator step-2 w-10 h-10 flex items-center justify-center bg-surface border border-white/10 text-zinc-600">
+                    <i data-lucide="briefcase" class="w-4 h-4"></i>
+                </div>
+                <div class="step-indicator step-3 w-10 h-10 flex items-center justify-center bg-surface border border-white/10 text-zinc-600">
+                    <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+                </div>
+                <div class="step-indicator step-4 w-10 h-10 flex items-center justify-center bg-surface border border-white/10 text-zinc-600">
+                    <i data-lucide="globe" class="w-4 h-4"></i>
+                </div>
+                <div class="step-indicator step-5 w-10 h-10 flex items-center justify-center bg-surface border border-white/10 text-zinc-600">
+                    <i data-lucide="credit-card" class="w-4 h-4"></i>
+                </div>
+            </div>
+            <div class="h-0.5 bg-white/5">
+                <div id="progress-bar" class="h-full bg-champagne transition-all duration-500" style="width: 20%"></div>
+            </div>
+            <div class="flex justify-between mt-1.5 text-xs text-zinc-600">
+                <span class="step-label step-1 text-champagne">Infos</span>
+                <span class="step-label step-2">Expériences</span>
+                <span class="step-label step-3">Formation</span>
+                <span class="step-label step-4">Liens</span>
+                <span class="step-label step-5">Paiement</span>
+            </div>
+        </div>
+
+        <!-- Form Card -->
+        <div class="bg-surface border border-white/5 p-8">
+            <form id="portfolio-form">
+                <!-- Step 1: Personal Info -->
+                <div id="step-1" class="step-content">
+                    <div class="text-center mb-8">
+                        <i data-lucide="user" class="w-10 h-10 text-champagne mx-auto mb-4"></i>
+                        <h2 class="text-xl font-heading font-semibold text-white">Informations Personnelles</h2>
+                        <p class="text-sm text-zinc-500">Commencez par les bases</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-300 mb-1">Email *</label>
+                            <input type="email" name="email" required value="{{ email }}" placeholder="votre@email.com" class="input-field">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-300 mb-1">Nom complet *</label>
+                            <input type="text" name="full_name" required placeholder="Jean Kouassi" class="input-field">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-300 mb-1">Titre professionnel *</label>
+                            <input type="text" name="job_title" required placeholder="Développeur Web, Comptable, Designer..." class="input-field">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-300 mb-1">Bio / Présentation *</label>
+                            <textarea name="bio" required rows="4" placeholder="Décrivez-vous en quelques phrases..." class="textarea-field"></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-zinc-300 mb-1">Téléphone</label>
+                                <input type="tel" name="phone" placeholder="+225 07 00 00 00" class="input-field">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-zinc-300 mb-1">Localisation</label>
+                                <input type="text" name="location" placeholder="Abidjan, Côte d'Ivoire" class="input-field">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-300 mb-1">URL de votre photo</label>
+                            <input type="url" name="photo_url" placeholder="https://..." class="input-field">
+                            <p class="text-xs text-zinc-600 mt-1">Lien vers une photo professionnelle</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Skills & Experiences -->
+                <div id="step-2" class="step-content hidden">
+                    <div class="text-center mb-8">
+                        <i data-lucide="briefcase" class="w-10 h-10 text-champagne mx-auto mb-4"></i>
+                        <h2 class="text-xl font-heading font-semibold text-white">Compétences & Expériences</h2>
+                        <p class="text-sm text-zinc-500">Mettez en valeur votre parcours</p>
+                    </div>
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-300 mb-2">Compétences</label>
+                            <div class="flex gap-2 mb-2">
+                                <input type="text" id="new-skill" placeholder="Ex: Excel, Management, Python..." class="input-field flex-1">
+                                <button type="button" id="add-skill-btn" class="px-4 h-12 border border-white/10 text-zinc-300 hover:border-champagne hover:text-champagne transition-colors">
+                                    <i data-lucide="plus" class="w-4 h-4"></i>
+                                </button>
+                            </div>
+                            <div id="skills-list" class="flex flex-wrap gap-2"></div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="text-sm font-medium text-zinc-300">Expériences professionnelles</label>
+                                <button type="button" id="add-experience-btn" class="text-xs px-3 py-1 border border-white/10 text-zinc-300 hover:border-champagne hover:text-champagne transition-colors">
+                                    <i data-lucide="plus" class="w-3 h-3 inline mr-1"></i> Ajouter
+                                </button>
+                            </div>
+                            <div id="experiences-list" class="space-y-4"></div>
+                            <p id="no-experiences" class="text-sm text-zinc-600 text-center py-4">Cliquez sur "Ajouter" pour ajouter une expérience</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Education & Projects -->
+                <div id="step-3" class="step-content hidden">
+                    <div class="text-center mb-8">
+                        <i data-lucide="graduation-cap" class="w-10 h-10 text-champagne mx-auto mb-4"></i>
+                        <h2 class="text-xl font-heading font-semibold text-white">Formation & Projets</h2>
+                        <p class="text-sm text-zinc-500">Votre parcours académique et réalisations</p>
+                    </div>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="text-sm font-medium text-zinc-300">Formation</label>
+                                <button type="button" id="add-education-btn" class="text-xs px-3 py-1 border border-white/10 text-zinc-300 hover:border-champagne hover:text-champagne transition-colors">
+                                    <i data-lucide="plus" class="w-3 h-3 inline mr-1"></i> Ajouter
+                                </button>
+                            </div>
+                            <div id="education-list" class="space-y-3"></div>
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="text-sm font-medium text-zinc-300">Projets / Réalisations</label>
+                                <button type="button" id="add-project-btn" class="text-xs px-3 py-1 border border-white/10 text-zinc-300 hover:border-champagne hover:text-champagne transition-colors">
+                                    <i data-lucide="plus" class="w-3 h-3 inline mr-1"></i> Ajouter
+                                </button>
+                            </div>
+                            <div id="projects-list" class="space-y-4"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Social Links -->
+                <div id="step-4" class="step-content hidden">
+                    <div class="text-center mb-8">
+                        <i data-lucide="globe" class="w-10 h-10 text-champagne mx-auto mb-4"></i>
+                        <h2 class="text-xl font-heading font-semibold text-white">Liens & Réseaux Sociaux</h2>
+                        <p class="text-sm text-zinc-500">Connectez vos profils (optionnel)</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-300 mb-1">LinkedIn</label>
+                            <input type="url" name="linkedin_url" placeholder="https://linkedin.com/in/..." class="input-field">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-300 mb-1">Twitter / X</label>
+                            <input type="url" name="twitter_url" placeholder="https://twitter.com/..." class="input-field">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-300 mb-1">GitHub</label>
+                            <input type="url" name="github_url" placeholder="https://github.com/..." class="input-field">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-zinc-300 mb-1">Site web personnel</label>
+                            <input type="url" name="website_url" placeholder="https://..." class="input-field">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 5: Summary & Payment -->
+                <div id="step-5" class="step-content hidden">
+                    <div class="text-center mb-8">
+                        <i data-lucide="credit-card" class="w-10 h-10 text-champagne mx-auto mb-4"></i>
+                        <h2 class="text-xl font-heading font-semibold text-white">Récapitulatif & Paiement</h2>
+                        <p class="text-sm text-zinc-500">Vérifiez vos informations et procédez au paiement</p>
+                    </div>
+                    <div class="bg-noir border border-white/5 p-6 space-y-4 mb-6">
+                        <div class="flex items-start gap-4">
+                            <i data-lucide="user" class="w-6 h-6 text-champagne mt-1"></i>
+                            <div>
+                                <p id="summary-name" class="font-semibold text-white">-</p>
+                                <p id="summary-title" class="text-sm text-zinc-400">-</p>
+                                <p id="summary-email" class="text-sm text-zinc-500">-</p>
+                            </div>
+                        </div>
+                        <div id="summary-skills-container" class="hidden">
+                            <p class="text-sm font-medium text-zinc-300 mb-2">Compétences:</p>
+                            <div id="summary-skills" class="flex flex-wrap gap-1"></div>
+                        </div>
+                        <div id="summary-counts" class="text-sm text-zinc-500"></div>
+                    </div>
+                    {% if product %}
+                    <div class="border border-champagne/20 p-6 mb-6">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <p class="font-heading font-semibold text-white">{{ product.name }}</p>
+                                <p class="text-sm text-zinc-500">Création de portfolio professionnel</p>
+                            </div>
+                            <p class="text-2xl font-heading font-bold text-champagne">{{ format_price(product.price, product.currency) }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="bg-champagne/10 border border-champagne/20 p-4 text-sm text-champagne flex items-center gap-2">
+                        <i data-lucide="check-circle" class="w-5 h-5 flex-shrink-0"></i>
+                        Après paiement, notre équipe créera votre portfolio sous 48-72h
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="flex gap-4 mt-8 pt-6 border-t border-white/5">
+                    <button type="button" id="prev-btn" class="hidden flex-1 h-12 border border-white/10 text-zinc-300 hover:border-champagne hover:text-champagne transition-colors">
+                        Précédent
+                    </button>
+                    <button type="button" id="next-btn" class="flex-1 h-12 btn-gold">
+                        Suivant
+                    </button>
+                    <button type="submit" id="submit-btn" class="hidden flex-1 h-14 btn-gold text-base">
+                        <i data-lucide="credit-card" class="w-5 h-5 mr-2"></i>
+                        Payer {% if product %}{{ format_price(product.price, product.currency) }}{% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const productId = "{{ product.id if product else '' }}";
+let currentStep = 1;
+const totalSteps = 5;
+
+// Data storage
+let formData = {
+    skills: [],
+    experiences: [],
+    education: [],
+    projects: []
+};
+
+// Step navigation
+function goToStep(step) {
+    if (step < 1 || step > totalSteps) return;
+    
+    // Hide all steps
+    document.querySelectorAll('.step-content').forEach(el => el.classList.add('hidden'));
+    document.getElementById(`step-${step}`).classList.remove('hidden');
+    
+    // Update progress
+    document.getElementById('progress-bar').style.width = `${(step / totalSteps) * 100}%`;
+    
+    // Update indicators
+    for (let i = 1; i <= totalSteps; i++) {
+        const indicator = document.querySelector(`.step-indicator.step-${i}`);
+        const label = document.querySelector(`.step-label.step-${i}`);
+        
+        if (i <= step) {
+            indicator.classList.remove('bg-surface', 'border', 'border-white/10', 'text-zinc-600');
+            indicator.classList.add('bg-champagne', 'text-noir');
+            label.classList.add('text-champagne');
+        } else {
+            indicator.classList.add('bg-surface', 'border', 'border-white/10', 'text-zinc-600');
+            indicator.classList.remove('bg-champagne', 'text-noir');
+            label.classList.remove('text-champagne');
+        }
+    }
+    
+    // Show/hide navigation buttons
+    document.getElementById('prev-btn').classList.toggle('hidden', step === 1);
+    document.getElementById('next-btn').classList.toggle('hidden', step === totalSteps);
+    document.getElementById('submit-btn').classList.toggle('hidden', step !== totalSteps);
+    
+    // Update summary on last step
+    if (step === totalSteps) updateSummary();
+    
+    currentStep = step;
+    lucide.createIcons();
+}
+
+document.getElementById('next-btn').addEventListener('click', () => goToStep(currentStep + 1));
+document.getElementById('prev-btn').addEventListener('click', () => goToStep(currentStep - 1));
+
+// Skills management
+document.getElementById('add-skill-btn').addEventListener('click', addSkill);
+document.getElementById('new-skill').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); addSkill(); }
+});
+
+function addSkill() {
+    const input = document.getElementById('new-skill');
+    const skill = input.value.trim();
+    if (skill && !formData.skills.includes(skill)) {
+        formData.skills.push(skill);
+        renderSkills();
+        input.value = '';
+    }
+}
+
+function removeSkill(skill) {
+    formData.skills = formData.skills.filter(s => s !== skill);
+    renderSkills();
+}
+
+function renderSkills() {
+    const container = document.getElementById('skills-list');
+    container.innerHTML = formData.skills.map(skill => `
+        <span class="inline-flex items-center gap-1 px-3 py-1 bg-champagne/10 text-champagne text-sm border border-champagne/20">
+            ${skill}
+            <button type="button" onclick="removeSkill('${skill}')" class="hover:text-red-400 ml-1">
+                <i data-lucide="trash-2" class="w-3 h-3"></i>
+            </button>
+        </span>
+    `).join('');
+    lucide.createIcons();
+}
+
+// Experiences management
+document.getElementById('add-experience-btn').addEventListener('click', () => {
+    formData.experiences.push({ company: '', role: '', duration: '', description: '' });
+    renderExperiences();
+});
+
+function removeExperience(index) {
+    formData.experiences.splice(index, 1);
+    renderExperiences();
+}
+
+function renderExperiences() {
+    const container = document.getElementById('experiences-list');
+    const noExp = document.getElementById('no-experiences');
+    
+    if (formData.experiences.length === 0) {
+        container.innerHTML = '';
+        noExp.classList.remove('hidden');
+        return;
+    }
+    
+    noExp.classList.add('hidden');
+    container.innerHTML = formData.experiences.map((exp, i) => `
+        <div class="p-4 border border-white/5 bg-noir relative">
+            <button type="button" onclick="removeExperience(${i})" class="absolute top-2 right-2 text-zinc-500 hover:text-red-400">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+            <div class="grid grid-cols-2 gap-3 mb-3">
+                <input type="text" value="${exp.company}" onchange="formData.experiences[${i}].company = this.value" placeholder="Entreprise" class="input-field h-10">
+                <input type="text" value="${exp.role}" onchange="formData.experiences[${i}].role = this.value" placeholder="Poste" class="input-field h-10">
+            </div>
+            <input type="text" value="${exp.duration}" onchange="formData.experiences[${i}].duration = this.value" placeholder="Durée (ex: 2020 - 2023)" class="input-field h-10 mb-3">
+            <textarea onchange="formData.experiences[${i}].description = this.value" placeholder="Description des responsabilités..." class="textarea-field text-sm min-h-[80px]">${exp.description}</textarea>
+        </div>
+    `).join('');
+    lucide.createIcons();
+}
+
+// Education management
+document.getElementById('add-education-btn').addEventListener('click', () => {
+    formData.education.push({ school: '', degree: '', year: '' });
+    renderEducation();
+});
+
+function removeEducation(index) {
+    formData.education.splice(index, 1);
+    renderEducation();
+}
+
+function renderEducation() {
+    const container = document.getElementById('education-list');
+    container.innerHTML = formData.education.map((edu, i) => `
+        <div class="flex gap-2 items-start">
+            <div class="flex-1 grid grid-cols-3 gap-2">
+                <input type="text" value="${edu.school}" onchange="formData.education[${i}].school = this.value" placeholder="École" class="input-field h-10">
+                <input type="text" value="${edu.degree}" onchange="formData.education[${i}].degree = this.value" placeholder="Diplôme" class="input-field h-10">
+                <input type="text" value="${edu.year}" onchange="formData.education[${i}].year = this.value" placeholder="Année" class="input-field h-10">
+            </div>
+            <button type="button" onclick="removeEducation(${i})" class="p-2 text-zinc-500 hover:text-red-400">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+        </div>
+    `).join('');
+    lucide.createIcons();
+}
+
+// Projects management
+document.getElementById('add-project-btn').addEventListener('click', () => {
+    formData.projects.push({ title: '', description: '', link: '' });
+    renderProjects();
+});
+
+function removeProject(index) {
+    formData.projects.splice(index, 1);
+    renderProjects();
+}
+
+function renderProjects() {
+    const container = document.getElementById('projects-list');
+    container.innerHTML = formData.projects.map((proj, i) => `
+        <div class="p-4 border border-white/5 bg-noir relative">
+            <button type="button" onclick="removeProject(${i})" class="absolute top-2 right-2 text-zinc-500 hover:text-red-400">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+            <input type="text" value="${proj.title}" onchange="formData.projects[${i}].title = this.value" placeholder="Titre du projet" class="input-field h-10 mb-3">
+            <textarea onchange="formData.projects[${i}].description = this.value" placeholder="Description du projet..." class="textarea-field text-sm min-h-[60px] mb-3">${proj.description}</textarea>
+            <input type="url" value="${proj.link}" onchange="formData.projects[${i}].link = this.value" placeholder="Lien (optionnel)" class="input-field h-10">
+        </div>
+    `).join('');
+    lucide.createIcons();
+}
+
+// Summary update
+function updateSummary() {
+    const form = document.getElementById('portfolio-form');
+    document.getElementById('summary-name').textContent = form.full_name.value || 'Non renseigné';
+    document.getElementById('summary-title').textContent = form.job_title.value || 'Non renseigné';
+    document.getElementById('summary-email').textContent = form.email.value || '';
+    
+    const skillsContainer = document.getElementById('summary-skills-container');
+    const skillsList = document.getElementById('summary-skills');
+    
+    if (formData.skills.length > 0) {
+        skillsContainer.classList.remove('hidden');
+        skillsList.innerHTML = formData.skills.map(s => `<span class="text-xs px-2 py-1 bg-champagne/10 text-champagne border border-champagne/20">${s}</span>`).join('');
+    } else {
+        skillsContainer.classList.add('hidden');
+    }
+    
+    document.getElementById('summary-counts').textContent = 
+        `${formData.experiences.length} expérience(s) | ${formData.education.length} formation(s) | ${formData.projects.length} projet(s)`;
+}
+
+// Form submission
+document.getElementById('portfolio-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const form = e.target;
+    const submitBtn = document.getElementById('submit-btn');
+    
+    // Validate required fields
+    if (!form.full_name.value || !form.job_title.value || !form.bio.value || !form.email.value) {
+        alert('Veuillez remplir les champs obligatoires');
+        goToStep(1);
+        return;
+    }
+    
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>';
+    lucide.createIcons();
+    
+    try {
+        // Submit portfolio data
+        const submitRes = await fetch('/api/portfolio/submit', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: form.email.value,
+                full_name: form.full_name.value,
+                job_title: form.job_title.value,
+                bio: form.bio.value,
+                phone: form.phone.value,
+                location: form.location.value,
+                photo_url: form.photo_url.value,
+                skills: formData.skills,
+                experiences: formData.experiences,
+                education: formData.education,
+                projects: formData.projects,
+                linkedin_url: form.linkedin_url.value,
+                twitter_url: form.twitter_url.value,
+                github_url: form.github_url.value,
+                website_url: form.website_url.value,
+                product_id: productId
+            })
+        });
+        
+        const submitData = await submitRes.json();
+        
+        if (!submitRes.ok) {
+            throw new Error(submitData.detail || 'Erreur lors de la soumission');
+        }
+        
+        // Create payment session
+        const payRes = await fetch(`/api/portfolio/pay/${submitData.submission_id}`, {
+            method: 'POST'
+        });
+        
+        const payData = await payRes.json();
+        
+        if (payData.checkout_url) {
+            window.location.href = payData.checkout_url;
+        } else {
+            throw new Error('Erreur lors du paiement');
+        }
+    } catch (err) {
+        alert(err.message);
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i data-lucide="credit-card" class="w-5 h-5 mr-2"></i> Payer';
+        lucide.createIcons();
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}Produits - Admin NumStore{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-6 lg:px-12 py-8">
+    <div class="flex items-center gap-4 mb-8">
+        <a href="/admin/dashboard" class="p-2 text-zinc-500 hover:text-champagne transition-colors">
+            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+        </a>
+        <div class="flex-1">
+            <h1 class="text-3xl font-heading font-semibold text-white">Produits</h1>
+            <p class="text-zinc-500 text-sm">{{ products|length }} produits</p>
+        </div>
+        <button id="add-product-btn" class="btn-gold gap-2 px-4 py-2 flex items-center">
+            <i data-lucide="plus" class="w-4 h-4"></i> Ajouter
+        </button>
+    </div>
+
+    <div class="bg-surface border border-white/5">
+        {% if not products %}
+        <div class="p-12 text-center text-zinc-600">Aucun produit. Cliquez sur "Ajouter" pour créer.</div>
+        {% else %}
+        <div class="divide-y divide-white/5">
+            {% for p in products %}
+            <div class="flex items-center gap-4 p-4 hover:bg-white/[0.02]">
+                <img src="{{ p.image_url or 'https://images.unsplash.com/photo-1697292859784-c319e612ea15?w=100' }}" alt="{{ p.name }}" class="w-14 h-14 object-cover border border-white/5">
+                <div class="flex-1 min-w-0">
+                    <p class="font-semibold text-white text-sm truncate">{{ p.name }}</p>
+                    <p class="text-xs text-zinc-500">{{ p.category }} | {{ format_price(p.price, p.currency) }} {{ '| Service' if p.is_service else '' }}</p>
+                </div>
+                <div class="flex items-center gap-1">
+                    <button onclick="editProduct('{{ p.id }}', '{{ p.name|e }}', '{{ p.description|e }}', {{ p.price }}, '{{ p.currency }}', '{{ p.category }}', '{{ p.image_url or '' }}', '{{ p.download_url or '' }}', '{{ p.file_size or '' }}', {{ 'true' if p.is_service else 'false' }})" class="p-2 text-zinc-500 hover:text-champagne transition-colors">
+                        <i data-lucide="pencil" class="w-4 h-4"></i>
+                    </button>
+                    <button onclick="deleteProduct('{{ p.id }}')" class="p-2 text-zinc-500 hover:text-red-400 transition-colors">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-noir/80">
+    <div class="max-w-lg w-full bg-surface border border-white/10 p-6">
+        <h2 id="modal-title" class="font-heading text-xl text-white mb-4">Nouveau produit</h2>
+        <form id="product-form" class="space-y-4">
+            <input type="hidden" id="product-id">
+            <div>
+                <label class="text-sm font-medium text-zinc-300 block mb-1">Nom *</label>
+                <input type="text" id="p-name" required placeholder="Nom du produit" class="input-field">
+            </div>
+            <div>
+                <label class="text-sm font-medium text-zinc-300 block mb-1">Description *</label>
+                <textarea id="p-description" required placeholder="Description" class="textarea-field" rows="3"></textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="text-sm font-medium text-zinc-300 block mb-1">Prix (FCFA) *</label>
+                    <input type="number" id="p-price" required min="0" placeholder="25000" class="input-field">
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-zinc-300 block mb-1">Catégorie</label>
+                    <select id="p-category" class="input-field">
+                        <option value="ebook">E-book</option>
+                        <option value="template">Template</option>
+                        <option value="software">Logiciel</option>
+                        <option value="course">Cours</option>
+                        <option value="portfolio">Portfolio</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label class="text-sm font-medium text-zinc-300 block mb-1">URL Image</label>
+                <input type="url" id="p-image" placeholder="https://..." class="input-field">
+            </div>
+            <div>
+                <label class="text-sm font-medium text-zinc-300 block mb-1">URL Téléchargement</label>
+                <input type="url" id="p-download" placeholder="https://..." class="input-field">
+            </div>
+            <div>
+                <label class="text-sm font-medium text-zinc-300 block mb-1">Taille fichier</label>
+                <input type="text" id="p-size" placeholder="15 MB" class="input-field">
+            </div>
+            <div class="flex items-center gap-2">
+                <input type="checkbox" id="p-service" class="w-4 h-4">
+                <label for="p-service" class="text-sm text-zinc-300">C'est un service (Portfolio)</label>
+            </div>
+            <div class="flex gap-3 pt-4">
+                <button type="button" onclick="closeModal()" class="flex-1 h-12 border border-white/10 text-zinc-300 hover:border-champagne hover:text-champagne transition-colors">Annuler</button>
+                <button type="submit" id="save-btn" class="flex-1 h-12 btn-gold">Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const modal = document.getElementById('modal');
+
+document.getElementById('add-product-btn').addEventListener('click', () => {
+    document.getElementById('modal-title').textContent = 'Nouveau produit';
+    document.getElementById('product-id').value = '';
+    document.getElementById('product-form').reset();
+    modal.classList.remove('hidden');
+});
+
+function editProduct(id, name, description, price, currency, category, imageUrl, downloadUrl, fileSize, isService) {
+    document.getElementById('modal-title').textContent = 'Modifier le produit';
+    document.getElementById('product-id').value = id;
+    document.getElementById('p-name').value = name;
+    document.getElementById('p-description').value = description;
+    document.getElementById('p-price').value = price;
+    document.getElementById('p-category').value = category;
+    document.getElementById('p-image').value = imageUrl;
+    document.getElementById('p-download').value = downloadUrl;
+    document.getElementById('p-size').value = fileSize;
+    document.getElementById('p-service').checked = isService;
+    modal.classList.remove('hidden');
+}
+
+function closeModal() {
+    modal.classList.add('hidden');
+}
+
+async function deleteProduct(id) {
+    if (!confirm('Supprimer ce produit?')) return;
+    
+    try {
+        const res = await fetch(`/api/admin/products/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+            window.location.reload();
+        } else {
+            alert('Erreur lors de la suppression');
+        }
+    } catch (err) {
+        alert('Erreur de connexion');
+    }
+}
+
+document.getElementById('product-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const id = document.getElementById('product-id').value;
+    const btn = document.getElementById('save-btn');
+    
+    btn.disabled = true;
+    btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>';
+    lucide.createIcons();
+    
+    const data = {
+        name: document.getElementById('p-name').value,
+        description: document.getElementById('p-description').value,
+        price: parseFloat(document.getElementById('p-price').value),
+        currency: 'XOF',
+        category: document.getElementById('p-category').value,
+        image_url: document.getElementById('p-image').value || null,
+        download_url: document.getElementById('p-download').value || null,
+        file_size: document.getElementById('p-size').value || null,
+        is_service: document.getElementById('p-service').checked
+    };
+    
+    try {
+        const url = id ? `/api/admin/products/${id}` : '/api/admin/products';
+        const method = id ? 'PUT' : 'POST';
+        
+        const res = await fetch(url, {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        
+        if (res.ok) {
+            window.location.reload();
+        } else {
+            const err = await res.json();
+            alert(err.detail || 'Erreur');
+        }
+    } catch (err) {
+        alert('Erreur de connexion');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Enregistrer';
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block title %}Portfolios - Admin NumStore{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-6 lg:px-12 py-8">
+    <div class="flex items-center gap-4 mb-8">
+        <a href="/admin/dashboard" class="p-2 text-zinc-500 hover:text-champagne transition-colors">
+            <i data-lucide="arrow-left" class="w-5 h-5"></i>
+        </a>
+        <div>
+            <h1 class="text-3xl font-heading font-semibold text-white">Demandes de Portfolio</h1>
+            <p class="text-zinc-500 text-sm">{{ submissions|length }} demande(s)</p>
+        </div>
+    </div>
+
+    <div class="bg-surface border border-white/5">
+        {% if not submissions %}
+        <div class="p-12 text-center text-zinc-600">Aucune demande de portfolio pour le moment.</div>
+        {% else %}
+        <div class="divide-y divide-white/5">
+            {% for sub in submissions %}
+            <div class="flex items-center gap-4 p-4 hover:bg-white/[0.02] cursor-pointer" onclick="showDetails({{ sub|tojson|safe }})">
+                <div class="w-10 h-10 bg-champagne/10 flex items-center justify-center">
+                    <i data-lucide="user" class="w-5 h-5 text-champagne"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-semibold text-white text-sm">{{ sub.full_name }}</p>
+                    <p class="text-xs text-zinc-500 truncate">{{ sub.job_title }}</p>
+                    <p class="text-xs text-zinc-600">{{ sub.email }}</p>
+                </div>
+                <div class="text-right">
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium 
+                        {% if sub.status == 'completed' %}bg-emerald-500/10 text-emerald-400
+                        {% elif sub.status == 'in_progress' %}bg-champagne/10 text-champagne
+                        {% else %}bg-amber-500/10 text-amber-400{% endif %}">
+                        {% if sub.status == 'completed' %}<i data-lucide="check-circle" class="w-3 h-3"></i> Terminé
+                        {% elif sub.status == 'in_progress' %}<i data-lucide="hourglass" class="w-3 h-3"></i> En cours
+                        {% else %}<i data-lucide="clock" class="w-3 h-3"></i> En attente{% endif %}
+                    </span>
+                    <p class="text-xs text-zinc-600 mt-1">{{ sub.created_at.strftime('%d/%m/%Y') }}</p>
+                </div>
+                <i data-lucide="eye" class="w-4 h-4 text-zinc-600"></i>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-noir/80 overflow-y-auto">
+    <div class="max-w-2xl w-full bg-surface border border-white/10 p-6 my-8">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="font-heading text-xl text-white">Détails de la demande</h2>
+            <button onclick="closeModal()" class="text-zinc-500 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+        <div id="modal-content" class="space-y-6"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const modal = document.getElementById('modal');
+let currentSubmission = null;
+
+function showDetails(sub) {
+    currentSubmission = sub;
+    
+    // Parse JSON fields if they're strings
+    if (typeof sub.skills === 'string') sub.skills = JSON.parse(sub.skills || '[]');
+    if (typeof sub.experiences === 'string') sub.experiences = JSON.parse(sub.experiences || '[]');
+    if (typeof sub.education === 'string') sub.education = JSON.parse(sub.education || '[]');
+    if (typeof sub.projects === 'string') sub.projects = JSON.parse(sub.projects || '[]');
+    
+    let html = `
+        <div class="bg-noir border border-white/5 p-4">
+            <div class="flex items-center gap-4 mb-4">
+                ${sub.photo_url ? 
+                    `<img src="${sub.photo_url}" alt="${sub.full_name}" class="w-14 h-14 object-cover rounded-full border border-white/10">` :
+                    `<div class="w-14 h-14 bg-champagne/10 flex items-center justify-center rounded-full"><i data-lucide="user" class="w-7 h-7 text-champagne"></i></div>`
+                }
+                <div>
+                    <h3 class="text-lg font-semibold text-white">${sub.full_name}</h3>
+                    <p class="text-champagne text-sm">${sub.job_title}</p>
+                </div>
+            </div>
+            <p class="text-sm text-zinc-400">${sub.bio}</p>
+            <div class="mt-3 flex gap-4 text-xs text-zinc-500">
+                ${sub.phone ? `<span>Tel: ${sub.phone}</span>` : ''}
+                ${sub.location ? `<span>Loc: ${sub.location}</span>` : ''}
+            </div>
+        </div>
+    `;
+    
+    if (sub.skills && sub.skills.length > 0) {
+        html += `
+            <div>
+                <h4 class="font-semibold text-sm text-zinc-300 mb-2">Compétences</h4>
+                <div class="flex flex-wrap gap-2">
+                    ${sub.skills.map(s => `<span class="px-2 py-1 bg-champagne/10 text-champagne text-xs border border-champagne/20">${s}</span>`).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    if (sub.experiences && sub.experiences.length > 0) {
+        html += `
+            <div>
+                <h4 class="font-semibold text-sm text-zinc-300 mb-2">Expériences</h4>
+                <div class="space-y-3">
+                    ${sub.experiences.map(exp => `
+                        <div class="border-l-2 border-champagne/30 pl-3">
+                            <p class="font-medium text-sm text-white">${exp.role || ''}</p>
+                            <p class="text-xs text-zinc-500">${exp.company || ''} | ${exp.duration || ''}</p>
+                            <p class="text-xs text-zinc-400 mt-1">${exp.description || ''}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
+    
+    // Social links
+    const links = [];
+    if (sub.linkedin_url) links.push(`<a href="${sub.linkedin_url}" target="_blank" class="text-[#0A66C2] hover:underline">LinkedIn</a>`);
+    if (sub.twitter_url) links.push(`<a href="${sub.twitter_url}" target="_blank" class="text-zinc-300 hover:underline">Twitter</a>`);
+    if (sub.github_url) links.push(`<a href="${sub.github_url}" target="_blank" class="text-zinc-300 hover:underline">GitHub</a>`);
+    if (sub.website_url) links.push(`<a href="${sub.website_url}" target="_blank" class="text-champagne hover:underline">Site web</a>`);
+    
+    if (links.length > 0) {
+        html += `<div class="flex flex-wrap gap-3 text-xs">${links.join('')}</div>`;
+    }
+    
+    // Status update section
+    if (sub.status !== 'completed') {
+        html += `
+            <div class="border-t border-white/5 pt-4">
+                <h4 class="font-semibold text-sm text-zinc-300 mb-3">Mettre à jour le statut</h4>
+                <div class="mb-4">
+                    <label class="block text-xs font-medium text-zinc-400 mb-1">URL du portfolio créé</label>
+                    <input type="url" id="portfolio-url" placeholder="https://portfolio-client.com" class="input-field h-10">
+                </div>
+                <div class="flex gap-2">
+                    ${sub.status === 'pending' ? 
+                        `<button onclick="updateStatus('in_progress')" class="flex-1 h-10 border border-white/10 text-zinc-300 hover:border-champagne hover:text-champagne transition-colors text-sm">Marquer en cours</button>` : ''
+                    }
+                    <button onclick="updateStatus('completed')" class="flex-1 h-10 bg-emerald-600 hover:bg-emerald-700 text-white text-sm">Marquer terminé</button>
+                </div>
+            </div>
+        `;
+    }
+    
+    if (sub.portfolio_url) {
+        html += `
+            <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 text-xs">
+                <p class="font-medium text-emerald-400">Portfolio livré:</p>
+                <a href="${sub.portfolio_url}" target="_blank" class="text-champagne hover:underline">${sub.portfolio_url}</a>
+            </div>
+        `;
+    }
+    
+    document.getElementById('modal-content').innerHTML = html;
+    modal.classList.remove('hidden');
+    lucide.createIcons();
+}
+
+function closeModal() {
+    modal.classList.add('hidden');
+}
+
+async function updateStatus(newStatus) {
+    if (!currentSubmission) return;
+    
+    const portfolioUrl = document.getElementById('portfolio-url')?.value || '';
+    
+    if (newStatus === 'completed' && !portfolioUrl.trim()) {
+        alert('Veuillez entrer l\'URL du portfolio');
+        return;
+    }
+    
+    try {
+        let url = `/api/admin/portfolio-submissions/${currentSubmission.id}?status=${newStatus}`;
+        if (portfolioUrl) {
+            url += `&portfolio_url=${encodeURIComponent(portfolioUrl)}`;
+        }
+        
+        const res = await fetch(url, { method: 'PUT' });
+        
+        if (res.ok) {
+            window.location.reload();
+        } else {
+            alert('Erreur lors de la mise à jour');
+        }
+    } catch (err) {
+        alert('Erreur de connexion');
+    }
+}
+</script>
+{% endblock %}
