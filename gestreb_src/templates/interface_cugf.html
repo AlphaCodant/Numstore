@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>TABLEAU DE BORED</title>
+    <link rel="icon" 
+     type="image/png" 
+     href="/img/Logo_gestreb.jpg">
+    <!-- Montserrat Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/tailStyle.css">
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body>
+    <div class="grid-container">
+      <!-- Header -->
+      <header class="header">
+        <div class="menu-icon" onclick="openSidebar()">
+          <span class="material-icons-outlined">menu</span>
+        </div>
+        <div class="header-left">
+          <div class="main-title">
+          <h2>TABLEAU DE BORD</h2>
+        </div>
+        </div>
+        <div class="header-right">
+        </div>
+      </header>
+      <!-- End Header -->
+      <!-- Sidebar -->
+      <aside id="sidebar">
+        <div class="sidebar-title">
+          <div class="sidebar-brand">
+            <a href="#" class="flex ms-2 md:me-24">
+              <img src="/img/Logo_gestreb.jpg" class="ml-4" alt="Logo GestReb" />
+              </a>
+          </div>
+          <span class="material-icons-outlined" onclick="closeSidebar()">close</span>
+        </div>
+        <div class="px-2 pb-4 bg-green  shadow-zinc-600">
+          <ul class="space-y-2 font-medium">
+            <li>
+              <a href="/api/cugf/{{ foret }}" class="flex items-center py-3 px-1 mt-16 text-black border-y border-black  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined">dashboard</span>
+                <span class="ms-3">Tableau de bord</span>
+              </a>
+            </li>   
+            <li>
+              <a href="#" class="flex items-center mt-16 p-2 text-purple  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined" style="color:brown">nature</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Prod. de plants</span>
+              </a>
+            </li>  
+            <li>
+              <a href="/api/cugf/mise_en_place/{{ foret }}" class="flex items-center mt-16 p-2 text-purple  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined" style="color:blueviolet">agriculture</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Mise en place</span>
+              </a>
+            </li>  
+            <li>
+              <a href="# "class="flex items-center mt-16 p-2 text-green  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined" style="color:greenyellow">nature_people</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Entretien</span>
+              </a>
+            </li> 
+            <li>
+              <a href="#" class="flex items-center mt-16 p-2 dark:text-black  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined" style="color:palevioletred">carpenter</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Sylviculture</span>
+              </a>
+            </li> 
+            <li>
+              <button onclick="effacer_tout()">
+              <a href="/page/{{ id }}" class="flex items-center mt-16 p-2 dark:text-black  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined" style="color:orange">map</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Carte interactive</span>
+              </a>
+            </button>
+            </li> 
+                       
+          </ul>
+        </div>
+      </aside>
+      <!-- End Sidebar -->
+
+     <!-- Main -->
+     <main class="main-container">
+
+      <div class="main-cards">
+
+        <div style="border-radius: 5%; background-color: #171c2b;;color: white;"  class="card" class="flex">
+          <a href="#">
+          <div class="card-inner">
+            <h3 style="color: white;">Production de plants</h3>
+            <span class="material-icons-outlined">nature</span>
+          </div>
+          <h1></h1>
+          <br>
+          <div>
+            <p id="p"></p><br>
+            <p id="p"></p>
+          </div>
+          </a>
+        </div>
+        
+        <div style="background-image: linear-gradient(to right,rgb(0, 140, 255),rgb(0, 238, 255) );
+         color: white;" class="card" class="flex flex-col">
+          <a href="/api/cugf/mise_en_place/{{ foret }}">
+          <div class="card-inner">
+            <h3 style="color: black; font-weight: bolder;">MISE EN PLACE</h3>
+            <span class="material-icons-outlined" style="color:blueviolet">agriculture</span>
+          </div>
+          <h1></h1>
+          <br>
+          <div>
+            <p id="p1" style="color: white; font-weight: bold;"></p><br>
+            <p id="p2" style="color: white; font-weight: bold;"></p>
+          </div>
+          </a>
+        </div>
+
+        <div style="border-radius: 5%; background-color: #171c2b;;color: white;"  class="card" class="flex">
+          <a href="#">
+          <div class="card-inner">
+            <h3 style="color: white;">ENTRETIEN</h3>
+            <span class="material-icons-outlined">nature_people</span>
+          </div>
+          <h1></h1>
+          <br>
+          <div>
+            <p id="p"></p><br>
+            <p id="p"></p>
+          </div>
+          </a>
+        </div>
+
+        <div style="border-radius: 5%;background-color: #171c2b;;color: white;"  class="card" class="flex">
+          <a href="#">
+          <div class="card-inner">
+            <h3 style="color: white;">SYLVICULTURE</h3>
+            <span class="material-icons-outlined">carpenter</span>
+          </div>
+          <h1></h1>
+          <br>
+          <div>
+            <p id="p"></p><br>
+            <p id="p"></p>
+          </div>
+          </a>
+        </div>
+
+      </div>
+
+     <div class="charts">
+
+        <div class="charts-card">
+          <h2 class="chart-title">Travaux de mise en place realisée</h2>
+          <div id="bar-chart"></div>
+        </div>
+
+        <div class="charts-card">
+          <h2 class="chart-title">Proportion des travaux de mise en place</h2>
+          <div id="area-chart"></div>
+        </div>
+
+      </div>
+    </main>
+    <!-- End Main -->
+      </div>
+    
+
+    <!-- Scripts -->
+    <!-- ApexCharts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.js"></script>
+    <script src="/js/map.js"></script>
+    <!-- <script src="/js/scripts.js"></script> -->
+    
+    <script>
+      document.addEventListener('DOMContentLoaded', async () => {
+        try {
+          const response = await fetch('/get/parcelles/mise_en_place/{{ foret }}');
+          const travail = await response.json();
+          const liste_travaux = [];
+          const taux_total = [];
+          console.log(typeof(taux_total));
+          travail.forEach(trv => {
+           const t = {travail:trv.travail, objectif:trv.objectif, realise:trv.realise, taux:trv.realise/trv.objectif*100, reliquat:trv.objectif-trv.realise};
+           
+           taux_total.push(t.taux);
+           console.log(t.taux); 
+           liste_travaux.push(t.objectif);
+          });
+          console.log(taux_total);
+          console.log(liste_travaux);
+          document.getElementById(`p1`).textContent = `Objectif : ${(Math.round(liste_travaux[6] * 100)/100).toFixed(2)} ha`;
+          document.getElementById(`p2`).textContent = `Taux : ${(Math.round((taux_total[0]+taux_total[1]+taux_total[2]+taux_total[3]+taux_total[4]
+          +taux_total[5]+taux_total[6])/7 * 100)/100).toFixed(2)} %`;
+          console.log(liste_travaux);
+          console.log(taux_total);
+        } catch (error) {
+          console.error('Erreur lors de la récupération des parcelles:', error);
+        }
+      });
+      document.addEventListener('DOMContentLoaded', async () => {
+        try {
+          const response = await fetch('/get/parcelles/entretien/{{ foret }}');
+          const entretien = await response.json();
+          entretien.forEach(trv => {
+           const t = {objectif:trv.objectif, realise:trv.realise, taux:trv.realise/trv.objectif*100, reliquat:trv.objectif-trv.realise};
+           document.getElementById(`p3`).textContent = `Objectif : ${(Math.round(t.objectif * 100)/100).toFixed(2)} ha`;
+           document.getElementById(`p4`).textContent = `Taux : ${(Math.round((t.realise/t.objectif)*100 * 100)/100).toFixed(2)} %`;
+          });  
+          
+        } catch (error) {
+          console.error('Erreur lors de la récupération des parcelles:', error);
+        }
+      });
+
+      //--------------------------------------------------------------------------------------------------------------------------------------
+      document.addEventListener('DOMContentLoaded', async () => {
+        try {
+          const travaux = [];
+          const response = await fetch('/get/parcelles/cu/graph1/{{ foret }}/2025');
+          const entretien = await response.json();
+          entretien.forEach(trv => {
+           travaux.push(trv.raba);
+           travaux.push(trv.aba);
+           travaux.push(trv.bru);
+           travaux.push(trv.piq);
+           travaux.push(trv.ouv);
+           travaux.push(trv.trou);
+           travaux.push(trv.plan);
+          });  
+          console.log(travaux);
+          const barChartOptions = {
+          series: [
+            {
+              data: travaux,
+              name: 'Travaux',
+            },
+          ],
+          chart: {
+            type: 'bar',
+            background: 'transparent',
+            height: 350,
+            toolbar: {
+              show: false,
+            },
+          },
+          colors: ['#2962ff', '#d50000', '#2e7d32', '#ff6d00', '#583cb3','#d50000', '#2e7d32'],
+          plotOptions: {
+            bar: {
+              distributed: true,
+              borderRadius: 4,
+              horizontal: false,
+              columnWidth: '40%',
+            },
+          },
+          dataLabels: {
+            enabled: false,
+          },
+          fill: {
+            opacity: 1,
+          },
+          grid: {
+            borderColor: '#55596e',
+            yaxis: {
+              lines: {
+                show: true,
+              },
+            },
+            xaxis: {
+              lines: {
+                show: true,
+              },
+            },
+          },
+          legend: {
+            labels: {
+              colors: '#f5f7ff',
+            },
+            show: true,
+            position: 'top',
+          },
+          stroke: {
+            colors: ['transparent'],
+            show: true,
+            width: 2,
+          },
+          tooltip: {
+            shared: true,
+            intersect: false,
+            theme: 'dark',
+          },
+          xaxis: {
+            categories: ['Rabattage', 'Abattage et Tr.', 'Brûlage', 'Piquetage', 'Ouverture de lignes','Trouaison','Planting'],
+            title: {
+              style: {
+                color: '#f5f7ff',
+              },
+            },
+            axisBorder: {
+              show: true,
+              color: '#55596e',
+            },
+            axisTicks: {
+              show: true,
+              color: '#55596e',
+            },
+            labels: {
+              style: {
+                colors: '#f5f7ff',
+              },
+            },
+          },
+          yaxis: {
+            title: {
+              text: 'Count',
+              style: {
+                color: '#f5f7ff',
+              },
+            },
+            axisBorder: {
+              color: '#55596e',
+              show: true,
+            },
+            axisTicks: {
+              color: '#55596e',
+              show: true,
+            },
+            labels: {
+              style: {
+                colors: '#f5f7ff',
+              },
+            },
+          },
+        };
+
+        const barChart = new ApexCharts(
+          document.querySelector('#bar-chart'),
+          barChartOptions
+        );
+        barChart.render();
+          
+        } catch (error) {
+          console.error('Erreur lors de la récupération des parcelles:', error);
+        }
+      });
+
+      document.addEventListener('DOMContentLoaded', async () => {
+        try {
+          const response = await fetch('/get/parcelles/mise_en_place/{{ foret }}');
+          const travail = await response.json();
+          const liste_travaux = [];
+          const taux_total = [];
+          console.log(typeof(taux_total));
+          travail.forEach(trv => {
+           const t = {travail:trv.travail, objectif:trv.objectif, realise:trv.realise, taux:trv.realise/trv.objectif*100, reliquat:trv.objectif-trv.realise};
+           
+           taux_total.push(t.taux);
+           console.log(t.taux); 
+           liste_travaux.push(t.objectif);
+          });
+          console.log(taux_total);
+          console.log(liste_travaux);
+          document.getElementById(`p1`).textContent = `Objectif : ${(Math.round(liste_travaux[6] * 100)/100).toFixed(2)} ha`;
+          document.getElementById(`p2`).textContent = `Taux : ${(Math.round((taux_total[0]+taux_total[1]+taux_total[2]+taux_total[3]+taux_total[4]
+          +taux_total[5]+taux_total[6])/7 * 100)/100).toFixed(2)} %`;
+          const val1 = ((Math.round((taux_total[0]+taux_total[1]+taux_total[2]+taux_total[3]+taux_total[4]
+          +taux_total[5]+taux_total[6])/7 * 100)/100).toFixed(2));
+          const val2 = 100-((Math.round((taux_total[0]+taux_total[1]+taux_total[2]+taux_total[3]+taux_total[4]
+          +taux_total[5]+taux_total[6])/7 * 100)/100).toFixed(2));
+          console.log(val1,val2);
+          var options = {
+          series: [parseFloat(val1),parseFloat(val2)],
+          labels : ['Réalisés','Réliquat'],
+          chart: {
+          type: 'donut',
+        },
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              labels: {
+              colors: '#f5f7ff',
+            },
+              position: 'bottom'
+            },
+            
+          }
+        }]
+        };
+        const areaChart = new ApexCharts(
+        document.querySelector('#area-chart'),
+        options
+);
+areaChart.render();
+        } catch (error) {
+          console.error('Erreur lors de la récupération des parcelles:', error);
+        }
+      });
+
+      //------------------------------------------------------------------------------------------------------------------------------------
+    </script>
+  </body>
+</html>

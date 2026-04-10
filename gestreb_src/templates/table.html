@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, shrink-to-fit=no"
+		/>
+		<title>WebStylePress</title>
+    <script src="libs/jquery.js"></script>
+    <link rel="stylesheet" href="libs/jquery-ui-1.12.1/jquery-ui.css">
+    <script src="libs/jquery-ui-1.12.1/external/jquery/jquery.js"></script>
+    <script src="libs/jquery-ui-1.12.1/jquery-ui.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css"/>
+		<link rel="stylesheet" href="css/custom2.css" />
+      <!-- Charger jsPDF depuis un CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Charger le plugin autoTable depuis un CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
+
+	</head>
+	<body>
+   <!-- <button id="generatePdfButton" style="color :white; width:80%;background-color: green; border-width: 0%;">Enrégistrer PDF</button>-->
+		<div class="container receipt-wrap" id="receipt-wrap">
+			<div class="row justify-content-md-center">
+				<div class="receipt-main col-xs-12 col-sm-12 col-md-12">
+					<div class="row">
+						<div class="col-xs-6 col-sm-6 col-md-6">
+							<div class="receipt-left">
+								<img
+									class="img-responsive"
+									alt="iamgurdeeposahan"
+									src="/img/Logo_gestreb.jpg"
+									style="width: 70px; border-radius: 8px"
+								/>
+							</div>
+						</div>
+				
+					</div>
+
+					<br />
+					<br>
+
+                    <div class="row justify-content-md-center" >
+					
+							<div id="fiche_parcellaire">
+								<h1 id="titre_fiche">FICHE PARCELLAIRE</h1>
+							</div>
+					
+				
+					</div>
+
+					<br />
+					<br>
+
+					<div class="row">
+						<div class="col-xs-6 col-sm-6 col-md-6 text-left">
+							<div class="receipt-right">
+								<p id="cg">Centre de gestion :</p>
+								<!--<p id="division"><b>Division :</b>  </p>--->
+								<p id="ugf">UGF :</p>
+                <p id="foret">Forêt :</p>
+								<p id="bloc">Bloc :</p>
+								<p id="parcelle">Parcelle :</p>
+                <p id="sup">Superficie :</p>
+								<p id="essence">Essence :</p>
+								<p id ="finance">Financement :</p>
+							</div>
+						</div>
+						<div
+							class="col-xs-6 col-sm-6 col-md-6 "
+							style="align-self: flex-end"
+						>
+							<div class="receipt-left">
+								<p id="ty_re">Type de reboisement :</p>
+								<p id="ty_pl">Type de plantation :</p>
+								<p id="ty_p">Type de plants :</p>
+                <p id="met">Méthode :</p>
+								<p id="ecr">Ecartement :</p>
+								<p id="dens">Densité :</p>
+                <!--<p id="prov">Provenence :</p>
+								<p id="cul_ass">Culture associée :</p>-->
+								<p id="dte">Date de plantation :</p>
+							</div>
+						</div>
+					</div>
+
+					<br />
+
+					<div class="items-center space-y-2 md:space-y-0 pb-1 dark:bg-gray-900 scroll-my-2">
+						
+                        <table border="1" id="table1" class="w-full bottom-0 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-lg ">
+                            <thead class="text-xs text-white uppercase  bg-black">
+                                <tr class="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    <th rowspan="3">DATE</th>
+                                    <th rowspan="3">TRAVAUX</th>
+                                    <th rowspan="3">Coût (ha)</th>
+                                    <th colspan="2">SOUS-TRAITANCE</th>
+                                    <th colspan="5">REGIE</th>
+                                    <th colspan="2">TOTAL</th>
+                                    <th rowspan="3">OBS</th>
+                                </tr>
+                                <tr>
+                                    
+                                    <th rowspan="2">Surface traitée (a) (ha)</th>
+                                    <th rowspan="2">Montant (1)</th>
+                                    <th rowspan="2">Surface traitée (b)</th>
+                                    <th colspan="2">Homme/jour</th>
+                                    <th colspan="2">H/Engins</th>
+                                    <th rowspan="2">Surface traitée (a+b)</th>
+                                    <th rowspan="2">Coût (1+2+3)</th>
+                                </tr>
+                                <tr>
+                                    <th>Qté</th>
+                                    <th>Coût (2)</th>
+                                    <th>Qté</th>
+                                    <th>Coût (3)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody2">
+                            </tbody>
+                        </table>
+					</div>
+					<br>
+					<div class="row">
+						<div class="col-xs-8 col-sm-8 col-md-8 text-left">
+							<div class="receipt-right">
+								<h5 style="font-size: 15px;"
+									>Méthode de mise en oeuvre : Sous-traitance. Régie. Taungya. Opérateur du bois. Régénération après coupe.</h5
+								>
+                <h5 id="date_enreg" style="font-size: 12px; color: brown;"
+									></h5
+								>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+    <br>
+  
+	</body>
+	<script>
+    const fr_ugf = ['Tene','Sangoue'];
+let donnee_get =[];
+let mot = "ide=";
+    let tab = document.cookie.split(";");
+    let id_id;
+    for (let i=0;i<tab.length;i++){
+        let c = tab[i];
+        while (c.charAt("0")==' '){
+            c = c.substring(1,c.length);
+        }
+        if (c.indexOf(mot)==0){
+            id_id = c.substring(mot.length,c.length);
+        }                        
+    }
+let jsonCugf =[];
+$(document).ready(function() {  
+    $.ajax({
+        url: `/get/fiches/cu/graph1/${id_id}`,
+        dataType: "json",
+        success: function(json) {
+            jsonCugf.push(json);
+            console.log(json);
+
+            setTimeout(function (){
+             
+			let c_g = document.getElementById("cg");
+			let for_et = document.getElementById("foret");
+			let parce = document.getElementById("parcelle");
+			let ess_ence = document.getElementById("essence");
+      let bloc = document.getElementById("bloc");
+      let ugf = document.getElementById("ugf");
+    let finance = document.getElementById("finance");
+    let sup = document.getElementById("sup");
+    let ty_re = document.getElementById("ty_re");
+    let ty_pl = document.getElementById("ty_pl");
+    let ty_p = document.getElementById("ty_p");
+    let met = document.getElementById("met");
+    let ecr = document.getElementById("ecr");
+    let dens = document.getElementById("dens");
+    //let prov = document.getElementById("prov");
+    //let cul_ass = document.getElementById("cul_ass");
+    let dte = document.getElementById("dte");
+			
+			
+			
+			
+    
+    let elements;
+    //let donnees_uniques = [];
+    for (let z=0; z<json.length;z++){
+      elements=json[z];
+      
+     
+      
+          
+              c_g.innerHTML='Centre de gestion: Gagnoa';
+          
+          
+            parce.innerHTML='Parcelle : '+elements.numero;
+          
+         
+            ugf.innerHTML='UGF : '+fr_ugf[elements.ugf-1];
+          
+          
+            ess_ence.innerHTML='Essence : '+elements.essence;
+       
+          
+         
+            finance.innerHTML='Financement : '+elements.partenaire;
+         
+          
+         
+            for_et.innerHTML='Forêt : '+fr_ugf[elements.foret-1];
+         
+          
+            sup.innerHTML='Superficie : '+elements.superficie + ' ha';
+          
+          
+            bloc.innerHTML='Bloc : '+elements.annee;
+          
+          
+            ty_re.innerHTML='Type de reboisement : Industriel';
+         
+         
+            ty_pl.innerHTML='Type de plantation : Manuel';
+          
+         
+            ty_p.innerHTML='Type de plants : ';
+         
+          
+            met.innerHTML='Méthode : Taungya';
+          
+          
+            ecr.innerHTML='Ecartement : ';
+         
+          
+         
+            dens.innerHTML='Densité : '+elements.densite;
+         
+         
+           // cul_ass.innerHTML='Culture associée : ';
+    
+            //prov.innerHTML='Provenence : ';
+          
+         
+            
+            const liste_activites = ['Rabattage','Abattage et tronçonnage','Brûlage','Piquetage','Ouverture des lignes','Trouaison','Planting',
+  'Entretien 1 ligne','Entretien 1 interligne','Remplacement plants morts','Entretien en puits','Entretien 2 ligne','Entretien 2 interligne'];
+
+    const parcelles = json;
+    console.log(parcelles);
+    const tableBody = document.querySelector('#tbody2');
+    tableBody.innerHTML = '';
+    tableBody.style.fontSize='12px';
+    const row = document.createElement('tr');
+      row.setAttribute('class', 'text-xs ');
+    //tableBody.style.fontSize='8px';
+    
+    let i=0;
+    parcelles.forEach(parcelle => {
+      const row = document.createElement('tr');
+      
+        //-------------------------------------------------------------
+
+      const montant2 = (Math.round(parcelle.cout * 100)/100);
+      const options2 = { style: 'currency' };
+      const numberFormat2 = new Intl.NumberFormat(options2);
+      if (i==6){
+        dte.innerHTML='Date de plantation : '+parcelle.date_debut;
+      }
+      if (i==1){
+        row.innerHTML = `
+        <td class="text-sm px-4 py-1 editable-cell" >${parcelle.date_debut}-${parcelle.date_fin}</td>
+        <td class="text-sm px-4 py-1 editable-cell" >${liste_activites[i]}</td>
+        <td class="text-sm px-4 py-1 editable-cell" id="taux_td">${numberFormat2.format(montant2)}</td>
+        <td class="text-sm px-4 py-1 editable-cell" >${parcelle.realise}</td>
+        <td class="text-sm px-4 py-1 editable-cell" data-id="" data-field="date_debut">
+          ${numberFormat2.format(parcelle.realise*parcelle.cout)}
+        </td>   
+        <td class="text-sm px-4 py-1 editable-cell" ></td>
+        <td class="text-sm px-4 py-1 editable-cell" ></td>
+        <td class="text-sm px-4 py-1 editable-cell" id="taux_td"></td>
+        <td class="text-sm px-4 py-1 editable-cell" ></td>
+        <td class="text-sm px-4 py-1 editable-cell" ></td>  
+        <td class="text-sm px-4 py-1 editable-cell" >${parcelle.realise}</td>
+        <td class="text-sm px-4 py-1 editable-cell" data-id="" data-field="date_debut">
+          ${numberFormat2.format(parcelle.realise*parcelle.cout)}
+        </td>   
+   `;
+      }else{
+        row.innerHTML = `
+        <td class="text-sm px-4 py-1 editable-cell" >${parcelle.date_debut}-${parcelle.date_fin}</td>
+        <td class="text-sm px-4 py-1 editable-cell" >${liste_activites[i]}</td>
+        <td class="text-sm px-4 py-1 editable-cell" id="taux_td">${numberFormat2.format(montant2)}</td>
+        <td class="text-sm px-4 py-1 editable-cell" ></td>
+        <td class="text-sm px-4 py-1 editable-cell" id="taux_td"></td>
+        <td class="text-sm px-4 py-1 editable-cell" >${parcelle.realise}</td>
+        <td class="text-sm px-4 py-1 editable-cell" ></td>
+        <td class="text-sm px-4 py-1 editable-cell" data-id="" data-field="date_debut">
+          ${numberFormat2.format(parcelle.realise*parcelle.cout)}
+        </td>   
+        <td class="text-sm px-4 py-1 editable-cell" ></td>
+        <td class="text-sm px-4 py-1 editable-cell" ></td>
+        <td class="text-sm px-4 py-1 editable-cell" >${parcelle.realise}</td>
+        <td class="text-sm px-4 py-1 editable-cell" data-id="" data-field="date_debut">
+          ${numberFormat2.format(parcelle.realise*parcelle.cout)}
+        </td>   
+   `;
+      }
+
+      //-------------------------------------------------------------
+      
+      tableBody.appendChild(row);
+      i++;
+    });
+    var today = new Date(); 
+    var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+var yyyy = today.getFullYear();
+
+today = dd + '/' + mm + '/' + yyyy;
+    document.getElementById('date_enreg').innerHTML='Date : '+today;
+          /*let tableau = document.getElementById(`ligne_table${l}`);
+          for (let k = 0; k<13;k++){
+            if (elements[]==null){
+              tableau.innerHTML += `<td></td>`
+            }else{
+              if (entetes[k]=="donnees_tableau/sous_traitance/montant" || entetes[k]=="donnees_tableau/sous_traitance/cout1" 
+              || entetes[k]=="donnees_tableau/regie/homme_jour/cout1_001" ||entetes[k]=="donnees_tableau/regie/homme_engins/cout1_002"
+              || entetes[k]=="donnees_tableau/total/cout3" ){
+                const amount = element[entetes[k]];
+                const options1 = { style: 'currency', currency: 'XOF' };
+                const numberFormat1 = new Intl.NumberFormat('XOF', options1);
+                tableau.innerHTML += `<td>${numberFormat1.format(amount)}</td>`
+
+              }else{
+                tableau.innerHTML += `<td>${element[entetes[k]]}</td>`
+              }*/
+              
+            
+            
+          }
+
+				})
+      
+            }
+
+      })
+    })
+    
+    ;
+    //console.log(jsonCugf);
+    const { jsPDF } = window.jspdf;
+    
+    //document.getElementById('generatePdfButton').addEventListener('click', function () {
+      // Créer une nouvelle instance jsPDF
+
+      const doc = new jsPDF('p', 'mm', 'a4');  // Format A4
+
+      // Récupérer le tableau HTML à partir de l'élément DOM
+      //const table = document.getElementById('myTable');
+      const logoUrl = 'img/logo2.jpg';  // Remplacer par l'URL de ton logo ou une image en base64
+      doc.addImage(logoUrl, 'PNG', 10, 15, 15, 18);  // x, y, largeur, hauteur
+      //const contentDiv = document.getElementById('fiche_parcellaire').innerHTML;
+      // Ajouter un titre ou du texte dans l'entête
+      //doc.setFontSize(18);
+      //doc.text('Rapport de données', 50, 25);  // Position du texte après le logo
+
+         // Définir les coordonnées et la taille du cadre
+      const x = 76; // Position horizontale du coin supérieur gauche du cadre
+      const y = 35; // Position verticale du coin supérieur gauche du cadre
+      const width = 73; // Largeur du rectangle
+      const height = 12; // Hauteur du rectangle
+
+      // Définir les styles pour le cadre
+      doc.setDrawColor(0, 0, 0); // Couleur de la bordure (ici, noir)
+      doc.setLineWidth(0.2); // Épaisseur de la bordure
+
+      // Dessiner le rectangle autour du texte  (encadrer le texte)
+      doc.rect(x, y, width, height);
+
+      //------------------
+         // Définir les coordonnées et la taille du cadre
+      const x2 = 75; // Position horizontale du coin supérieur gauche du cadre
+      const y2 = 34; // Position verticale du coin supérieur gauche du cadre
+      const width2 = 75; // Largeur du rectangle
+      const height2 = 14; // Hauteur du rectangle
+
+      // Définir les styles pour le cadre
+      doc.setDrawColor(0, 0, 0); // Couleur de la bordure (ici, noir)
+      doc.setLineWidth(0.4); // Épaisseur de la bordure
+
+      // Dessiner le rectangle autour du texte  (encadrer le texte)
+      doc.rect(x2, y2, width2, height2);
+
+
+      // Ajouter un sous-titre ou plus de texte
+      doc.setFontSize(18);
+      doc.text('FICHE PARCELLAIRE', 80, 43); 
+
+      /*doc.setFontSize(10);
+      doc.text('Centre de gestion :', 15, 70);
+
+      doc.setFontSize(10);
+      doc.text('UGF :', 15, 77);
+
+      doc.setFontSize(10);
+      doc.text('Forêt :', 15, 84);
+
+      doc.setFontSize(10);
+      doc.text('Bloc :', 15, 91);
+
+      doc.setFontSize(10);
+      doc.text('Parcelle :', 15, 98);
+
+      doc.setFontSize(10);
+      doc.text('Superficie :', 15, 105);
+
+      doc.setFontSize(10);
+      doc.text('Essence :', 15, 112);
+
+      doc.setFontSize(10);
+      doc.text('Financement :', 15, 119);*/
+
+      let c_g = document.getElementById("cg").innerHTML;
+    let for_et = document.getElementById("foret").innerHTML;
+    let parce = document.getElementById("parcelle").innerHTML;
+    let ess_ence = document.getElementById("essence").innerHTML;
+    let secteur = document.getElementById("secteur").innerHTML;
+    let bloc = document.getElementById("bloc").innerHTML;
+    let finance = document.getElementById("finance").innerHTML;
+    let sup = document.getElementById("sup").innerHTML;
+
+
+      doc.setFontSize(10);
+      doc.text(c_g, 15, 70);
+
+      doc.setFontSize(10);
+      doc.text(parce, 15, 98);
+
+      doc.setFontSize(10);
+      doc.text(for_et, 15, 84);
+
+      doc.setFontSize(10);
+      doc.text(ess_ence, 15, 112);
+      
+      doc.setFontSize(10);
+      doc.text(secteur, 15, 77);
+      
+      doc.setFontSize(10);
+      doc.text(bloc, 15, 91);
+
+      doc.setFontSize(10);
+      doc.text(sup, 15, 105);
+
+      doc.setFontSize(10);
+      doc.text(finance, 15, 119);
+
+      
+      
+
+      //--------------------------------
+
+      /*doc.setFontSize(10);
+      doc.text('Type de reboisement :', 115, 70);
+
+      doc.setFontSize(10);
+      doc.text('Type de plantation :', 115, 77);
+
+      doc.setFontSize(10);
+      doc.text('Type de plants :', 115, 84);
+
+      doc.setFontSize(10);
+      doc.text('Mét. mise en oeuvre :', 115, 91);
+
+      doc.setFontSize(10);
+      doc.text('Ecartement :', 115, 98);
+
+      doc.setFontSize(10);
+      doc.text('Densité :', 115, 105);
+
+      doc.setFontSize(10);
+      doc.text('Provenance :', 115, 112);
+
+      doc.setFontSize(10);
+      doc.text('Culture associée :', 115, 119);
+
+      doc.setFontSize(10);
+      doc.text('Date de plantation :', 115, 126);*/
+
+      //-----------------------
+
+      let ty_re = document.getElementById("ty_re").innerHTML;
+    let ty_pl = document.getElementById("ty_pl").innerHTML;
+    let ty_p = document.getElementById("ty_p").innerHTML;
+    let met = document.getElementById("met").innerHTML;
+    let ecr = document.getElementById("ecr").innerHTML;
+    let dens = document.getElementById("dens").innerHTML;
+    let prov = document.getElementById("prov").innerHTML;
+    let cul_ass = document.getElementById("cul_ass").innerHTML;
+    let dte = document.getElementById("dte").innerHTML;
+
+    doc.setFontSize(10);
+      doc.text(ty_re, 115, 70);
+
+      doc.setFontSize(10);
+      doc.text(ty_pl, 115, 77);
+
+      doc.setFontSize(10);
+      doc.text(ty_p, 115, 84);
+
+      doc.setFontSize(10);
+      doc.text(met, 115, 91);
+
+      doc.setFontSize(10);
+      doc.text(ecr, 115, 98);
+
+      doc.setFontSize(10);
+      doc.text(dens, 115, 105);
+
+      doc.setFontSize(10);
+      doc.text(prov, 115, 112);
+
+      doc.setFontSize(10);
+      doc.text(cul_ass, 115, 119);
+
+      doc.setFontSize(10);
+      doc.text(dte, 115, 126);
+
+      // Utiliser autoTable pour ajouter le tableau HTML au PDF
+      doc.autoTable({
+      html: '#table1', // Récupère le tableau HTML
+      startY: 132, // Position verticale de départ du tableau
+      theme: 'grid', // Applique le thème 'grid' qui montre les bordures de chaque cellule
+      styles: {
+        lineWidth: 0.5,   // Définir l'épaisseur de la ligne des bordures
+        lineColor: [0, 0, 0], // Couleur des bordures (noir ici)
+        fontSize: 7.5,     // Taille de la police du tableau
+        cellPadding: 1,   // Espace interne dans les cellules
+      },
+      headStyles: {
+        fillColor: [255, 255, 255], // Fond bleu pour l'en-tête
+        textColor: [0, 0, 0], // Texte blanc dans l'en-tête
+        lineWidth: 0.1,  // Epaisseur des bordures des entêtes
+        lineColor: [0, 0, 0], // Couleur blanche pour les bordures des entêtes
+      },
+      bodyStyles: {
+        lineWidth: 0.1, 
+        textColor: [0, 0, 0],  // Bordures plus fines pour les cellules du corps
+        lineColor: [0, 0, 0], // Couleur des bordures des cellules (gris clair)
+      },
+    });
+
+      // Sauvegarder le PDF généré
+      doc.save('fiche-'+donnee_get[0]+'.pdf');
+    
+	</script>
+	
+</html>

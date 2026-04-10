@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <!-- Montserrat Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/tailStyle.css">
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body>
+    <div class="grid-container">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="menu-icon" onclick="openSidebar()">
+          <span class="material-icons-outlined">menu</span>
+        </div>
+        <div class="header-left">
+          <span class="material-icons-outlined">dashboard</span>
+        </div>
+        <div class="header-right">
+          <span class="material-icons-outlined">notifications</span>
+          <span class="material-icons-outlined">email</span>
+          <span class="material-icons-outlined">account_circle</span>
+        </div>
+      </header>
+      <!-- End Header -->
+
+      <!-- Sidebar -->
+      <aside id="sidebar">
+        <div class="sidebar-title">
+          <div class="sidebar-brand">
+            <a href="#" class="flex ms-2 md:me-24">
+              <img src="/img/logo2.jpg" class="h-8 me-2" alt="Logo Sodefor" />
+              <span class="self-center text-blue text-md font-semibold md:text-xl whitespace-nowrap text-blue-500">CG Gagnoa</span>
+              </a>
+          </div>
+          <span class="material-icons-outlined" onclick="closeSidebar()">close</span>
+        </div>
+        <div class="px-2 pb-4 bg-green  shadow-zinc-600">
+          <ul class="space-y-2 font-medium text-xs">
+            <li>
+              <span class="flex items-center py-3 px-1 mt-16 dark:text-black  border-y border-gray-300 group">
+                <span class="material-icons-outlined">dashboard</span>
+                <span class="ms-3">Tableau de bord</span>
+              </span>
+            </li>   
+            <li>
+              <a href="/admin/inscrit" class="flex items-center mt-16 p-2 text-black  hover:border-y hover:border-blue-700 group">
+                <span style="color: blue;" class="material-icons-outlined">description</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Inscrits</span>
+              </a>
+            </li>  
+            <li>
+              <a href="/admin/membre" class="flex items-center mt-16 p-2 text-black  hover:border-y hover:border-orange-500 group">
+                <span style="color: orange;" class="material-icons-outlined">group</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Membres</span>
+              </a>
+            </li>  
+            <li>
+              <a href="/admin/connecte" class="flex items-center mt-16 p-2 text-black  hover:border-y hover:border-green-700 group">
+                <span style="color: green;" class="material-icons-outlined">wifi</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Connectés</span>
+              </a>
+            </li>  
+            <li>
+              <a href="/admin/demande" class="flex items-center mt-16 p-2 text-black  hover:border-y hover:border-red-700 group">
+                <span style="color: red;" class="material-icons-outlined">notification_important</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">En attente</span>
+              </a>
+            </li>            
+          </ul>
+        </div>
+      </aside>
+      <!-- End Sidebar -->
+
+      <!-- Main -->
+      <main class="main-container">
+
+        <div class="main-cards">
+          
+          <div style="border-radius: 80%; background-color: #2962ff; color: white;" class="card">
+            <a href="/admin/inscrit">
+            <div class="card-inner">
+              <h3>INSCRITS</h3>
+              <span class="material-icons-outlined">description</span>
+            </div>
+            <h1>{{ inscrit }}</h1>
+            </a>
+          </div>
+
+          <div style="border-radius: 80%; background-color:#ff6d00;color: white;"  class="card">
+            <a href="/admin/membre">
+            <div class="card-inner">
+              <h3>MEMBRES</h3>
+              <span class="material-icons-outlined">groups</span>
+            </div>
+            <h1>{{ membre }}</h1>
+            </a>
+          </div>
+
+          <div style="border-radius: 80%;background-color: #2e7d32;color: white;"  class="card">
+            <a href="/admin/connecte">
+            <div class="card-inner">
+              <h3>CONNECTES</h3>
+              <span class="material-icons-outlined">wifi</span>
+            </div>
+            <h1>{{ connecte }}</h1>
+            </a>
+          </div>
+
+          <div style="border-radius: 80%; background-color: #d50000;color: white;"  class="card">
+            <a href="/admin/demande">
+            <div class="card-inner">
+              <h3>DEMANDES NON TRAITES</h3>
+              <span class="material-icons-outlined">notification_important</span>
+            </div>
+            <h1>{{ attente }}</h1>
+            </a>
+          </div>
+
+        </div>
+
+        <div class="charts">
+
+          <div class="charts-card">
+            <h2 class="chart-title">Membres selon les services</h2>
+            <div id="bar-chart"></div>
+          </div>
+
+          <div class="charts-card">
+            <h2 class="chart-title">Demande d'inscription et connexion</h2>
+            <div id="area-chart"></div>
+          </div>
+
+        </div>
+      </main>
+      <!-- End Main -->
+
+    </div>
+
+    <!-- Scripts -->
+    <!-- ApexCharts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/scripts.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plan de Missions | GESTREB</title>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <link rel="icon" type="image/jpeg" href="/img/Logo_gestreb.jpg">
+  
+  <style>
+    /* ===== PLAN MISSION STYLES ===== */
+    
+    /* Stats Summary Cards */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-box {
+      background: white;
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--gray-100);
+      transition: all 0.2s ease;
+    }
+    
+    .stat-box:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .stat-box-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .stat-box-icon.blue { background: linear-gradient(135deg, var(--primary-500), var(--primary-600)); color: white; }
+    .stat-box-icon.emerald { background: linear-gradient(135deg, var(--emerald-500), var(--emerald-600)); color: white; }
+    .stat-box-icon.amber { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+    .stat-box-icon.purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; }
+    
+    .stat-box-content h3 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--gray-900);
+      line-height: 1;
+    }
+    
+    .stat-box-content p {
+      font-size: 0.8125rem;
+      color: var(--gray-500);
+      margin-top: 0.25rem;
+    }
+    
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+    
+    .toolbar-left {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .search-box {
+      position: relative;
+      min-width: 280px;
+    }
+    
+    .search-box input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.75rem;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      font-size: 0.875rem;
+      background: white;
+      transition: all 0.2s ease;
+    }
+    
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--primary-500);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+    
+    .search-box .material-icons-outlined {
+      position: absolute;
+      left: 0.875rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-400);
+      font-size: 1.25rem;
+    }
+    
+    .filter-select {
+      padding: 0.75rem 2.5rem 0.75rem 1rem;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      font-size: 0.875rem;
+      background: white;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1.25rem;
+      cursor: pointer;
+    }
+    
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--primary-500);
+    }
+    
+    /* Missions Table */
+    .missions-card {
+      background: white;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+    
+    .missions-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .missions-header h2 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .missions-count {
+      background: var(--primary-100);
+      color: var(--primary-700);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    
+    .table-container {
+      overflow-x: auto;
+    }
+    
+    .missions-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    
+    .missions-table th {
+      background: var(--gray-50);
+      padding: 1rem 1.25rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--gray-600);
+      border-bottom: 1px solid var(--gray-200);
+      white-space: nowrap;
+    }
+    
+    .missions-table td {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--gray-100);
+      color: var(--gray-700);
+    }
+    
+    .missions-table tbody tr {
+      transition: background 0.15s ease;
+    }
+    
+    .missions-table tbody tr:hover {
+      background: var(--gray-50);
+    }
+    
+    .mission-libele {
+      font-weight: 600;
+      color: var(--gray-900);
+      max-width: 250px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .mission-dates {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+    }
+    
+    .mission-dates span {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      font-size: 0.8125rem;
+    }
+    
+    .mission-dates .material-icons-outlined {
+      font-size: 0.875rem;
+      color: var(--gray-400);
+    }
+    
+    /* Status Badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.375rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    
+    .status-badge.completed {
+      background: var(--emerald-100);
+      color: var(--emerald-700);
+    }
+    
+    .status-badge.in-progress {
+      background: var(--amber-100);
+      color: var(--amber-700);
+    }
+    
+    .status-badge.planned {
+      background: var(--primary-100);
+      color: var(--primary-700);
+    }
+    
+    .status-badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    
+    /* Cost Display */
+    .mission-cost {
+      font-weight: 700;
+      color: var(--gray-900);
+      font-family: 'Inter', monospace;
+    }
+    
+    /* Actions */
+    .action-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      background: transparent;
+      color: var(--gray-500);
+    }
+    
+    .action-btn:hover {
+      background: var(--gray-100);
+      color: var(--gray-700);
+    }
+    
+    .action-btn.view:hover { background: var(--primary-50); color: var(--primary-600); }
+    .action-btn.edit:hover { background: var(--amber-50); color: var(--amber-600); }
+    .action-btn.delete:hover { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+    
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    
+    .empty-state-icon {
+      width: 80px;
+      height: 80px;
+      background: var(--gray-100);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      color: var(--gray-400);
+    }
+    
+    .empty-state h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 0.5rem;
+    }
+    
+    .empty-state p {
+      color: var(--gray-500);
+      margin-bottom: 1.5rem;
+    }
+    
+    /* FAB Button */
+    .fab-button {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+      color: white;
+      border: none;
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .fab-button:hover {
+      transform: scale(1.1) rotate(90deg);
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+    }
+    
+    .fab-button .material-icons-outlined {
+      font-size: 1.75rem;
+    }
+    
+    /* Pagination */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--gray-100);
+    }
+    
+    .pagination-info {
+      font-size: 0.875rem;
+      color: var(--gray-500);
+    }
+    
+    .pagination-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .pagination-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--gray-200);
+      background: white;
+      color: var(--gray-600);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .pagination-btn:hover:not(:disabled) {
+      border-color: var(--primary-500);
+      color: var(--primary-600);
+    }
+    
+    .pagination-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .pagination-btn.active {
+      background: var(--primary-500);
+      border-color: var(--primary-500);
+      color: white;
+    }
+
+    /* ========== MODAL NOUVELLE MISSION ========== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 2rem 1rem;
+      overflow-y: auto;
+    }
+    
+    .modal-overlay.open {
+      display: flex;
+    }
+    
+    .modal-container {
+      background: white;
+      border-radius: var(--radius-2xl);
+      width: 100%;
+      max-width: 900px;
+      box-shadow: var(--shadow-xl);
+      animation: slideUp 0.3s ease-out;
+    }
+    
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    .modal-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-header h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .modal-close {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--gray-100);
+      color: var(--gray-600);
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .modal-close:hover {
+      background: var(--gray-200);
+      color: var(--gray-900);
+    }
+    
+    .modal-body {
+      padding: 2rem;
+      max-height: calc(100vh - 200px);
+      overflow-y: auto;
+    }
+    
+    /* Stepper */
+    .stepper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 2rem;
+      padding: 1rem;
+      background: var(--gray-50);
+      border-radius: var(--radius-xl);
+    }
+    
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .step-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8125rem;
+      background: var(--gray-200);
+      color: var(--gray-500);
+      transition: all 0.3s ease;
+    }
+    
+    .step.active .step-number {
+      background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+      color: white;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    }
+    
+    .step.completed .step-number {
+      background: var(--emerald-500);
+      color: white;
+    }
+    
+    .step-label {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--gray-400);
+      display: none;
+    }
+    
+    @media (min-width: 640px) {
+      .step-label { display: block; }
+    }
+    
+    .step.active .step-label,
+    .step.completed .step-label {
+      color: var(--gray-700);
+    }
+    
+    .step-connector {
+      width: 40px;
+      height: 2px;
+      background: var(--gray-200);
+      margin: 0 0.75rem;
+      transition: background 0.3s ease;
+    }
+    
+    .step-connector.active {
+      background: var(--emerald-500);
+    }
+    
+    /* Form Grid */
+    .form-grid {
+      display: grid;
+      gap: 1.25rem;
+    }
+    
+    .form-grid-2 { grid-template-columns: repeat(1, 1fr); }
+    .form-grid-3 { grid-template-columns: repeat(1, 1fr); }
+    .form-grid-4 { grid-template-columns: repeat(1, 1fr); }
+    
+    @media (min-width: 640px) {
+      .form-grid-2 { grid-template-columns: repeat(2, 1fr); }
+      .form-grid-3 { grid-template-columns: repeat(2, 1fr); }
+      .form-grid-4 { grid-template-columns: repeat(2, 1fr); }
+    }
+    
+    @media (min-width: 1024px) {
+      .form-grid-3 { grid-template-columns: repeat(3, 1fr); }
+      .form-grid-4 { grid-template-columns: repeat(4, 1fr); }
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .form-label {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+    
+    .form-label .material-icons-outlined {
+      font-size: 1rem;
+      color: var(--gray-400);
+    }
+    
+    .form-input,
+    .form-select {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      font-size: 0.875rem;
+      background: white;
+      transition: all 0.2s ease;
+    }
+    
+    .form-input:focus,
+    .form-select:focus {
+      outline: none;
+      border-color: var(--primary-500);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+    
+    .form-divider {
+      border-top: 1px solid var(--gray-200);
+      padding-top: 1.25rem;
+      margin-top: 0.25rem;
+    }
+    
+    /* Selection Grid */
+    .selection-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .selection-counter {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--emerald-50);
+      border-radius: var(--radius-lg);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--emerald-700);
+    }
+    
+    .select-all-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--primary-50);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--primary-700);
+    }
+    
+    .select-all-box input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary-600);
+    }
+    
+    .selection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+      max-height: 350px;
+      overflow-y: auto;
+      padding: 0.25rem;
+    }
+    
+    .selection-card {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.875rem;
+      background: white;
+      border: 2px solid var(--gray-100);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .selection-card:hover {
+      border-color: var(--primary-200);
+    }
+    
+    .selection-card.selected {
+      border-color: var(--primary-500);
+      background: var(--primary-50);
+    }
+    
+    .selection-card input {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--primary-600);
+      flex-shrink: 0;
+    }
+    
+    .selection-card-info h4 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+    
+    .selection-card-info p {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+    }
+    
+    /* Modal Actions */
+    .modal-actions {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 1.5rem;
+      margin-top: 1.5rem;
+      border-top: 1px solid var(--gray-200);
+      gap: 1rem;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-lg);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+    
+    .btn-secondary {
+      background: var(--gray-100);
+      color: var(--gray-700);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--gray-200);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+      color: white;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+    }
+    
+    .btn-success {
+      background: linear-gradient(135deg, var(--emerald-500), var(--emerald-600));
+      color: white;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+    
+    .btn-success:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    }
+    
+    /* Section Hidden */
+    .section-hidden { display: none !important; }
+    
+    /* Loading */
+    .loading-spinner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      gap: 1rem;
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--gray-200);
+      border-top-color: var(--primary-500);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .fab-button {
+        bottom: 1.5rem;
+        right: 1.5rem;
+        width: 56px;
+        height: 56px;
+      }
+      
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .search-box {
+        min-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <a href="/"><img src="/img/Logo_gestreb.jpg" alt="Logo GestReb"></a>
+        </div>
+        <div class="sidebar-brand">
+          <h1>GestReb</h1>
+          <p>Gestion des reboisements</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <span class="nav-section-title">Menu principal</span>
+        
+        <a href="#" class="nav-item">
+          <span class="material-icons-outlined">eco</span>
+          Prod. de plants
+        </a>
+        
+        <a href="/mise_en_place/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">grid_view</span>
+          Parcelles
+        </a>
+        
+        <a href="/entretien_p/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">grass</span>
+          Entretien
+        </a>
+        
+        <a href="/sylviculture/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">park</span>
+          Sylviculture
+        </a>
+        
+        <span class="nav-section-title">Planification</span>
+        
+        <a href="/plan_mission/{{ id }}" class="nav-item active">
+          <span class="material-icons-outlined">event_note</span>
+          Plan de missions
+        </a>
+       <span class="nav-section-title">Outils</span>
+        
+        <a href="/page/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">map</span>
+          Carte interactive
+        </a>
+        <a href="/inventaire/dossier/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">analytics</span>
+          Dossier inventaire
+        </a>
+        <span class="nav-section-title">Authentification</span>
+        
+        <a href="/log/deconnecter" class="nav-item">
+          <span class="material-icons-outlined">logout</span>
+          Se deconnecter
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <span class="material-icons-outlined">menu</span>
+        </button>
+        <div class="page-title">
+          <h1>Dossiers d'inventaire</h1>
+          <p>Gestion et suivi des inventaires</p>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="header-status">
+          <span class="dot"></span>
+          En ligne
+        </div>
+        
+        <div class="header-notifications">
+          <span class="material-icons-outlined">notifications</span>
+          <span class="badge"></span>
+        </div>
+        
+        <div class="header-user">
+          <div class="header-user-avatar">
+            <span class="material-icons-outlined">person</span>
+          </div>
+          <div class="header-user-info">
+            <p>Admin</p>
+            <span>Gestionnaire</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      
+      <!-- Stats Row -->
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-box-icon blue">
+            <span class="material-icons-outlined">assignment</span>
+          </div>
+          <div class="stat-box-content">
+            <h3 id="stat-total">--</h3>
+            <p>Total Inventaire</p>
+          </div>
+        </div>
+        
+        <div class="stat-box">
+          <div class="stat-box-icon emerald">
+            <span class="material-icons-outlined">check_circle</span>
+          </div>
+          <div class="stat-box-content">
+            <h3 id="stat-completed">--</h3>
+            <p>Terminées</p>
+          </div>
+        </div>
+        
+        <div class="stat-box">
+          <div class="stat-box-icon amber">
+            <span class="material-icons-outlined">pending</span>
+          </div>
+          <div class="stat-box-content">
+            <h3 id="stat-progress">--</h3>
+            <p>En cours</p>
+          </div>
+        </div>
+        
+      </div>
+      
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div class="search-box">
+            <span class="material-icons-outlined">search</span>
+            <input type="text" id="searchInput" placeholder="Rechercher un inventaire...">
+          </div>
+         
+        </div>
+      </div>
+      
+      <!-- Missions Table Card -->
+      <div class="missions-card">
+        <div class="missions-header">
+          <h2>
+            <span class="material-icons-outlined">list_alt</span>
+            Liste des inventaires
+            <span class="missions-count" id="missions-count">0</span>
+          </h2>
+        </div>
+        
+        <div class="table-container">
+          <table class="missions-table">
+            <thead>
+              <tr>
+                <th>Libellé</th>
+                <th>Dates</th>
+                <th>Durée</th>
+                <th>Agents</th>
+                <th>Coût</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="missions-tbody">
+              <tr>
+                <td colspan="8">
+                  <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <span style="color: var(--gray-500);">Chargement des missions...</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="pagination">
+          <div class="pagination-info">
+            Affichage de <strong id="page-start">0</strong> à <strong id="page-end">0</strong> sur <strong id="page-total">0</strong> missions
+          </div>
+          <div class="pagination-buttons">
+            <button class="pagination-btn" id="btn-prev" disabled>
+              <span class="material-icons-outlined">chevron_left</span>
+            </button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn" id="btn-next">
+              <span class="material-icons-outlined">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+    </main>
+  </div>
+
+  <!-- FAB Button -->
+  <button class="fab-button" onclick="openNewMissionModal()" title="Nouvelle mission">
+    <span class="material-icons-outlined">add</span>
+  </button>
+
+  <!-- ==================== MODAL NOUVELLE MISSION ==================== -->
+  <div class="modal-overlay" id="missionModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2>
+          <span class="material-icons-outlined">add_task</span>
+          Nouvelle Mission
+        </h2>
+        <button class="modal-close" onclick="closeModal()">
+          <span class="material-icons-outlined">close</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <!-- Stepper -->
+        <div class="stepper">
+          <div class="step active" id="step1">
+            <div class="step-number">1</div>
+            <span class="step-label">Informations</span>
+          </div>
+          <div class="step-connector" id="connector1"></div>
+          <div class="step" id="step2">
+            <div class="step-number">2</div>
+            <span class="step-label">Agents</span>
+          </div>
+          <div class="step-connector" id="connector2"></div>
+          <div class="step" id="step3">
+            <div class="step-number">3</div>
+            <span class="step-label">Parcelles</span>
+          </div>
+        </div>
+        
+        <!-- ÉTAPE 1 : INFORMATIONS -->
+        <section id="modal-step-1">
+          <div class="form-grid form-grid-4">
+            <div class="form-group">
+              <label class="form-label">
+                <span class="material-icons-outlined">label</span>
+                Libellé
+              </label>
+              <input type="text" id="libele" class="form-input" placeholder="Ex: Mission de vérification..." required>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <span class="material-icons-outlined">today</span>
+                Jours
+              </label>
+              <select id="nb_jour" class="form-select" required>
+                <option value="" disabled selected>Sélectionner</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <span class="material-icons-outlined">groups</span>
+                Agents
+              </label>
+              <select id="nb_agent" class="form-select" required>
+                <option value="" disabled selected>Sélectionner</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <span class="material-icons-outlined">payments</span>
+                Coût (XOF)
+              </label>
+              <input type="number" id="cout" class="form-input" placeholder="Ex: 500000" required>
+            </div>
+          </div>
+          
+          <div class="form-grid form-grid-3 form-divider">
+            <div class="form-group">
+              <label class="form-label">
+                <span class="material-icons-outlined">event</span>
+                Date début
+              </label>
+              <input type="date" id="date_debut" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <span class="material-icons-outlined">event_available</span>
+                Date fin
+              </label>
+              <input type="date" id="date_fin" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <span class="material-icons-outlined">description</span>
+                N° Ordre
+              </label>
+              <input type="text" id="document_mission" class="form-input" placeholder="Ex: OM-2025-001">
+            </div>
+          </div>
+          
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+            <button type="button" class="btn btn-primary" onclick="goToStep(2)">
+              Suivant
+              <span class="material-icons-outlined">arrow_forward</span>
+            </button>
+          </div>
+        </section>
+        
+        <!-- ÉTAPE 2 : AGENTS -->
+        <section id="modal-step-2" class="section-hidden">
+          <div class="selection-header">
+            <div class="search-box" style="min-width: 200px;">
+              <span class="material-icons-outlined">search</span>
+              <input type="text" id="search-agents" placeholder="Rechercher un agent...">
+            </div>
+            <div class="selection-counter">
+              <span class="material-icons-outlined">check_circle</span>
+              <span id="agents-count">0</span> agent(s)
+            </div>
+            <label class="select-all-box">
+              <input type="checkbox" id="select-all-agents">
+              Tout sélectionner
+            </label>
+          </div>
+          
+          <div class="selection-grid" id="agents-grid">
+            <div class="loading-spinner">
+              <div class="spinner"></div>
+            </div>
+          </div>
+          
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" onclick="goToStep(1)">
+              <span class="material-icons-outlined">arrow_back</span>
+              Retour
+            </button>
+            <button type="button" class="btn btn-primary" onclick="goToStep(3)">
+              Suivant
+              <span class="material-icons-outlined">arrow_forward</span>
+            </button>
+          </div>
+        </section>
+        
+        <!-- ÉTAPE 3 : PARCELLES -->
+        <section id="modal-step-3" class="section-hidden">
+          <div class="selection-header">
+            <div class="search-box" style="min-width: 200px;">
+              <span class="material-icons-outlined">search</span>
+              <input type="text" id="search-parcelles" placeholder="Rechercher une parcelle...">
+            </div>
+            <div class="selection-counter" style="background: var(--emerald-50); color: var(--emerald-700);">
+              <span class="material-icons-outlined">forest</span>
+              <span id="parcelles-count">0</span> parcelle(s)
+            </div>
+            <label class="select-all-box">
+              <input type="checkbox" id="select-all-parcelles">
+              Tout sélectionner
+            </label>
+          </div>
+          
+          <div class="selection-grid" id="parcelles-grid">
+            <div class="loading-spinner">
+              <div class="spinner"></div>
+            </div>
+          </div>
+          
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" onclick="goToStep(2)">
+              <span class="material-icons-outlined">arrow_back</span>
+              Retour
+            </button>
+            <button type="button" class="btn btn-success" onclick="submitMission()">
+              <span class="material-icons-outlined">check</span>
+              Valider la mission
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // INITIALISATION
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      initSelectOptions();
+      loadMissions();
+    });
+
+    function initSelectOptions() {
+      const nbJourSelect = document.getElementById('nb_jour');
+      const nbAgentSelect = document.getElementById('nb_agent');
+      
+      for (let i = 1; i <= 10; i++) {
+        nbJourSelect.innerHTML += `<option value="${i}">${i} jour${i > 1 ? 's' : ''}</option>`;
+        nbAgentSelect.innerHTML += `<option value="${i}">${i} agent${i > 1 ? 's' : ''}</option>`;
+      }
+    }
+
+    // ==========================================
+    // SIDEBAR MOBILE
+    // ==========================================
+    document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.toggle('open');
+      document.getElementById('sidebarOverlay').classList.toggle('open');
+    });
+
+    document.getElementById('sidebarOverlay').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('sidebarOverlay').classList.remove('open');
+    });
+
+    // ==========================================
+    // CHARGER LES MISSIONS (depuis cout_variable)
+    // ==========================================
+    let missionsData = [];
+
+    async function loadMissions() {
+      try {
+        const response = await fetch('/mission', {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        missionsData = await response.json();
+        renderMissions(missionsData);
+        updateStats(missionsData);
+      } catch (error) {
+        console.error('Erreur:', error);
+        // Données de démonstration
+        missionsData = getDemoData();
+        renderMissions(missionsData);
+        updateStats(missionsData);
+      }
+    }
+
+    function getDemoData() {
+      return [
+        ];
+    }
+
+    function renderMissions(missions) {
+      const tbody = document.getElementById('missions-tbody');
+      
+      if (!missions || missions.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8">
+              <div class="empty-state">
+                <div class="empty-state-icon">
+                  <span class="material-icons-outlined" style="font-size: 2.5rem;">assignment</span>
+                </div>
+                <h3>Aucune mission trouvée</h3>
+                <p>Cliquez sur le bouton + pour créer une nouvelle mission</p>
+              </div>
+            </td>
+          </tr>
+        `;
+        document.getElementById('missions-count').textContent = '0';
+        return;
+      }
+
+      document.getElementById('missions-count').textContent = missions.length;
+      document.getElementById('page-start').textContent = '1';
+      document.getElementById('page-end').textContent = missions.length;
+      document.getElementById('page-total').textContent = missions.length;
+
+      tbody.innerHTML = missions.map(m => {
+        const statusClass = m.statut === 'completed' ? 'completed' : m.statut === 'in-progress' ? 'in-progress' : 'planned';
+        const statusText = m.statut === 'completed' ? 'Terminée' : m.statut === 'in-progress' ? 'En cours' : 'Planifiée';
+        
+        return `
+          <tr>
+            <td>
+              <div class="mission-libele" title="${m.libele}">${m.libele}</div>
+            </td>
+            <td>
+              <div class="mission-dates">
+                <span><span class="material-icons-outlined">event</span>${formatDate(m.date_debut)}</span>
+                <span><span class="material-icons-outlined">event_available</span>${formatDate(m.date_fin)}</span>
+              </div>
+            </td>
+            <td>${m.nb_jour} jour${m.nb_jour > 1 ? 's' : ''}</td>
+            <td>${m.nb_agent} agent${m.nb_agent > 1 ? 's' : ''}</td>
+            <td class="mission-cost">${formatCurrency(m.cout)}</td>
+            <td>
+              <button class="action-btn view" title="Voir" onclick="viewMission(${m.id})">
+                <span class="material-icons-outlined">visibility</span>
+              </button>
+              <button class="action-btn edit" title="Modifier" onclick="editMission(${m.id})">
+                <span class="material-icons-outlined">edit</span>
+              </button>
+              <button class="action-btn delete" title="Supprimer" onclick="deleteMission(${m.id})">
+                <span class="material-icons-outlined">delete</span>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function updateStats(missions) {
+      const total = missions.length;
+      const completed = missions.filter(m => m.statut === 'completed').length;
+      const inProgress = missions.filter(m => m.statut === 'in-progress').length;
+      const totalCost = missions.reduce((sum, m) => sum + (m.cout || 0), 0);
+
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-completed').textContent = completed;
+      document.getElementById('stat-progress').textContent = inProgress;
+      document.getElementById('stat-cost').textContent = formatCompactNumber(totalCost);
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '--/--/--';
+      const d = new Date(dateStr);
+      return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' });
+    }
+
+    function formatCurrency(val) {
+      if (!val) return '-- XOF';
+      return new Intl.NumberFormat('fr-FR').format(val);
+    }
+
+    function formatCompactNumber(num) {
+      if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+      if (num >= 1000) return (num / 1000).toFixed(0) + 'K';
+      return num.toString();
+    }
+
+    // ==========================================
+    // RECHERCHE ET FILTRE
+    // ==========================================
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase();
+      const filtered = missionsData.filter(m => 
+        m.libele.toLowerCase().includes(term)
+      );
+      renderMissions(filtered);
+    });
+
+    document.getElementById('filterStatus').addEventListener('change', (e) => {
+      const status = e.target.value;
+      const filtered = status ? missionsData.filter(m => m.statut === status) : missionsData;
+      renderMissions(filtered);
+    });
+
+    // ==========================================
+    // MODAL NOUVELLE MISSION
+    // ==========================================
+    function openNewMissionModal() {
+      document.getElementById('missionModal').classList.add('open');
+      goToStep(1);
+    }
+
+    function closeModal() {
+      document.getElementById('missionModal').classList.remove('open');
+      resetForm();
+    }
+
+    function resetForm() {
+      document.getElementById('libele').value = '';
+      document.getElementById('nb_jour').value = '';
+      document.getElementById('nb_agent').value = '';
+      document.getElementById('cout').value = '';
+      document.getElementById('date_debut').value = '';
+      document.getElementById('date_fin').value = '';
+      document.getElementById('document_mission').value = '';
+      goToStep(1);
+    }
+
+    let currentStep = 1;
+    let agentsData = [];
+    let parcellesData = [];
+
+    function goToStep(step) {
+      currentStep = step;
+      
+      // Cacher toutes les sections
+      document.querySelectorAll('[id^="modal-step-"]').forEach(s => s.classList.add('section-hidden'));
+      document.getElementById(`modal-step-${step}`).classList.remove('section-hidden');
+      
+      // Mettre à jour le stepper
+      for (let i = 1; i <= 3; i++) {
+        const stepEl = document.getElementById(`step${i}`);
+        const connEl = document.getElementById(`connector${i}`);
+        
+        stepEl.classList.remove('active', 'completed');
+        if (i < step) {
+          stepEl.classList.add('completed');
+          if (connEl) connEl.classList.add('active');
+        } else if (i === step) {
+          stepEl.classList.add('active');
+        }
+        if (i >= step && connEl) connEl.classList.remove('active');
+      }
+      
+      // Charger les données si nécessaire
+      if (step === 2 && agentsData.length === 0) loadAgents();
+      if (step === 3 && parcellesData.length === 0) loadParcelles();
+      
+      // Sauvegarder étape 1
+      if (step === 2) saveMissionInfo();
+    }
+
+    function saveMissionInfo() {
+      const missionData = {
+        libele: document.getElementById('libele').value,
+        nb_jour: document.getElementById('nb_jour').value,
+        nb_agent: document.getElementById('nb_agent').value,
+        cout: document.getElementById('cout').value,
+        date_debut: document.getElementById('date_debut').value,
+        date_fin: document.getElementById('date_fin').value,
+        document_mission: document.getElementById('document_mission').value
+      };
+      localStorage.setItem('mission_data', JSON.stringify(missionData));
+      console.log('Mission data saved:', missionData);
+    }
+
+    // ==========================================
+    // AGENTS
+    // ==========================================
+    async function loadAgents() {
+      const grid = document.getElementById('agents-grid');
+      try {
+        const response = await fetch('/api/agents');
+        agentsData = await response.json();
+      } catch (error) {
+        agentsData = [
+          
+        ];
+      }
+      renderAgents(agentsData);
+    }
+
+    function renderAgents(agents) {
+      const grid = document.getElementById('agents-grid');
+      grid.innerHTML = agents.map(a => `
+        <div class="selection-card" data-id="${a.id}" onclick="toggleSelection(this, 'agent')">
+          <input type="checkbox" value="${a.id}">
+          <div class="selection-card-info">
+            <h4>${a.nom_prenoms}</h4>
+            <p>${a.matricule} • ${a.lieu_service || '--'}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ==========================================
+    // PARCELLES
+    // ==========================================
+    async function loadParcelles() {
+      const grid = document.getElementById('parcelles-grid');
+      try {
+        const response = await fetch('/api/parcelles');
+        parcellesData = await response.json();
+      } catch (error) {
+        parcellesData = [
+          
+        ];
+      }
+      renderParcelles(parcellesData);
+    }
+
+    function renderParcelles(parcelles) {
+      const grid = document.getElementById('parcelles-grid');
+      grid.innerHTML = parcelles.map(p => `
+        <div class="selection-card" data-id="${p.id}" data-numero="${p.numero}" onclick="toggleSelection(this, 'parcelle')">
+          <input type="checkbox" value="${p.numero}">
+          <div class="selection-card-info">
+            <h4>Parcelle ${p.numero}</h4>
+            <p>${p.nom} • ${p.superficie} ha • ${p.essence}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ==========================================
+    // SÉLECTION
+    // ==========================================
+    function toggleSelection(card, type) {
+      const checkbox = card.querySelector('input[type="checkbox"]');
+      checkbox.checked = !checkbox.checked;
+      card.classList.toggle('selected', checkbox.checked);
+      updateSelectionCount(type);
+      saveSelections(type);
+    }
+
+    function updateSelectionCount(type) {
+      const gridId = type === 'agent' ? 'agents-grid' : 'parcelles-grid';
+      const countId = type === 'agent' ? 'agents-count' : 'parcelles-count';
+      const count = document.querySelectorAll(`#${gridId} .selection-card.selected`).length;
+      document.getElementById(countId).textContent = count;
+    }
+
+    function saveSelections(type) {
+      const gridId = type === 'agent' ? 'agents-grid' : 'parcelles-grid';
+      const key = type === 'agent' ? 'agents_selectionnes_ids' : 'parcelles_selectionnees_ids';
+      const selected = Array.from(document.querySelectorAll(`#${gridId} input:checked`)).map(cb => cb.value);
+      localStorage.setItem(key, JSON.stringify(selected));
+    }
+
+    // Select all
+    document.getElementById('select-all-agents').addEventListener('change', function() {
+      document.querySelectorAll('#agents-grid .selection-card').forEach(card => {
+        const checkbox = card.querySelector('input');
+        checkbox.checked = this.checked;
+        card.classList.toggle('selected', this.checked);
+      });
+      updateSelectionCount('agent');
+      saveSelections('agent');
+    });
+
+    document.getElementById('select-all-parcelles').addEventListener('change', function() {
+      document.querySelectorAll('#parcelles-grid .selection-card').forEach(card => {
+        const checkbox = card.querySelector('input');
+        checkbox.checked = this.checked;
+        card.classList.toggle('selected', this.checked);
+      });
+      updateSelectionCount('parcelle');
+      saveSelections('parcelle');
+    });
+
+    // Search
+    document.getElementById('search-agents').addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase();
+      document.querySelectorAll('#agents-grid .selection-card').forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(term) ? 'flex' : 'none';
+      });
+    });
+
+    document.getElementById('search-parcelles').addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase();
+      document.querySelectorAll('#parcelles-grid .selection-card').forEach(card => {
+        const text = card.textContent.toLowerCase();
+        card.style.display = text.includes(term) ? 'flex' : 'none';
+      });
+    });
+
+    // ==========================================
+    // SOUMISSION
+    // ==========================================
+    async function submitMission() {
+      const missionData = JSON.parse(localStorage.getItem('mission_data') || '{}');
+      const agents = JSON.parse(localStorage.getItem('agents_selectionnes_ids') || '[]');
+      const parcelles = JSON.parse(localStorage.getItem('parcelles_selectionnees_ids') || '[]');
+
+      if (agents.length === 0) {
+        alert('Veuillez sélectionner au moins un agent.');
+        goToStep(2);
+        return;
+      }
+
+      if (parcelles.length === 0) {
+        alert('Veuillez sélectionner au moins une parcelle.');
+        return;
+      }
+
+      try {
+        await fetch('/api/planifier_mission', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            missionData,
+            agentsSelectionnes: agents,
+            parcellesSelectionnees: parcelles,
+            nombre_agents: agents.length,
+            nombre_parcelles: parcelles.length
+          })
+        });
+      } catch (error) {
+        console.log('Mission enregistrée');
+      }
+
+      /*Nettoyer et rediriger
+      localStorage.removeItem('mission_data');
+      localStorage.removeItem('agents_selectionnes_ids');
+      localStorage.removeItem('parcelles_selectionnees_ids');*/
+      
+      window.location.href = '/confirm_mission';
+    }
+
+    // ==========================================
+    // ACTIONS MISSIONS
+    // ==========================================
+    function viewMission(id) {
+      alert(`Fonctionnalité en cours de developpement`);
+    }
+
+    function editMission(id) {
+      alert(`Fonctionnalité en cours de developpement`);
+    }
+
+    function deleteMission(id) {
+      if (confirm('Êtes-vous sûr de vouloir supprimer cette mission ?')) {
+        alert(`Fonctionnalité en cours de developpement`);
+      }
+    }
+
+    // Fermer modal avec Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    document.getElementById('missionModal').addEventListener('click', (e) => {
+      if (e.target.id === 'missionModal') closeModal();
+    });
+  </script>
+</body>
+</html>

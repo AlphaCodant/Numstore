@@ -1,0 +1,117 @@
+{
+  "project_context": {
+    "domain": "Digital Personal Branding & Portfolio E-commerce",
+    "target_audience": "Professionals, entrepreneurs, and freelancers in Ivory Coast and Francophone Africa",
+    "brand_persona": "Accessible luxury, refined, authoritative, high-end, modern",
+    "archetype": "5 (Jewel & Luxury)",
+    "theme": "DARK"
+  },
+  "typography": {
+    "fonts": {
+      "headings": {
+        "family": "Cormorant Garamond",
+        "description": "Used for all H1, H2, and premium display texts. Brings elegance and editorial luxury."
+      },
+      "body": {
+        "family": "Outfit",
+        "description": "Used for body text, inputs, labels, and micro-copy. Clean, geometric, highly legible."
+      }
+    },
+    "scale": {
+      "h1": "text-5xl sm:text-6xl tracking-tight leading-none",
+      "h2": "text-3xl sm:text-4xl tracking-tight",
+      "h3": "text-2xl",
+      "h4": "text-lg sm:text-xl",
+      "body": "text-base leading-relaxed",
+      "small": "text-sm uppercase tracking-[0.2em]"
+    }
+  },
+  "color_system": {
+    "background": {
+      "default": "#050505",
+      "surface": "#111111",
+      "glass": "rgba(17, 17, 17, 0.6)"
+    },
+    "text": {
+      "primary": "#FAFAFA",
+      "secondary": "#A1A1AA",
+      "accent": "#E6C9A8",
+      "inverse": "#050505"
+    },
+    "brand": {
+      "primary": "#E6C9A8",
+      "primary_hover": "#D4B895",
+      "accent": "#B87D4B"
+    },
+    "border": {
+      "default": "rgba(255, 255, 255, 0.08)",
+      "highlight": "rgba(230, 201, 168, 0.3)"
+    }
+  },
+  "layout_and_spacing": {
+    "spacing_scale": "Use generous spacing. Standard section padding: py-24 or py-32. Container padding: px-6 lg:px-12.",
+    "grids": {
+      "marketing": "Use Bento Grid (Mode A: Tetris) for services. grid-cols-1 md:grid-cols-12 with wide gaps (gap-8).",
+      "dashboard": "Use Control Room Grid for the admin interface. Compact, dense, gap-6."
+    },
+    "surfaces": {
+      "header": "Crystal Glassmorphism: backdrop-blur-xl bg-[#050505]/60 border-b border-white/5",
+      "cards": "Dark Charcoal (#111111) with 1px border-white/5. Hover: -translate-y-1 with subtle Champagne Gold glow.",
+      "vip_card": "Tracing Beam aesthetic: Subtle glowing border using #E6C9A8 to denote the highest premium tier."
+    }
+  },
+  "component_strategy": {
+    "marketing_pages": "Pure HTML/Tailwind for hero, bento grids, and storytelling. Avoid rigid Shadcn cards for display sections.",
+    "forms_and_checkout": "Use Shadcn/UI (Input, Select, Form, Tabs) but heavily override styles to match luxury theme (e.g., bg-[#111111] border-white/10 focus:ring-[#E6C9A8]).",
+    "admin_dashboard": "Cardless, dense layout. Use Shadcn Table, Dialog, and Dropdown for order management.",
+    "buttons": "Primary CTA: bg-[#E6C9A8] text-[#050505] font-semibold hover:bg-[#D4B895] transition-all. Secondary: bg-transparent border border-white/20 text-white hover:border-[#E6C9A8]."
+  },
+  "motion_and_interactions": {
+    "scroll": "Use Lenis for smooth scrolling (momentum scrolling).",
+    "reveals": "Staggered fade-up (Framer Motion) for bento grid items and list entries.",
+    "hover": "Text color shifts slightly, images scale slightly (1.02) within overflow-hidden containers.",
+    "accessibility": "Respect prefers-reduced-motion. Ensure 4.5:1 text contrast minimum."
+  },
+  "media": {
+    "images": {
+      "hero_background": {
+        "url": "https://static.prod-images.emergentagent.com/jobs/d92c6202-14d7-42b4-8759-6d0ad38d3b87/images/a494079b51d8f07b1ff49bb1f4fbfadc136a99c8cefb265c3b9ad973d7e47f1b.png",
+        "description": "Cinematic wide-angle shot of a sophisticated African businessman in a tailored dark suit. Use in the main Hero section with a heavy dark gradient overlay (from-[#050505] to-transparent) on the left side to ensure text readability."
+      },
+      "texture_background": {
+        "url": "https://static.prod-images.emergentagent.com/jobs/d92c6202-14d7-42b4-8759-6d0ad38d3b87/images/c7da8c345d2d6d233bfbc81d049272ea9736c6b374b2a44d877e340811f03d02.png",
+        "description": "Abstract dark luxury texture with champagne gold light bleeding. Use as background for the Pricing/Services section or the multi-step form."
+      },
+      "service_business_card": {
+        "url": "https://static.prod-images.emergentagent.com/jobs/d92c6202-14d7-42b4-8759-6d0ad38d3b87/images/16027425fe7f4010eb33e27f710912ad6282ccd6141f0c28a8cc9161d05e3a70.png",
+        "description": "Premium matte black metallic NFC digital business card resting on a dark marble surface. Use in the Services Bento Grid."
+      },
+      "service_digital_cv": {
+        "url": "https://images.unsplash.com/photo-1697292859784-c319e612ea15?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODR8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBzbWFydHBob25lJTIwc2NyZWVuJTIwbW9ja3VwJTIwZGFya3xlbnwwfHx8fDE3NzU4MTU2NTN8MA&ixlib=rb-4.1.0&q=85",
+        "description": "Elegant smartphone screen mockup showing digital presence. Use for Digital CV/Portfolio feature blocks."
+      },
+      "testimonial_1": {
+        "url": "https://images.unsplash.com/photo-1614700308520-bd630ab82471?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1MTN8MHwxfHNlYXJjaHwzfHxlbGVnYW50JTIwYWZyaWNhbiUyMHByb2Zlc3Npb25hbCUyMHBvcnRyYWl0fGVufDB8fHx8MTc3NTgxNTY1M3ww&ixlib=rb-4.1.0&q=85",
+        "description": "Man in black suit jacket. African professional portrait for testimonial section."
+      },
+      "testimonial_2": {
+        "url": "https://static.prod-images.emergentagent.com/jobs/d92c6202-14d7-42b4-8759-6d0ad38d3b87/images/12321d9f2256a0e34615b9ecc5eccc3b86e2ffe5320220aa1e2e7a3c5f58b87a.png",
+        "description": "Elegant African businesswoman in a chic neutral-toned blazer. Testimonial/Success story feature."
+      }
+    },
+    "icons": {
+      "library": "lucide-react",
+      "styling": "Use stroke-width 1.5, text-[#E6C9A8] for accents."
+    }
+  },
+  "instructions_to_main_agent": [
+    "Load Cormorant Garamond and Outfit fonts via Google Fonts in index.html.",
+    "Implement Lenis for smooth scrolling at the root level.",
+    "Build the multi-step form for placing orders using Shadcn Forms/Tabs, restyling them drastically to fit the #111111 dark theme with gold #E6C9A8 accents.",
+    "The Hero section must use 'hero_background' with a heavy left-to-right gradient overlay (#050505 to transparent) to ensure the white and gold text pops perfectly.",
+    "For the Service Catalog, implement a Bento Grid layout (asymmetrical) rather than a boring row of identical cards. The VIP Pack should span wider and have a subtle gold glowing border.",
+    "Implement an admin route (`/admin`) using Shadcn tables and data visualization to manage orders. This section should have a pure utilitarian 'Control Room' grid layout.",
+    "Ensure all interactive elements have data-testid attributes for testing.",
+    "Never use purely transparent headers if content scrolls beneath them; use the specified Crystal Glassmorphism settings."
+  ]
+}

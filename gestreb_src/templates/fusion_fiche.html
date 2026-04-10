@@ -1,0 +1,28 @@
+import { PDFDocument } from 'pdf-lib';
+import fs from 'fs'; // Utilisé pour lire et écrire des fichiers dans Node.js
+
+async function mergePDFs(pdfPaths, outputPath) {
+  // Créer un nouveau PDF vide
+  const mergedPdf = await PDFDocument.create();
+
+  for (const pdfPath of pdfPaths) {
+    // Lire chaque PDF à fusionner
+    const pdfBytes = fs.readFileSync(pdfPath);
+    const pdfDoc = await PDFDocument.load(pdfBytes);
+    
+    // Copier toutes les pages de ce PDF et les ajouter au PDF fusionné
+    const copiedPages = await mergedPdf.copyPages(pdfDoc, pdfDoc.getPageIndices());
+    copiedPages.forEach(page => mergedPdf.addPage(page));
+  }
+
+  // Sauvegarder le PDF fusionné dans un fichier
+  const mergedPdfBytes = await mergedPdf.save();
+  fs.writeFileSync(outputPath, mergedPdfBytes);
+  console.log(`PDF fusionné enregistré sous : ${outputPath}`);
+}
+
+// Exemple d'utilisation
+const pdfFiles = ['file1.pdf', 'file2.pdf', 'file3.pdf'];  // Liste des fichiers PDF à fusionner
+const outputFilePath = 'merged_output.pdf'; // Nom du fichier de sortie
+
+mergePDFs(pdfFiles, outputFilePath);

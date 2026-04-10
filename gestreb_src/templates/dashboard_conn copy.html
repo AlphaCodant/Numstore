@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <title>CARTE INTERACTIVE</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" 
+     type="image/png" 
+     href="/img/Logo_gestreb.jpg">
+     <!-- Montserrat Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Material Icons -->
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link href="/libs/bootstrap-5.1.3-dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/libs/bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/libs/jquery.js"></script>
+    <script src="/libs/v6.13.0-dist/ol.js"></script>
+    <link rel="stylesheet" href="/libs/v6.13.0-dist/ol.css">
+    <script src="/libs/ol-layerswitcher-master/dist/ol-layerswitcher.js"></script>
+    <link rel="stylesheet" href="/libs/ol-layerswitcher-master/dist/ol-layerswitcher.css" />
+    <script src="/libs/ol-geocoder/ol-geocoder.js"></script>
+    <link rel="stylesheet" href="/libs/ol-geocoder/ol-geocoder.css" />
+    <script src="/libs/ol-popup/ol-popup.js"></script>
+    <link rel="stylesheet" href="/libs/ol-popup/ol-popup.css" />
+    <link rel="stylesheet" href="/libs/jquery-ui-1.12.1/jquery-ui.css">
+    <script src="/libs/jquery-ui-1.12.1/external/jquery/jquery.js"></script>
+    <script src="/libs/jquery-ui-1.12.1/jquery-ui.js"></script>
+    <link href="/css/tailStyle.css" rel="stylesheet" />
+    <link href="/css/style_perso.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/json2csv"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  </head>
+  <body style="font-family: sans-serif; color: black;">
+    <div class="grid-container">
+     <!-- Header -->
+     <header class="header" style="background-color:white ;">
+      <div class="menu-icon" onclick="openSidebar()">
+        <span class="material-icons-outlined">menu</span>
+      </div>
+      <div>
+        <button onclick="wms_layers()" type="button" id="wms_layers_btn" class="flex items-center mr-4  text-black rounded-lg bg-none hover:text-green-600 group"><span style="color: rgb(5, 198, 5);" class="material-icons-outlined">dataset</span><p class="hidden text-xs lg:inline-block xl:inline-block 2xl:inline-block">BASE DE DONNEES</p></button>
+    </div>
+    <div>
+        <button onclick="info()" type="button" id="info_btn" class="flex items-center mr-4 text-black rounded-lg bg-none hover:text-orange-600  group"><span style="color: rgb(231, 190, 9);" class="material-icons-outlined">info</span><p id="activer_info" class="hidden text-xs lg:inline-block xl:inline-block 2xl:inline-block">ACTIVER INFOS</p> </button>
+    </div>
+    <div>
+        <button onclick="show_hide_querypanel()" type="button" id="query_panel_btn" class="flex items-center mr-4   text-black rounded-lg bg-none hover:text-blue-600  group"><span style="color: rgb(5, 118, 247);" class="material-icons-outlined">question_mark</span><p id="fermer_requete" class="hidden text-xs lg:inline-block xl:inline-block 2xl:inline-block">REQUETES</p></button>
+    </div>
+    <div>
+      <!--<form action="/reinit" method="POST">-->
+        <button onclick="effacer_tout()"  id="clear_btn" class="flex items-center mr-4  text-black rounded-lg bg-none hover:text-purple-600  group"><span style="color: rgba(181, 5, 178, 0.766);" class="material-icons-outlined">restart_alt</span><p class="hidden text-xs lg:inline-block xl:inline-block 2xl:inline-block">REINITIALISER</p></button>
+      <!--</form>-->
+    </div>
+    <div>
+      <button><a href="#"><span style="color: black;" class="material-icons-outlined">account_circle</span></a></button>
+    </div>
+      <!--<div class="header-left">
+        <div class="main-title">
+          <span style="color: green;" class="material-icons-outlined">query_stats</span>
+          <span><p>STATISTIQUES</p></span>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="material-icons-outlined">notifications</span>
+        <span class="material-icons-outlined">email</span>
+        <span class="material-icons-outlined">account_circle</span>
+      </div>-->
+    </header>
+    <!-- End Header -->
+  
+      <aside id="sidebar">
+        <div class="sidebar-title">
+          <div class="sidebar-brand">
+            <a href="#" class="flex mt-2 ms-2 md:me-24">
+              <img src="/img/Logo_gestreb.jpg" class="ml-4" alt="Logo GestReb" />
+              </a>
+          </div>
+          <span class="material-icons-outlined" onclick="closeSidebar()">close</span>
+        </div>
+        <div id="map_visiere" class="hidden lg:inline-block xl:inline-block 2xl:inline-block"></div>
+      <div class="px-3 pb-2  bg-white border-b  shadow-zinc-600">
+        
+        <div id ="titres">
+          <ul class="space-y-2 font-medium py-2 ">
+              <li>
+                  <span class="flex items-center py-3 px-1 dark:text-black  border-y border-gray-300 group">
+                  <svg class="w-5 h-5 text-green-500 transition duration-75  group-hover:text-green-600 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 30 30">
+                    <title/><g data-name="Layer 2" id="Layer_2"><g id="Interface-Solid"><g id="interface-solid-pin-location">
+                      <circle cx="15" cy="9.57129" fill="none" r="3.42865"/>
+                      <path d="M25.31152,20.40039a1,1,0,1,0-.623,1.90039C26.97607,23.05078,28,23.94629,28,24.5c0,1.39355-5.18506,3.5-13,3.5S2,25.89355,2,24.5c0-.55371,1.02393-1.44922,3.31152-2.19922a1,1,0,1,0-.623-1.90039C.81348,21.6709,0,23.33105,0,24.5,0,28.11035,7.5459,30,15,30s15-1.88965,15-5.5C30,23.33105,29.18652,21.6709,25.31152,20.40039Z"/>
+                      <path d="M14.37549,25.78125a1.00083,1.00083,0,0,0,1.249,0c.36572-.293,8.94678-7.26074,8.94678-16.21a9.57129,9.57129,0,0,0-19.14258,0C5.42871,18.52051,14.00977,25.48828,14.37549,25.78125Zm-2.80408-16.21A3.42859,3.42859,0,1,1,15,13,3.4287,3.4287,0,0,1,11.57141,9.57129Z"/></g></g></g>
+                  </svg>
+                  <span class="text-sm ms-3 md:text-xs lg:text-xs xl:text-xs 2xl:text-xs">Carte interactive</span>
+                </span>
+              </li>   
+              <li>
+                <a href="/statistiques" target="_blank" class="flex items-center mt-3 p-2 text-black  bg-white hover:bg-gray-300 hover:border-y hover:border-purple-500 group">
+                  <svg class="w-5 h-5 text-purple-500 transition duration-75  group-hover:text-purple-600 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
+                    <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
+                    <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
+                </svg>
+                <span class="text-sm ms-3 md:text-xs lg:text-xs xl:text-xs 2xl:text-xs">Statistiques</span>
+                </a>
+            </li>  
+            <li id="bouton_ugf" class="hidden">
+              <a href="/api/cugf/{{ poste }}" target="_self" class="flex items-center mt-3 p-2 text-black  bg-white hover:bg-gray-300 hover:border-y hover:border-blue-500 group">
+                <svg class="w-5 h-5 text-blue-500 transition duration-75  group-hover:text-blue-600 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
+                  <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
+                  <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
+              </svg>
+              <span class="text-sm ms-3 md:text-xs lg:text-xs xl:text-xs 2xl:text-xs">Admin UGF</span>
+              </a>
+          </li> 
+          <li id="bouton_cg" class="hidden">
+            <a href="/api/gest/{{ poste }}" target="_self" class="flex items-center mt-3 p-2 text-black  bg-white hover:bg-gray-300 hover:border-y hover:border-blue-500 group">
+              <svg class="w-5 h-5 text-blue-500 transition duration-75  group-hover:text-blue-600 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
+                <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
+                <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
+            </svg>
+            <span class="text-sm ms-3 md:text-xs lg:text-xs xl:text-xs 2xl:text-xs">Admin CG</span>
+            </a>
+        </li> 
+              <li>
+                <a href="/log/deconnecter" class="flex items-center mt-3 p-2 text-black  bg-white hover:bg-gray-300 hover:border-y hover:border-red-500 group">
+                  <svg height="30" viewBox="0 0 24 24" width="30" class="w-5 h-5 text-red-500 transition duration-75  group-hover:text-orange-600 " fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <g>
+                      <path fill="none" d="M0 0h24v24H0z"/>
+                      <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zM7 11V8l-5 4 5 4v-3h8v-2H7z"/>
+                  </g>
+                  </svg>
+                <span class="text-sm ms-3 md:text-xs lg:text-xs xl:text-xs 2xl:text-xs">Se deconnecter</span>
+                </a>
+            </li>    
+              <li>
+                <div id="stats_stats" class="mt-16" style="background-color: white; display:none; width: 100%; height: 60%; border-width: 1px;border-color: black; border-radius: 5%; padding : 4%; margin:1%;">
+                  <div style="height: 5%;">
+                      <div style="align-items: center;text-align: center;">
+                          <h2 style="font-weight: bold;color: black;">Superficie totale</h2>
+                      </div>
+                  </div>
+                  <div style="height: 15%;">
+                      <div style="align-items: center;text-align: center;">
+                          <h1 id ="sup_totale" style="font-weight: bold;font-size: 20px;color:#583cb3">Superficie totale</h1>
+                      </div>
+                  </div>
+                  
+                  <div style="height: 5%;">
+                      <div style="align-items: center;text-align: center;">
+                          <h2 style="font-weight: bold;color: black;">Superficie min</h2>
+                      </div>
+                  </div>
+                  <div style="height: 15%;">
+                      <div style="align-items: center;text-align: center;">
+                          <h1 id ="sup_min" style="font-weight: bold;font-size: 15px;color:#ff6d00">Superficie minimale</h1>
+                      </div>
+                  </div>
+                  <div style="height: 5%;">
+                      <div style="align-items: center;text-align: center;">
+                          <h2 style="font-weight: bold;color: black;">Superficie max</h2>
+                      </div>
+                  </div>
+                  <div style="height: 15%;">
+                      <div style="align-items: center;text-align: center;">
+                          <h1 id ="sup_max" style="font-weight: bold;font-size: 15px;color:#2e7d32">Superficie maximale</h1>
+                      </div>
+                  </div>
+                  
+              </div>
+              </li>
+              
+          </ul>
+        </div>
+      </div>
+      </aside>
+    <!--<div id="particles-js"></div>-->
+    <!--<div id="cadre_stats" style="border-radius: 2%; left:16.66% ;width:40%;height:100%;border:1px solid #a6a6a8; display:none;position: absolute; top: 0%; background-color: #ffffff; ">
+      <button id="imprimer" style="display: inline-block;" ><a href="/stats" target="display-stats">Actualiser</a></button>
+      <button id="fermer_stats" style="display: inline-block;" onclick="stats_fermer()">Fermer</button>
+      <iframe name="display-stats" id="framestats"
+      style="width:100%;height:92%;border:none; z-index: 80;position: relative; top: 2%; display: inline-block;">
+      </iframe>
+  </div>-->
+  
+  <div id="loader" class="loader">
+    <img src="/img/loader.gif" alt="Loading...">
+  </div>
+  <main class="main-container">
+    <div id="map" style="height:100%; color: black;">
+      <div id="cadre_frame" style="left:20% ;width:75%;height:90%;border:1px solid #575762; display:none;position: absolute; top: 10%; background-color: #ffffff; ">
+        <button id="imprimer" style="display: inline-block;" onclick="imprimer_fiche_pr()"><span style="color: green;" class="material-icons-outlined">print</span></button>
+        <button id="fermer" style="display: inline-block;" onclick="fermer_cadre()"><span style="color: red;" class="material-icons-outlined">close</span></button>
+        <iframe name="display-frame" id="framedis"
+        style="width:100%;height:92%;border:none; z-index: 80;position: relative; top: 2%; display: inline-block;">
+        </iframe> 
+            
+    </div> 
+    <div id="cadre_frame2" style="left:3% ;width:70%;height:100%; display:none;position: absolute; top: 0%; background-color: #ffffff; ">
+        <button id="imprimer2" style="display: inline-block;" onclick="imprimer_fiche_pr2()"><span style="color: green;" class="material-icons-outlined">print</span></button>
+        <button id="fermer2" style="display: inline-block;" onclick="fermer_cadre2()"><span style="color: red;" class="material-icons-outlined">close</span></button>
+        <iframe name="display-frame2" id="framedis2"
+        style="width:100%;height:92%;border:none; z-index: 80;position: relative; top: 2%; display: inline-block;">
+        </iframe>
+    </div> 
+        
+      <div class="modal fade" id="wms_layers_window" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div style="color: black;" class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">BASE DE DONNEES</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form action='/dashboard/00000/{{ id }}' method="post" name="frame_c_g" id="frame_c_g"
+                  style="width:100%;height:100%;width:100%;border:none;position: relative; top: 0%;left:1%; display: inline-block;">
+                  <div class="font-semibold">
+                    <div class="pt-2 pb-2 bg-blue-500 rounded-sm">
+                      <h3>UNITES DE GESTION FORESTIERES</h3>
+                    </div>
+                    <div class="flex columns-3">
+                      <div id="labels-forets" class="hidden">
+                        <!--<div>
+                          <label id="tous_ugf">TOUT AFFICHER</label>
+                        </div>-->
+                        
+                        <div id="tene-label" class="hidden" >
+                          <label id="ugf_tene">U.G.F Tene</label>
+                        </div>
+                        <div id="sangoue-label" class="hidden" >
+                          <label id="ugf_sangoue">U.G.F Sangoue</label>
+                        </div>
+
+                        
+
+                        <!--<div>
+                          <label id="ugf_laouda">U.G.F Laouda</label>
+                        </div>
+                        <div>
+                          <label id="ugf_okromodou_nord">U.G.F Okromodou Nord</label>
+                        </div>
+                        <div>
+                          <label id="ugf_okromodou_sud">U.G.F Okromodou Sud</label>
+                        </div>-->
+                      </div>
+                      <div id="checkbox-forets"  class="hidden">
+                          <!--<div>
+                            <input name="tout_ugf" value="sangoue,tene" type="checkbox">
+                          </div>-->
+                          <div id="tene" class="hidden">
+                            <input id="tene" name="ugf_tene" value="tene"  type="checkbox">
+                          </div>
+                          <div id="sangoue" class="hidden">
+                            <input id="sangoue" name="ugf_sangoue" value="sangoue"  type="checkbox">
+                          </div>
+
+                          <div id="aff_ugf" post="{{ ugf }}"></div>
+                          <!--<div>
+                            <input name="tout_ugf" value="sangoue,tene" type="checkbox">
+                          </div>
+                          <div>
+                            <input name="ugf_tene" value="tene"  type="checkbox">
+                          </div>
+                          <div>
+                            <input name="ugf_sangoue" value="sangoue"  type="checkbox">
+                          </div>-->
+
+                        </div>
+                      </div>
+                      
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button onclick="close_wms_window()" type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">FERMER</button>
+                    <button  onclick="action_affichage()" type="submit" id="add_map_btn" class="btn btn-primary btn-sm">AJOUTER A LA CARTE</button>
+                </div>
+              </form>
+            </div>
+        </div>
+        </div>
+        
+    </div>
+    
+          <div id="postData" post="{{ id }}"></div>
+          <div id="statut_admin" post="{{ admin }}"></div>
+          <div id="statut_poste" post="{{ poste }}"></div>
+          <div id="fenetre_requete" title="Requete">
+            <form action="/requete/{{ id }}" method="POST">
+              <div id="form2">
+                <!--<label for="layer">Selection couche</label>
+                <select class="form-control" id="layer" name="layer">
+                  <option value="">Selection couche</option>
+                </select>-->
+                <br>
+                <label id="critere1" style="text-decoration: underline; color:green">Critere 1</label><input type="checkbox" name="cocher" value="cocher" id="crt1" style="width:25%;padding: 10%;">
+                <br><br>
+                <label for="attributes">Selection attribut</label>
+                <select class="form-control" id="attributes" name="attributes">
+                  <option value="">Selection attribut</option>
+                  
+                </select>
+                <br>
+                <label for="operator">Selection operateur</label>
+                <select class="form-control" id="operator" name="operator">
+                  <option value="">Selection operateur</option>
+            
+                </select>
+                <br>
+                <label for="value">Entrer valeur</label>
+                <input type="text" class="form-control" value="" id="value" name="value">
+              </div>
+              <div id="form3">
+                <br>
+                <label id="critere2" style="text-decoration: underline;color:green">Critere 2</label><input type="checkbox" name="cocher2" value="cocher2" id="crt2" style="width:25%;padding: 10%;">
+                <br><br>
+                <label for="attributes2">Selection attribut</label>
+                <select class="form-control" id="attributes2" name="attributes2">
+                  <option value="">Selection attribut</option>
+                 
+                </select>
+                <br>
+                <label for="operator2">Selection operateur</label>
+                <select class="form-control" id="operator2" name="operator2">
+                  <option value="">Selection operateur</option> 
+                </select>
+                <br>
+                <label for="value2">Entrer valeur</label>
+                <input type="text" class="form-control" id="value2" name="value2">            
+              </div>
+              <div id="form4" class="hidden lg:inline-block xl:inline-block 2xl:inline-block">
+                <br>
+                <label id="critere3" style="text-decoration: underline;color:green">Critere 3</label><input type="checkbox" name="cocher3" value="cocher3" id="crt3" style="width:25%;padding: 10%;">
+                <br><br>
+                <label for="attributes3">Selection attribut</label>
+                <select class="form-control" id="attributes3" name="attributes3">
+                  <option value="">Selection attribut</option>
+                  
+                </select>
+                <br>
+                <label for="operator3">Selection operateur</label>
+                <select class="form-control" id="operator3" name="operator3">
+                  <option value="">Selection operateur</option>
+                 
+                </select>
+                <br>
+                <label for="value3">Entrer valeur</label>
+                <input type="text" class="form-control" id="value3" name="value3">
+              </div>
+              <div id="form5" class="hidden lg:inline-block xl:inline-block 2xl:inline-block">
+                <br>
+                <label id="critere4" style="text-decoration: underline;color:green">Critere 4</label><input type="checkbox" name="cocher4" value="cocher4" id="crt4" style="width:25%;padding: 10%;">
+                <br><br>
+                <label for="attributes4">Selection attribut</label>
+                <select class="form-control" id="attributes4" name="attributes4">
+                  <option value="">Selection attribut</option>
+                  
+                </select>
+                <br>
+                <label for="operator4">Selection operateur</label>
+                <select class="form-control" id="operator4" name="operator4">
+                  <option value="">Selection operateur</option>
+                  
+                </select>
+                <br>
+                <label for="value4">Entrer valeur</label>
+                <input type="text" class="form-control" id="value4" name="value4">
+              </div>
+              <div id="form6" class="hidden lg:inline-block xl:inline-block 2xl:inline-block">
+                <br>
+                <label id="critere5" style="text-decoration: underline;color:green">Critere 5</label><input type="checkbox" name="cocher5" value="cocher5" id="crt5" style="width:25%;padding: 10%;">
+                <br><br>
+                <label for="attributes5">Selection attribut</label>
+                <select class="form-control" id="attributes5" name="attributes5">
+                  <option value="">Select Attributes</option>
+                  
+                </select>
+                  <br>
+                  <label for="operator5">Select operator</label>
+                  <select class="form-control" id="operator5" name="operator5">
+                  <option value="">Select operator</option>
+                 
+                </select>
+                <br>
+                <label for="value5">Enter Value</label>
+                <input type="text" class="form-control" id="value5" name="value5">
+              </div>
+              <br>
+              <div >
+                <br>
+                <button id="bouton_fermer_rqt" class="btn btn-danger" onclick="fen_requete_fermer()">Fermer</button>
+                <button onclick="query()" type="submit" id="bouton_lancer_rqt" class="btn btn-success" >Filtrer</button>
+              </div>
+              
+            </form>
+          </div>
+          <div id="table_data" style="font-size:15px;"></div> 
+  </main>
+   
+</div>
+    
+    <script src="/js/map.js"></script>
+    <!--<script src="/js/stats.js"></script>-->
+    <script src="/js/particules.js"></script>
+    <script src="/js/print.js"></script>
+    <script src="/js/print2.js"></script>
+    <script>
+      // Sidebar actionneur
+
+let sidebarOpen = false;
+const sidebar = document.getElementById('sidebar');
+
+function openSidebar() {
+  if (!sidebarOpen) {
+    sidebar.classList.add('sidebar-responsive');
+    sidebarOpen = true;
+  }
+}
+
+function closeSidebar() {
+  if (sidebarOpen) {
+    sidebar.classList.remove('sidebar-responsive');
+    sidebarOpen = false;
+  }
+}
+      let ugf = document.getElementById('aff_ugf').getAttribute('post');
+      let groupe_label = document.getElementById('labels-forets');
+      let groupe_checkbox = document.getElementById('checkbox-forets');
+      let st_admin = document.getElementById('statut_admin').getAttribute('post');
+      let st_poste = document.getElementById('statut_poste').getAttribute('post');
+      let bouton_ugf = document.getElementById('bouton_ugf');
+      let bouton_cg = document.getElementById('bouton_cg');
+      if (st_admin=='admin' && st_poste==1){
+        bouton_ugf.setAttribute('class','block');
+      }
+      if (st_admin=='admin' && st_poste==2){
+        bouton_ugf.setAttribute('class','block');
+      }
+      if (st_admin=='admin' && st_poste==3){
+        bouton_cg.setAttribute('class','block');
+      }
+      if (ugf=='cg'){
+          groupe_label.setAttribute('class','inline-block gap-10');
+          document.getElementById('tene').setAttribute('class','block');
+          groupe_checkbox.setAttribute('class','inline-block ml-10 items-center gap-10 pl-8');
+          document.getElementById('tene-label').setAttribute('class','block');
+          document.getElementById('sangoue').setAttribute('class','inline-block');
+          document.getElementById('sangoue-label').setAttribute('class','inline-block');
+      }else{
+        groupe_label.setAttribute('class','inline-block gap-10');
+        groupe_checkbox.setAttribute('class','inline-block ml-10 items-center gap-10 pl-8');
+        document.getElementById(ugf+'-label').setAttribute('class','inline-block');
+        document.getElementById(ugf).setAttribute('class','inline-block');
+      }
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Missions | GESTREB</title>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <link rel="icon" type="image/jpeg" href="img/Logo_gestreb.jpg">
+  
+  <style>
+    /* ===== PLAN MISSION SPECIFIC STYLES ===== */
+    
+    /* Stepper */
+    .stepper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 2.5rem;
+      padding: 1.5rem;
+      background: white;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .step-number {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.875rem;
+      background: var(--gray-100);
+      color: var(--gray-400);
+      transition: all 0.3s ease;
+    }
+    
+    .step.active .step-number {
+      background: linear-gradient(135deg, var(--primary-600), var(--sky-600));
+      color: white;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+    }
+    
+    .step.completed .step-number {
+      background: var(--emerald-500);
+      color: white;
+    }
+    
+    .step-info {
+      display: none;
+    }
+    
+    @media (min-width: 768px) {
+      .step-info {
+        display: block;
+      }
+    }
+    
+    .step-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--gray-400);
+      transition: color 0.3s ease;
+    }
+    
+    .step.active .step-title,
+    .step.completed .step-title {
+      color: var(--gray-900);
+    }
+    
+    .step-subtitle {
+      font-size: 0.75rem;
+      color: var(--gray-400);
+    }
+    
+    .step-connector {
+      width: 60px;
+      height: 3px;
+      background: var(--gray-200);
+      margin: 0 1rem;
+      border-radius: 2px;
+      transition: background 0.3s ease;
+    }
+    
+    .step-connector.active {
+      background: linear-gradient(90deg, var(--emerald-500), var(--primary-500));
+    }
+    
+    @media (max-width: 640px) {
+      .step-connector {
+        width: 30px;
+        margin: 0 0.5rem;
+      }
+    }
+    
+    /* Form Card */
+    .form-card {
+      background: white;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+    
+    .form-header {
+      padding: 1.5rem 2rem;
+      background: linear-gradient(135deg, var(--primary-600), var(--sky-600));
+      color: white;
+    }
+    
+    .form-header h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+    
+    .form-header p {
+      font-size: 0.875rem;
+      opacity: 0.85;
+    }
+    
+    .form-body {
+      padding: 2rem;
+    }
+    
+    /* Form Grid */
+    .form-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+    
+    .form-grid-2 {
+      grid-template-columns: repeat(1, 1fr);
+    }
+    
+    .form-grid-3 {
+      grid-template-columns: repeat(1, 1fr);
+    }
+    
+    .form-grid-4 {
+      grid-template-columns: repeat(1, 1fr);
+    }
+    
+    @media (min-width: 640px) {
+      .form-grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .form-grid-3 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .form-grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .form-grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .form-grid-4 {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    /* Form Group */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .form-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .form-label .material-icons-outlined {
+      font-size: 1rem;
+      color: var(--gray-400);
+    }
+    
+    .form-input,
+    .form-select {
+      padding: 0.875rem 1rem;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      font-size: 0.9375rem;
+      background: var(--gray-50);
+      color: var(--gray-700);
+      transition: all 0.2s ease;
+    }
+    
+    .form-input:focus,
+    .form-select:focus {
+      outline: none;
+      border-color: var(--primary-500);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    }
+    
+    .form-input::placeholder {
+      color: var(--gray-400);
+    }
+    
+    .form-select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1.25rem;
+      padding-right: 3rem;
+      cursor: pointer;
+    }
+    
+    /* Form Section Divider */
+    .form-divider {
+      border-top: 1px solid var(--gray-200);
+      padding-top: 1.5rem;
+      margin-top: 0.5rem;
+    }
+    
+    /* Form Actions */
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 2rem;
+      margin-top: 1.5rem;
+      border-top: 1px solid var(--gray-100);
+      gap: 1rem;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.875rem 1.75rem;
+      border-radius: var(--radius-lg);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-600), var(--sky-600));
+      color: white;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+    }
+    
+    .btn-success {
+      background: linear-gradient(135deg, var(--emerald-500), var(--emerald-600));
+      color: white;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+    
+    .btn-success:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    }
+    
+    .btn-secondary {
+      background: var(--gray-100);
+      color: var(--gray-700);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--gray-200);
+    }
+    
+    /* Selection Grid (Agents & Parcelles) */
+    .selection-header {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    @media (min-width: 640px) {
+      .selection-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+    
+    .search-box {
+      position: relative;
+      flex: 1;
+      max-width: 400px;
+    }
+    
+    .search-box input {
+      width: 100%;
+      padding: 0.875rem 1rem 0.875rem 3rem;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      font-size: 0.9375rem;
+      background: var(--gray-50);
+      transition: all 0.2s ease;
+    }
+    
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--primary-500);
+      background: white;
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+    }
+    
+    .search-box .material-icons-outlined {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-400);
+      font-size: 1.25rem;
+    }
+    
+    .select-all-box {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--primary-50);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+    }
+    
+    .select-all-box input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--primary-600);
+      cursor: pointer;
+    }
+    
+    .select-all-box span {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--primary-700);
+    }
+    
+    /* Selection Cards Grid */
+    .selection-grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 1rem;
+      max-height: 500px;
+      overflow-y: auto;
+      padding: 0.5rem;
+    }
+    
+    @media (min-width: 640px) {
+      .selection-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .selection-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    @media (min-width: 1280px) {
+      .selection-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    /* Selection Card */
+    .selection-card {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1rem;
+      background: white;
+      border: 2px solid var(--gray-100);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .selection-card:hover {
+      border-color: var(--primary-200);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .selection-card.selected {
+      border-color: var(--primary-500);
+      background: var(--primary-50);
+    }
+    
+    .selection-card input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      accent-color: var(--primary-600);
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-top: 0.125rem;
+    }
+    
+    .selection-card-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-400), var(--sky-400));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    
+    .selection-card-avatar img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    
+    .selection-card-info {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .selection-card-title {
+      font-weight: 600;
+      color: var(--gray-900);
+      font-size: 0.9375rem;
+      margin-bottom: 0.25rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .selection-card-meta {
+      font-size: 0.8125rem;
+      color: var(--gray-500);
+      line-height: 1.5;
+    }
+    
+    .selection-card-meta span {
+      display: block;
+    }
+    
+    /* Selection Counter */
+    .selection-counter {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      background: var(--emerald-50);
+      border-radius: var(--radius-lg);
+      margin-bottom: 1rem;
+    }
+    
+    .selection-counter .material-icons-outlined {
+      color: var(--emerald-600);
+    }
+    
+    .selection-counter span {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--emerald-700);
+    }
+    
+    /* Empty State */
+    .empty-selection {
+      text-align: center;
+      padding: 3rem;
+      color: var(--gray-400);
+    }
+    
+    .empty-selection .material-icons-outlined {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+    
+    /* Hide/Show Sections */
+    .section-hidden {
+      display: none !important;
+    }
+    
+    /* Loading Spinner */
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      gap: 1rem;
+    }
+    
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid var(--gray-200);
+      border-top-color: var(--primary-500);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <a href="/"><img src="img/Logo_gestreb.jpg" alt="Logo GestReb"></a>
+        </div>
+        <div class="sidebar-brand">
+          <h1>GestReb</h1>
+          <p>Gestion des reboisements</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <span class="nav-section-title">Menu principal</span>
+        
+        <a href="#" class="nav-item">
+          <span class="material-icons-outlined">eco</span>
+          Prod. de plants
+        </a>
+        
+        <a href="/mise_en_place/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">grid_view</span>
+          Parcelles
+        </a>
+        
+        <a href="/entretien_p/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">grass</span>
+          Entretien
+        </a>
+        
+        <a href="/sylviculture/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">park</span>
+          Sylviculture
+        </a>
+        
+        <span class="nav-section-title">Planification</span>
+        
+        <a href="/plan_mission/{{ id }}" class="nav-item active">
+          <span class="material-icons-outlined">event_note</span>
+          Plan de missions
+        </a>
+        
+        <a href="/page/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">map</span>
+          Carte interactive
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <span class="material-icons-outlined">menu</span>
+        </button>
+        <div class="page-title">
+          <h1>Missions</h1>
+          <p>Reboisement</p>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="header-status">
+          <span class="dot"></span>
+          En ligne
+        </div>
+        
+        <div class="header-notifications">
+          <span class="material-icons-outlined">notifications</span>
+          <span class="badge"></span>
+        </div>
+        
+        <div class="header-user">
+          <div class="header-user-avatar">
+            <span class="material-icons-outlined">person</span>
+          </div>
+          <div class="header-user-info">
+            <p>Admin</p>
+            <span>Gestionnaire</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      
+      <!-- Stepper -->
+      <div class="stepper">
+        <div class="step active" id="step1">
+          <div class="step-number">1</div>
+          <div class="step-info">
+            <div class="step-title">Informations</div>
+            <div class="step-subtitle">Détails de la mission</div>
+          </div>
+        </div>
+        
+        <div class="step-connector" id="connector1"></div>
+        
+        <div class="step" id="step2">
+          <div class="step-number">2</div>
+          <div class="step-info">
+            <div class="step-title">Agents</div>
+            <div class="step-subtitle">Sélection des agents</div>
+          </div>
+        </div>
+        
+        <div class="step-connector" id="connector2"></div>
+        
+        <div class="step" id="step3">
+          <div class="step-number">3</div>
+          <div class="step-info">
+            <div class="step-title">Parcelles</div>
+            <div class="step-subtitle">Sélection des parcelles</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== ÉTAPE 1 : INFORMATIONS ==================== -->
+      <section id="section-info" class="form-card">
+        <div class="form-header">
+          <h2>Informations de la mission</h2>
+          <p>Renseignez les détails de la mission à planifier</p>
+        </div>
+        
+        <div class="form-body">
+          <form id="form-mission-info">
+            <!-- Ligne 1 -->
+            <div class="form-grid form-grid-4">
+              <div class="form-group">
+                <label class="form-label">
+                  <span class="material-icons-outlined">label</span>
+                  Libellé
+                </label>
+                <input type="text" id="libele" name="libele" class="form-input" 
+                       placeholder="Ex: Mission de vérification des entretiens année 1" required>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <span class="material-icons-outlined">today</span>
+                  Nombre de jours
+                </label>
+                <select id="nb_jour" name="nb_jour" class="form-select" required>
+                  <option value="" disabled selected>Sélectionner</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <span class="material-icons-outlined">groups</span>
+                  Nombre d'agents
+                </label>
+                <select id="nb_agent" name="nb_agent" class="form-select" required>
+                  <option value="" disabled selected>Sélectionner</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <span class="material-icons-outlined">payments</span>
+                  Coût estimé (XOF)
+                </label>
+                <input type="number" id="cout" name="cout" class="form-input" 
+                       placeholder="Ex: 500000" required>
+              </div>
+            </div>
+            
+            <!-- Ligne 2 -->
+            <div class="form-grid form-grid-3 form-divider">
+              <div class="form-group">
+                <label class="form-label">
+                  <span class="material-icons-outlined">event</span>
+                  Date de début
+                </label>
+                <input type="date" id="date_debut" name="date_debut" class="form-input" required>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <span class="material-icons-outlined">event_available</span>
+                  Date de fin
+                </label>
+                <input type="date" id="date_fin" name="date_fin" class="form-input" required>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <span class="material-icons-outlined">description</span>
+                  N° Ordre de mission
+                </label>
+                <input type="text" id="document_mission" name="document_mission" class="form-input" 
+                       placeholder="Ex: OM-2025-001">
+              </div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="form-actions">
+              <div></div>
+              <button type="submit" class="btn btn-primary">
+                Suivant
+                <span class="material-icons-outlined">arrow_forward</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ==================== ÉTAPE 2 : SÉLECTION DES AGENTS ==================== -->
+      <section id="section-agents" class="form-card section-hidden">
+        <div class="form-header">
+          <h2>Sélection des agents</h2>
+          <p>Choisissez les agents qui participeront à cette mission</p>
+        </div>
+        
+        <div class="form-body">
+          <!-- Search & Select All -->
+          <div class="selection-header">
+            <div class="search-box">
+              <span class="material-icons-outlined">search</span>
+              <input type="text" id="search-agents" placeholder="Rechercher par nom ou matricule...">
+            </div>
+            <label class="select-all-box">
+              <input type="checkbox" id="select-all-agents">
+              <span>Tout sélectionner</span>
+            </label>
+          </div>
+          
+          <!-- Counter -->
+          <div class="selection-counter">
+            <span class="material-icons-outlined">check_circle</span>
+            <span><span id="agents-count">0</span> agent(s) sélectionné(s)</span>
+          </div>
+          
+          <!-- Agents Grid -->
+          <div class="selection-grid" id="agents-grid">
+            <div class="loading">
+              <div class="spinner"></div>
+              <span style="color: var(--gray-500);">Chargement des agents...</span>
+            </div>
+          </div>
+          
+          <!-- Actions -->
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="btn-back-to-info">
+              <span class="material-icons-outlined">arrow_back</span>
+              Retour
+            </button>
+            <button type="button" class="btn btn-primary" id="btn-to-parcelles">
+              Suivant
+              <span class="material-icons-outlined">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== ÉTAPE 3 : SÉLECTION DES PARCELLES ==================== -->
+      <section id="section-parcelles" class="form-card section-hidden">
+        <div class="form-header" style="background: linear-gradient(135deg, var(--emerald-500), var(--emerald-600));">
+          <h2>Sélection des parcelles</h2>
+          <p>Choisissez les parcelles concernées par cette mission</p>
+        </div>
+        
+        <div class="form-body">
+          <!-- Search & Select All -->
+          <div class="selection-header">
+            <div class="search-box">
+              <span class="material-icons-outlined">search</span>
+              <input type="text" id="search-parcelles" placeholder="Rechercher par numéro de parcelle...">
+            </div>
+            <label class="select-all-box">
+              <input type="checkbox" id="select-all-parcelles">
+              <span>Tout sélectionner</span>
+            </label>
+          </div>
+          
+          <!-- Counter -->
+          <div class="selection-counter" style="background: var(--emerald-50);">
+            <span class="material-icons-outlined" style="color: var(--emerald-600);">forest</span>
+            <span style="color: var(--emerald-700);"><span id="parcelles-count">0</span> parcelle(s) sélectionnée(s)</span>
+          </div>
+          
+          <!-- Parcelles Grid -->
+          <div class="selection-grid" id="parcelles-grid">
+            <div class="loading">
+              <div class="spinner"></div>
+              <span style="color: var(--gray-500);">Chargement des parcelles...</span>
+            </div>
+          </div>
+          
+          <!-- Actions -->
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="btn-back-to-agents">
+              <span class="material-icons-outlined">arrow_back</span>
+              Retour
+            </button>
+            <button type="button" class="btn btn-success" id="btn-valider">
+              <span class="material-icons-outlined">check</span>
+              Valider la mission
+            </button>
+          </div>
+        </div>
+      </section>
+      
+    </main>
+  </div>
+
+  <script>
+    // ==========================================
+    // INITIALISATION
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      // Générer les options pour le nombre de jours
+      const nbJourSelect = document.getElementById('nb_jour');
+      for (let i = 1; i <= 10; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i + (i > 1 ? ' jours' : ' jour');
+        nbJourSelect.appendChild(option);
+      }
+      
+      // Générer les options pour le nombre d'agents
+      const nbAgentSelect = document.getElementById('nb_agent');
+      for (let i = 1; i <= 10; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i + (i > 1 ? ' agents' : ' agent');
+        nbAgentSelect.appendChild(option);
+      }
+    });
+
+    // ==========================================
+    // SIDEBAR MOBILE
+    // ==========================================
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+
+    mobileMenuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      sidebarOverlay.classList.toggle('open');
+    });
+
+    sidebarOverlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      sidebarOverlay.classList.remove('open');
+    });
+
+    // ==========================================
+    // NAVIGATION ENTRE ÉTAPES
+    // ==========================================
+    function showSection(sectionId) {
+      // Cacher toutes les sections
+      document.querySelectorAll('.form-card').forEach(s => s.classList.add('section-hidden'));
+      // Afficher la section demandée
+      document.getElementById(sectionId).classList.remove('section-hidden');
+      
+      // Mettre à jour le stepper
+      const steps = ['step1', 'step2', 'step3'];
+      const connectors = ['connector1', 'connector2'];
+      const currentIndex = sectionId === 'section-info' ? 0 : sectionId === 'section-agents' ? 1 : 2;
+      
+      steps.forEach((step, index) => {
+        const el = document.getElementById(step);
+        el.classList.remove('active', 'completed');
+        if (index < currentIndex) {
+          el.classList.add('completed');
+        } else if (index === currentIndex) {
+          el.classList.add('active');
+        }
+      });
+      
+      connectors.forEach((conn, index) => {
+        document.getElementById(conn).classList.toggle('active', index < currentIndex);
+      });
+      
+      // Scroll en haut
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ==========================================
+    // ÉTAPE 1 : FORMULAIRE MISSION
+    // ==========================================
+    document.getElementById('form-mission-info').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Récupérer les valeurs
+      const missionData = {
+        libele: document.getElementById('libele').value,
+        nb_jour: document.getElementById('nb_jour').value,
+        nb_agent: document.getElementById('nb_agent').value,
+        cout: document.getElementById('cout').value,
+        date_debut: document.getElementById('date_debut').value,
+        date_fin: document.getElementById('date_fin').value,
+        document_mission: document.getElementById('document_mission').value
+      };
+      
+      // Sauvegarder dans localStorage
+      localStorage.setItem('mission_data', JSON.stringify(missionData));
+      console.log('Mission data saved:', missionData);
+      
+      // Passer à l'étape 2
+      showSection('section-agents');
+      loadAgents();
+    });
+
+    // ==========================================
+    // ÉTAPE 2 : CHARGEMENT DES AGENTS
+    // ==========================================
+    let agentsData = [];
+    
+    async function loadAgents() {
+      const grid = document.getElementById('agents-grid');
+      
+      try {
+        const response = await fetch('/api/agents', {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        agentsData = await response.json();
+        renderAgents(agentsData);
+      } catch (error) {
+        console.error('Erreur:', error);
+        grid.innerHTML = `
+          <div class="empty-selection" style="grid-column: 1/-1;">
+            <span class="material-icons-outlined">error</span>
+            <p>Erreur lors du chargement des agents</p>
+          </div>
+        `;
+      }
+    }
+    
+    function renderAgents(agents) {
+      const grid = document.getElementById('agents-grid');
+      
+      if (!agents || agents.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-selection" style="grid-column: 1/-1;">
+            <span class="material-icons-outlined">person_off</span>
+            <p>Aucun agent disponible</p>
+          </div>
+        `;
+        return;
+      }
+      
+      grid.innerHTML = agents.map(agent => {
+        const initials = (agent.nom_prenoms || 'AG').substring(0, 2).toUpperCase();
+        return `
+          <div class="selection-card" data-id="${agent.id}" onclick="toggleAgent(this, '${agent.id}')">
+            <input type="checkbox" id="agent-${agent.id}" value="${agent.id}">
+            <div class="selection-card-avatar">${initials}</div>
+            <div class="selection-card-info">
+              <div class="selection-card-title">${agent.nom_prenoms}</div>
+              <div class="selection-card-meta">
+                <span>Matricule: ${agent.matricule || '--'}</span>
+                <span>Service: ${agent.lieu_service || '--'}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    function toggleAgent(card, id) {
+      const checkbox = card.querySelector('input[type="checkbox"]');
+      checkbox.checked = !checkbox.checked;
+      card.classList.toggle('selected', checkbox.checked);
+      updateAgentsCount();
+      saveSelectedAgents();
+    }
+    
+    function updateAgentsCount() {
+      const count = document.querySelectorAll('#agents-grid .selection-card.selected').length;
+      document.getElementById('agents-count').textContent = count;
+    }
+    
+    function saveSelectedAgents() {
+      const selected = Array.from(document.querySelectorAll('#agents-grid input:checked'))
+        .map(cb => cb.value);
+      localStorage.setItem('agents_selectionnes_ids', JSON.stringify(selected));
+    }
+    
+    // Recherche agents
+    document.getElementById('search-agents').addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase();
+      agentsData.forEach(agent => {
+        const card = document.querySelector(`[data-id="${agent.id}"]`);
+        if (!card) return;
+        
+        const nom = (agent.nom_prenoms || '').toLowerCase();
+        const matricule = (agent.matricule || '').toLowerCase();
+        const visible = nom.includes(term) || matricule.includes(term);
+        card.style.display = visible ? 'flex' : 'none';
+      });
+    });
+    
+    // Tout sélectionner agents
+    document.getElementById('select-all-agents').addEventListener('change', function() {
+      document.querySelectorAll('#agents-grid .selection-card').forEach(card => {
+        if (card.style.display !== 'none') {
+          const checkbox = card.querySelector('input[type="checkbox"]');
+          checkbox.checked = this.checked;
+          card.classList.toggle('selected', this.checked);
+        }
+      });
+      updateAgentsCount();
+      saveSelectedAgents();
+    });
+
+    // ==========================================
+    // ÉTAPE 3 : CHARGEMENT DES PARCELLES
+    // ==========================================
+    let parcellesData = [];
+    
+    async function loadParcelles() {
+      const grid = document.getElementById('parcelles-grid');
+      
+      try {
+        const response = await fetch('/api/parcelles', {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        parcellesData = await response.json();
+        renderParcelles(parcellesData);
+      } catch (error) {
+        console.error('Erreur:', error);
+        grid.innerHTML = `
+          <div class="empty-selection" style="grid-column: 1/-1;">
+            <span class="material-icons-outlined">error</span>
+            <p>Erreur lors du chargement des parcelles</p>
+          </div>
+        `;
+      }
+    }
+    
+    function renderParcelles(parcelles) {
+      const grid = document.getElementById('parcelles-grid');
+      
+      if (!parcelles || parcelles.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-selection" style="grid-column: 1/-1;">
+            <span class="material-icons-outlined">forest</span>
+            <p>Aucune parcelle disponible</p>
+          </div>
+        `;
+        return;
+      }
+      
+      grid.innerHTML = parcelles.map(p => `
+        <div class="selection-card" data-id="${p.id}" data-numero="${p.numero}" onclick="toggleParcelle(this, '${p.numero}')">
+          <input type="checkbox" id="parcelle-${p.id}" value="${p.numero}">
+          <div class="selection-card-avatar" style="background: linear-gradient(135deg, var(--emerald-400), var(--emerald-600)); border-radius: var(--radius-lg);">
+            <span class="material-icons-outlined" style="font-size: 1.5rem;">park</span>
+          </div>
+          <div class="selection-card-info">
+            <div class="selection-card-title">Parcelle N° ${p.numero}</div>
+            <div class="selection-card-meta">
+              <span>Forêt: ${p.nom || '--'}</span>
+              <span>Année: ${p.annee || '--'} • ${p.superficie || '--'} ha</span>
+              <span>Essence: ${p.essence || '--'}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    function toggleParcelle(card, numero) {
+      const checkbox = card.querySelector('input[type="checkbox"]');
+      checkbox.checked = !checkbox.checked;
+      card.classList.toggle('selected', checkbox.checked);
+      updateParcellesCount();
+      saveSelectedParcelles();
+    }
+    
+    function updateParcellesCount() {
+      const count = document.querySelectorAll('#parcelles-grid .selection-card.selected').length;
+      document.getElementById('parcelles-count').textContent = count;
+    }
+    
+    function saveSelectedParcelles() {
+      const selected = Array.from(document.querySelectorAll('#parcelles-grid input:checked'))
+        .map(cb => cb.value);
+      localStorage.setItem('parcelles_selectionnees_ids', JSON.stringify(selected));
+    }
+    
+    // Recherche parcelles
+    document.getElementById('search-parcelles').addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase();
+      document.querySelectorAll('#parcelles-grid .selection-card').forEach(card => {
+        const numero = (card.dataset.numero || '').toLowerCase();
+        card.style.display = numero.includes(term) ? 'flex' : 'none';
+      });
+    });
+    
+    // Tout sélectionner parcelles
+    document.getElementById('select-all-parcelles').addEventListener('change', function() {
+      document.querySelectorAll('#parcelles-grid .selection-card').forEach(card => {
+        if (card.style.display !== 'none') {
+          const checkbox = card.querySelector('input[type="checkbox"]');
+          checkbox.checked = this.checked;
+          card.classList.toggle('selected', this.checked);
+        }
+      });
+      updateParcellesCount();
+      saveSelectedParcelles();
+    });
+
+    // ==========================================
+    // NAVIGATION BUTTONS
+    // ==========================================
+    document.getElementById('btn-back-to-info').addEventListener('click', () => {
+      showSection('section-info');
+    });
+    
+    document.getElementById('btn-to-parcelles').addEventListener('click', () => {
+      showSection('section-parcelles');
+      loadParcelles();
+    });
+    
+    document.getElementById('btn-back-to-agents').addEventListener('click', () => {
+      showSection('section-agents');
+    });
+
+    // ==========================================
+    // VALIDATION FINALE
+    // ==========================================
+    document.getElementById('btn-valider').addEventListener('click', async () => {
+      // Récupérer les données
+      const missionDataString = localStorage.getItem('mission_data');
+      const missionData = missionDataString ? JSON.parse(missionDataString) : {};
+      
+      const agentsString = localStorage.getItem('agents_selectionnes_ids');
+      const agentsSelectionnes = agentsString ? JSON.parse(agentsString) : [];
+      
+      const parcellesString = localStorage.getItem('parcelles_selectionnees_ids');
+      const parcellesSelectionnees = parcellesString ? JSON.parse(parcellesString) : [];
+      
+      if (agentsSelectionnes.length === 0) {
+        alert('Veuillez sélectionner au moins un agent.');
+        showSection('section-agents');
+        return;
+      }
+      
+      if (parcellesSelectionnees.length === 0) {
+        alert('Veuillez sélectionner au moins une parcelle.');
+        return;
+      }
+      
+      console.log('Mission Data:', missionData);
+      console.log('Agents:', agentsSelectionnes);
+      console.log('Parcelles:', parcellesSelectionnees);
+      
+      try {
+        const response = await fetch('/api/planifier_mission', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            missionData,
+            agentsSelectionnes,
+            parcellesSelectionnees,
+            nombre_agents: agentsSelectionnes.length,
+            nombre_parcelles: parcellesSelectionnees.length
+          })
+        });
+        
+        if (response.ok) {
+          // Nettoyer le localStorage
+          localStorage.removeItem('mission_data');
+          localStorage.removeItem('agents_selectionnes_ids');
+          localStorage.removeItem('parcelles_selectionnees_ids');
+          
+          // Rediriger
+          window.location.href = '/confirm_mission';
+        } else {
+          throw new Error('Erreur serveur');
+        }
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Mission planifiée avec succès ! (Mode démo)');
+        
+        // En mode démo, nettoyer et rediriger quand même
+        localStorage.removeItem('mission_data');
+        localStorage.removeItem('agents_selectionnes_ids');
+        localStorage.removeItem('parcelles_selectionnees_ids');
+      }
+    });
+  </script>
+</body>
+</html>

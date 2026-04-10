@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="icon" 
+     type="image/jpg" 
+     href="/img/logo2.jpg">
+      <link href="/css/tailStyle.css" rel="stylesheet" />
+      <link href="/css/style_perso.css" rel="stylesheet" />
+      <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    </head>
+    <body >
+        <nav class="fixed top-0 z-50 w-full bg-green-100/0  shadow-zinc-600 text-black">
+            <div class="px-3 py-3 lg:px-5 lg:pl-3">
+                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-start rtl:justify-end">
+                    <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar" type="button" class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+                        <span class="sr-only"></span>
+                        <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
+                        </svg>
+                    </button>
+                    <a href="#" class="flex ms-2 md:me-24">
+                    <img src="/img/logo2.jpg" class="h-8 me-3" alt="Logo Sodefor" />
+                    <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap text-black">C.G GAGNOA</span>
+                    </a>
+                </div>
+                <div class="flex items-center">
+                    <div class="flex items-center ms-3">
+                    
+                        <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow " id="dropdown-user">
+                        <div class="px-4 py-3" role="none">
+                            <p class="text-sm text-gray-900 dark:text-white" role="none">
+                            </p>
+                            <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
+                            </p>
+                        </div>
+                        <ul class="py-1" role="none">
+                            <li>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Dashboard</a>
+                            </li>
+                            <li>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Settings</a>
+                            </li>
+                            <li>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Earnings</a>
+                            </li>
+                            <li>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white" role="menuitem">Sign out</a>
+                            </li>
+                        </ul>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            </nav>
+        
+            <aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-1/6 h-screen pt-20 transition-transform -translate-x-full  bg-white border-b  shadow-zinc-600 sm:translate-x-0" aria-label="Sidebar">
+              <div class="h-full px-3 pb-4 overflow-y-auto  bg-white border-b  shadow-zinc-600">
+                  <ul class="space-y-2 font-medium">
+                      <li>
+                          <span class="flex items-center py-3 px-1 dark:text-black  border-y border-gray-300 group">
+                            <svg class="w-5 h-5 text-purple-500 transition duration-75  group-hover:text-purple-600 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
+                              <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
+                              <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>
+                          </svg>
+                          <span class="ms-3">Validation</span>
+                      </span>
+                      </li>         
+                  </ul>
+                  
+              </div>
+              </aside>
+            <div id="particles-js"></div>
+            <div  class="sm:ml-64 font-[sans-serif] items-center justify-center bg-black">
+                <div class="min-h-screen flex fle-col items-center justify-center py-6 px-4">
+                  
+                    <div class="z-50 border border-white rounded-lg p-6 max-w-md shadow-[0_2px_22px_-4px_rgba(93,96,127,0.2)] max-md:mx-auto">
+                      <form action="/validation/{{ tokenGen }}" method="POST" class="space-y-4">
+                        <div class="mb-8">
+                          <h3 class="text-white text-3xl font-extrabold">Validation</h3>
+                          <p class="text-white text-sm mt-4 leading-relaxed">La personne dont les informations ont été fournis via mail souhaite avoir accès à la carte interactive</p>
+                        </div>
+                        <!--<div>
+                          <label class="text-white text-sm mb-2 block">Nom : </label>
+                          <label class="text-white text-sm mb-2 block">Prénom (s) : </label>
+                          <label class="text-white text-sm mb-2 block">Email : </label>
+                          <label class="text-white text-sm mb-2 block">Contact : </label>
+                          <label class="text-white text-sm mb-2 block">Matricule : </label>
+                          <label class="text-white text-sm mb-2 block">U.G.F : </label>          
+                        <div class="!mt-8">-->
+                          <button type="submit" class="w-full shadow-xl py-3 px-4 text-sm tracking-wide rounded-lg text-green bg-green-500 hover:bg-green-600 focus:outline-none">
+                            Valider la demande
+                          </button>
+                        </form><br>
+                        <form action="/rejet/{{ tokenGen }}" method="POST" class="space-y-4">
+                          <button type="submit" class="w-full shadow-xl py-3 px-4 text-sm tracking-wide rounded-lg text-black bg-red-500 hover:bg-red-600 focus:outline-none">
+                            Rejeter la demande
+                          </button>
+                        </form>                 
+                        </div>
+                      
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+            <script src="js/particules.js"></script>
+    </body>
+</html>

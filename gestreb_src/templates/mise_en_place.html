@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>MISE EN PLACE</title>
+    <link rel="icon" 
+     type="image/png" 
+     href="/img/Logo_gestreb.jpg">
+    <!-- Montserrat Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/tailStyle.css">
+    <link rel="stylesheet" href="/css/style_mise_en_place.css">
+  </head>
+  <body>
+    <div class="grid-container">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="menu-icon" onclick="openSidebar()">
+          <span class="material-icons-outlined">menu</span>
+        </div>
+        <div class="header-left">
+          <div class="main-title">
+          <h2>MISE EN PLACE</h2>
+        </div>
+        </div>
+        <div class="header-right">
+        </div>
+      </header>
+      <!-- End Header -->
+
+      <!-- Sidebar -->
+      <aside id="sidebar">
+        <div class="sidebar-title">
+          <div class="sidebar-brand">
+            <a href="#" class="flex ms-2 md:me-24">
+              <img src="/img/Logo_gestreb.jpg" class="ml-4" alt="Logo GestReb" />
+              </a>
+          </div>
+          <span class="material-icons-outlined" onclick="closeSidebar()">close</span>
+        </div>
+        <div class="px-2 pb-4 bg-green  shadow-zinc-600">
+          <ul class="space-y-2 font-medium">
+            <li>
+              <a href="/api/cugf/{{ foret }}" class="flex items-center py-3 px-1 mt-16 text-black   hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined">dashboard</span>
+                <span class="ms-3">Tableau de bord</span>
+              </a>
+            </li>   
+            <li>
+              <a href="#" class="flex items-center mt-16 p-2 text-purple  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined" style="color:brown">nature</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Prod. de plants</span>
+              </a>
+            </li>  
+            <li>
+              <a href="/api/cugf/mise_en_place/{{ foret }}" class="flex items-center mt-16 p-2 text-purple border-y border-black hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined" style="color:blueviolet">agriculture</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Mise en place</span>
+              </a>
+            </li>  
+            <li>
+              <a href="# "class="flex items-center mt-16 p-2 text-green  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined" style="color:greenyellow">nature_people</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Entretien</span>
+              </a>
+            </li> 
+            <li>
+              <a href="#" class="flex items-center mt-16 p-2 dark:text-black  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined" style="color:palevioletred">carpenter</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Sylviculture</span>
+              </a>
+            </li> 
+           
+                       
+          </ul>
+        </div>
+      </aside>
+      <!-- End Sidebar -->
+
+     <!-- Main -->
+     <main class="main-container">
+
+      <div class="sticky-buttons" style="border-bottom:solid 1px white; justify-items :flex-start; font-weight: bolder;color:black;
+      font-size: larger;background-image: linear-gradient(to right,rgb(165, 60, 246),rgb(0, 140, 255),rgb(0, 238, 255) );">
+        <h2 class="main-title">MISE EN PLACE</h2>
+      </div>
+
+      <div class="main-lignes" style="overflow-y: auto;height: 80%;">
+        
+        <div style="border-radius: 0dvh; background-color: #d5cdcd;color: black;"  class="card">
+          <div class="card-inner" style="margin-right: 5%;">
+            <div>
+              <span class="material-icons-outlined">close</span>
+            </div>
+          <div>
+            <h3 style="color: rgb(134, 3, 199);font-weight: bolder;">RABATTAGE</h3>            
+          </div>
+
+        </div>
+        <div class="card-inner" id="res_mise_en_p" style="width: 70%; font-weight: bold;">
+          <div>
+            <p id="p1-1"></p>           
+          </div>
+          <div>
+            <p id="p1-2"></p>
+          </div>
+          <div>
+            <p id="p1-3"></p>
+          </div>
+          <div>
+            <p id="p1-4"></p>
+          </div>
+          <div>
+            <a href="/api/cugf/mise_en_place/{{ foret }}/1/rabattage"><p style="text-decoration: underline; color:brown;">Editer</p></a>
+          </div>
+        </div>
+        </div>
+
+        <div style="border-radius: 0dvh; background-color:  #d5cdcd;color: black;"  class="card">
+          <div class="card-inner" style="width: 30%; margin-right: 5%;">
+            <div>
+              <span class="material-icons-outlined">carpenter</span>
+            </div>
+          <div>
+            <h3 style="color: rgb(42, 3, 199);font-weight: bolder;">ABATTAGE ET TRONCONNAGE</h3>            
+          </div>
+
+        </div>
+        <div class="card-inner" id="res_mise_en_p" style="width: 70%;font-weight: bold;">
+          <div>
+            <p id="p2-1"></p>           
+          </div>
+          <div>
+            <p id="p2-2"></p>
+          </div>
+          <div>
+            <p id="p2-3"></p>
+          </div>
+          <div>
+            <p id="p2-4"></p>
+          </div>
+          <div>
+            <a href="/api/cugf/mise_en_place/{{ foret }}/2/abattage"><p style="text-decoration: underline; color:brown;">Editer</p></a>
+          </div>
+        </div>
+        </div>
+
+        <div style="border-radius: 0dvh; background-color:  #d5cdcd;color: black;"  class="card">
+          <div class="card-inner" style="width: 30%; margin-right: 5%;">
+            <div>
+              <span class="material-icons-outlined">local_fire_department</span>
+            </div>
+          <div>
+            <h3 style="color:  rgb(3, 199, 147);font-weight: bolder;">BRULAGE</h3>            
+          </div>
+
+        </div>
+        <div class="card-inner" id="res_mise_en_p" style="width: 70%;font-weight: bold;">
+          <div>
+            <p id="p3-1"></p>           
+          </div>
+          <div>
+            <p id="p3-2"></p>
+          </div>
+          <div>
+            <p id="p3-3"></p>
+          </div>
+          <div>
+            <p id="p3-4"></p>
+          </div>
+          <div>
+            <a href="/api/cugf/mise_en_place/{{ foret }}/3/brulage"><p style="text-decoration: underline; color:brown;">Editer</p></a>
+          </div>
+        </div>
+        </div>
+        <div style="border-radius: 0dvh; background-color:  #d5cdcd;color: black;"  class="card">
+          <div class="card-inner" style="width: 30%; margin-right: 5%;">
+            <div>
+              <span class="material-icons-outlined">south</span>
+            </div>
+          <div>
+            <h3 style="color:  rgb(199, 124, 3);font-weight: bolder;">PIQUETAGE DE BASE</h3>            
+          </div>
+
+        </div>
+        <div class="card-inner" id="res_mise_en_p" style="width: 70%;font-weight: bold;">
+          <div>
+            <p id="p4-1"></p>           
+          </div>
+          <div>
+            <p id="p4-2"></p>
+          </div>
+          <div>
+            <p id="p4-3"></p>
+          </div>
+          <div>
+            <p id="p4-4"></p>
+          </div>
+          <div>
+            <a href="/api/cugf/mise_en_place/{{ foret }}/4/piquetage de base"><p style="text-decoration: underline; color:brown;">Editer</p></a>
+          </div>
+        </div>
+        </div>
+        <div style="border-radius: 0dvh; background-color:  #d5cdcd;color: black;"  class="card">
+          <div class="card-inner" style="width: 30%; margin-right: 5%;">
+            <div>
+              <span class="material-icons-outlined">signpost</span>
+            </div>
+          <div>
+            <h3 style="color:  rgb(199, 3, 72);font-weight: bolder;">OUVERTURE DES LIGNES</h3>            
+          </div>
+
+        </div> 
+        <div class="card-inner" id="res_mise_en_p" style="width: 70%;font-weight: bold;">
+          <div>
+            <p id="p5-1"></p>           
+          </div>
+          <div>
+            <p id="p5-2"></p>
+          </div>
+          <div>
+            <p id="p5-3"></p>
+          </div>
+          <div>
+            <p id="p5-4"></p>
+          </div>
+          <div>
+            <a href="/api/cugf/mise_en_place/{{ foret }}/5/ouverture des lignes"><p style="text-decoration: underline; color:brown;">Editer</p></a>
+          </div>
+        </div>
+        </div>
+        <div style="border-radius: 0dvh; background-color:  #d5cdcd;;color: black;"  class="card">
+          <div class="card-inner" style="width: 30%; margin-right: 5%;">
+            <div>
+              <span class="material-icons-outlined">golf_course</span>
+            </div>
+          <div>
+            <h3 style="color:  rgb(10, 41, 143);font-weight: bolder;">TROUAISON</h3>            
+          </div>
+
+        </div>
+        <div class="card-inner" id="res_mise_en_p" style="width: 70%;font-weight: bold;">
+          <div>
+            <p id="p6-1"></p>           
+          </div>
+          <div>
+            <p id="p6-2"></p>
+          </div>
+          <div>
+            <p id="p6-3"></p>
+          </div>
+          <div>
+            <p id="p6-4"></p>
+          </div>
+          <div>
+            <a href="/api/cugf/mise_en_place/{{ foret }}/6/trouaison"><p style="text-decoration: underline; color:brown;">Editer</p></a>
+          </div>
+        </div>
+        </div>
+        <div style="border-radius: 0dvh; background-color:  #d5cdcd;;color: black;"  class="card">
+          <div class="card-inner" style="width: 30%; margin-right: 5%;">
+            <div>
+              <span class="material-icons-outlined">nature</span>
+            </div>
+          <div>
+            <h3 style="color:  rgb(114, 199, 3);font-weight: bolder;">PLANTING</h3>            
+          </div>
+
+        </div>
+        <div class="card-inner" id="res_mise_en_p" style="width: 70%;font-weight: bold;">
+          <div>
+            <p id="p7-1"></p>           
+          </div>
+          <div>
+            <p id="p7-2"></p>
+          </div>
+          <div>
+            <p id="p7-3"></p>
+          </div>
+          <div>
+            <p id="p7-4"></p>
+          </div>
+          <div>
+            <a href="/api/cugf/mise_en_place/{{ foret }}/7/planting"><p style="text-decoration: underline; color:brown;">Editer</p></a>
+          </div>
+        </div>
+        </div>
+      </div>
+      <div class="sticky-buttons" style=" border-top:solid 1px white;display: flex; justify-content:end; font-size:medium;">
+        <div style="margin-top:10px; padding: 1px; border-radius: 7%;font-weight: bold; color:black;
+        background-image: linear-gradient(to right,rgb(0, 140, 255),rgb(0, 238, 255) );">
+          <button id="enreg"><a href="/api/cugf/{{ foret }}">VALIDER</a></button>
+        </div>       
+      </div>
+     
+    </main>
+    <!-- End Main -->
+      </div>
+    
+
+    <!-- Scripts -->
+    <!-- ApexCharts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/scripts.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', async () => {
+        try {
+          const response = await fetch('/get/parcelles/mise_en_place/{{ foret }}');
+          const travail = await response.json();
+          const liste_travaux = [];
+          travail.forEach(trv => {
+           const t = {travail:trv.travail, objectif:trv.objectif, realise:trv.realise, taux:trv.realise/trv.objectif*100, reliquat:trv.objectif-trv.realise};
+            liste_travaux.push(t);
+            document.getElementById(`p${trv.travail}-1`).textContent = `Objectif : ${(Math.round(t.objectif * 100)/100).toFixed(2)} ha`;
+            document.getElementById(`p${trv.travail}-2`).textContent = `Réalisé : ${(Math.round(t.realise * 100)/100).toFixed(2)} ha`;
+            document.getElementById(`p${trv.travail}-3`).textContent = `Taux : ${(Math.round(t.taux * 100)/100).toFixed(2)} %`;
+            document.getElementById(`p${trv.travail}-4`).textContent = `Réliquat : ${(Math.round(t.reliquat * 100)/100).toFixed(2)} ha`;
+          });
+          console.log(liste_travaux);
+        } catch (error) {
+          console.error('Erreur lors de la récupération des parcelles:', error);
+        }
+      });
+      document.addEventListener('DOMContentLoaded', () => {
+    const validerButton = document.getElementById('enreg');
+    validerButton.addEventListener('click', async () => {
+      try {
+        const response = await fetch('/get/parcelles/mise_en_place/{{ foret }}', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        if (!response.ok) {
+          throw new Error('Erreur lors de la mise à jour');
+        }
+        console.log('Mise à jour réussie');
+      } catch (error) {
+        console.error('Erreur:', error);
+      }
+    });
+  });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,281 @@
+<!-- component -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" 
+     type="image/jpg" 
+     href="/img/logo2.jpg">
+    <link href="libs/bootstrap-5.1.3-dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="libs/bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js"></script>
+    <script src="libs/jquery.js"></script>
+    <script src="libs/v6.13.0-dist/ol.js"></script>
+    <link rel="stylesheet" href="libs/v6.13.0-dist/ol.css">
+    <script src="libs/ol-layerswitcher-master/dist/ol-layerswitcher.js"></script>
+    <link rel="stylesheet" href="libs/ol-layerswitcher-master/dist/ol-layerswitcher.css" />
+    <script src="libs/ol-geocoder/ol-geocoder.js"></script>
+    <link rel="stylesheet" href="libs/ol-geocoder/ol-geocoder.css" />
+    <script src="libs/ol-popup/ol-popup.js"></script>
+    <link rel="stylesheet" href="libs/ol-popup/ol-popup.css" />
+    <link rel="stylesheet" href="libs/jquery-ui-1.12.1/jquery-ui.css">
+    <script src="libs/jquery-ui-1.12.1/external/jquery/jquery.js"></script>
+    <script src="libs/jquery-ui-1.12.1/jquery-ui.js"></script>
+    <link href="css/tailStyle.css" rel="stylesheet" />
+    <link href="css/style_perso.css" rel="stylesheet" />
+  </head>
+  <body style="font-family: sans-serif;">
+    <nav class="fixed top-0 z-50 w-full bg-green-100/0  shadow-zinc-600 text-black">
+        <div class="px-3 py-3 lg:px-5 lg:pl-3">
+            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-start rtl:justify-end">
+                <button data-drawer-target="logo-sidebar" data-drawer-toggle="logo-sidebar" aria-controls="logo-sidebar" type="button" class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+                    <span class="sr-only"></span>
+                    <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path clip-rule="evenodd" fill-rule="evenodd" d="M2 4.75A.75.75 0 012.75 4h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 4.75zm0 10.5a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5a.75.75 0 01-.75-.75zM2 10a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75A.75.75 0 012 10z"></path>
+                    </svg>
+                </button>
+                <a href="#" class="flex ms-2 md:me-24">
+                <img src="img/logo2.jpg" class="h-8 me-3" alt="Logo Sodefor" />
+                <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap text-blue-500">CG Gagnoa</span>
+                </a>
+            </div>
+            <div class="flex items-center">
+                <div class="flex items-center ms-3">
+                
+                    <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow " id="dropdown-user">
+                    <div class="px-4 py-3" role="none">
+                        <p class="text-sm text-gray-900 dark:text-white" role="none">
+                        </p>
+                        <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
+                        </p>
+                    </div>
+                    
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        </nav>
+    
+        
+        <aside id="logo-sidebar" class="fixed top-0 left-0 z-40 w-1/6 h-screen pt-20 transition-transform -translate-x-full  bg-white border-b  shadow-zinc-600 sm:translate-x-0" aria-label="Sidebar">
+            <div class="h-full px-3 pb-4 overflow-y-auto  bg-white border-b  shadow-zinc-600">
+                <ul class="space-y-2 font-medium">
+                  <li>
+                    <span class="flex items-center py-3 px-1 mt-16 dark:text-black  border-y border-gray-300 group">
+                    <svg class="w-5 h-5 text-green-500 transition duration-75  group-hover:text-green-600 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 30 30">
+                      <title/><g data-name="Layer 2" id="Layer_2"><g id="Interface-Solid"><g id="interface-solid-pin-location">
+                        <circle cx="15" cy="9.57129" fill="none" r="3.42865"/>
+                        <path d="M25.31152,20.40039a1,1,0,1,0-.623,1.90039C26.97607,23.05078,28,23.94629,28,24.5c0,1.39355-5.18506,3.5-13,3.5S2,25.89355,2,24.5c0-.55371,1.02393-1.44922,3.31152-2.19922a1,1,0,1,0-.623-1.90039C.81348,21.6709,0,23.33105,0,24.5,0,28.11035,7.5459,30,15,30s15-1.88965,15-5.5C30,23.33105,29.18652,21.6709,25.31152,20.40039Z"/>
+                        <path d="M14.37549,25.78125a1.00083,1.00083,0,0,0,1.249,0c.36572-.293,8.94678-7.26074,8.94678-16.21a9.57129,9.57129,0,0,0-19.14258,0C5.42871,18.52051,14.00977,25.48828,14.37549,25.78125Zm-2.80408-16.21A3.42859,3.42859,0,1,1,15,13,3.4287,3.4287,0,0,1,11.57141,9.57129Z"/></g></g></g>
+                    </svg>
+                    <span class="ms-3">Carte interactive</span>
+                  </span>
+                </li>   
+                <li>
+                  <a href="/connexion" class="flex items-center mt-16 p-2 text-black  hover:border-y hover:border-purple-500 group">
+                  <svg class="flex-shrink-0 w-5 h-5 text-purple-500 transition duration-75  " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
+                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"/>
+                  </svg>
+                  <span class="flex-1 ms-3 whitespace-nowrap">Connexion</span>
+                </a>
+              </li> 
+              <li>
+                <a href="/inscription" class="flex items-center mt-16 p-2 text-black  hover:border-y hover:border-blue-500 group">
+                <svg class="flex-shrink-0 w-5 h-5 text-blue-500 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.96 2.96 0 0 0 .13 5H5Z"/>
+                    <path d="M6.737 11.061a2.961 2.961 0 0 1 .81-1.515l6.117-6.116A4.839 4.839 0 0 1 16 2.141V2a1.97 1.97 0 0 0-1.933-2H7v5a2 2 0 0 1-2 2H0v11a1.969 1.969 0 0 0 1.933 2h12.134A1.97 1.97 0 0 0 16 18v-3.093l-1.546 1.546c-.413.413-.94.695-1.513.81l-3.4.679a2.947 2.947 0 0 1-1.85-.227 2.96 2.96 0 0 1-1.635-3.257l.681-3.397Z"/>
+                    <path d="M8.961 16a.93.93 0 0 0 .189-.019l3.4-.679a.961.961 0 0 0 .49-.263l6.118-6.117a2.884 2.884 0 0 0-4.079-4.078l-6.117 6.117a.96.96 0 0 0-.263.491l-.679 3.4A.961.961 0 0 0 8.961 16Zm7.477-9.8a.958.958 0 0 1 .68-.281.961.961 0 0 1 .682 1.644l-.315.315-1.36-1.36.313-.318Zm-5.911 5.911 4.236-4.236 1.359 1.359-4.236 4.237-1.7.339.341-1.699Z"/>
+                </svg>
+                <span class="flex-1 ms-3 whitespace-nowrap">Inscription</span>
+                </a>
+            </li> 
+                   
+                    
+                </ul>
+                
+            </div>
+            </aside>
+    <div id="map" class="">
+        <div id="b_d_frame" class="hidden absolute z-1000" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+              <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                  <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                      <div class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                        <svg class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-slot="icon">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                        </svg>
+                      </div>
+                      <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                        <h3 class="text-base font-semibold leading-6 text-gray-900" id="modal-title">Base de données</h3>
+                        <form action='/dashboard/00000' method="post" name="frame_c_g" id="frame_c_g">
+                            <div class="mt-2">
+                                    <div>
+                                    <h3>Unités de gestion</h3>
+                                    </div>
+                                    <div>
+                                    <label id="tous_ugf">Tout afficher</label><input name="tout_ugf" value="sangoue,tene" type="checkbox">
+                                    </div>
+                                    <div>
+                                    <label id="ugf_tene">U.G.F Tene</label><input name="ugf_tene" value="tene"  type="checkbox">
+                                    </div>
+                                    <div>
+                                    <label id="ugf_sangoue">U.G.F Sangoue</label><input name="ugf_sangoue" value="sangoue"  type="checkbox">
+                                    </div>
+                                    <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                                        <button  type="submit" class="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto">Ajouter à la carte</button>
+                                        <button onclick="close_wms_window()" type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Fermer</button>
+                                    </div>
+                            </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  
+                </div>
+              </div>
+            </div>
+          </div> 
+          
+          <div id="fenetre_requete" title="Filtre" class="hidden text-black">
+            <form action="/dashboard/filtre" method="POST">
+              <div id="form2">
+                <!--<label for="layer">Selection couche</label>
+                <select class="form-control" id="layer" name="layer">
+                  <option value="">Selection couche</option>
+                </select>-->
+                <br>
+                <label id="critere1" style="text-decoration: underline; color:green">Critere 1</label><input type="checkbox" name="cocher" value="" id="crt1" style="width:25%;padding: 10%;">
+                <br><br>
+                <label for="attributes">Selection attribut</label>
+                <select class="form-control" id="attributes" name="attributes">
+                  <option value="">Selection attribut</option>
+                  <option value="NUMERO">Numéro</option>
+                  <option value="DENSITE">Densité</option>
+                  <option value="SUPERFICIE">Superficie</option>
+                  <option value="PARTENAIRE">Partenaire</option>
+                </select>
+                <br>
+                <label for="operator">Selection operateur</label>
+                <select class="form-control" id="operator" name="operator">
+                  <option value="">Selection operateur</option>
+            
+                </select>
+                <br>
+                <label for="value">Entrer valeur</label>
+                <input type="text" class="form-control" id="value" name="value">
+              </div>
+              <div id="form3">
+                <br>
+                <label id="critere2" style="text-decoration: underline;color:green">Critere 2</label><input type="checkbox" name="cocher2" value="" id="crt2" style="width:25%;padding: 10%;">
+                <br><br>
+                <label for="attributes2">Selection attribut</label>
+                <select class="form-control" id="attributes2" name="attributes2">
+                  <option value="">Selection attribut</option>
+                  <option value="NUMERO">Numéro</option>
+                  <option value="DENSITE">Densité</option>
+                  <option value="SUPERFICIE">Superficie</option>
+                  <option value="PARTENAIRE">Partenaire</option>
+                </select>
+                <br>
+                <label for="operator2">Selection operateur</label>
+                <select class="form-control" id="operator2" name="operator2">
+                  <option value="">Selection operateur</option>
+                  <option value="">Superier</option>
+                  <option value="">Inférieur</option>
+                  <option value="">Egal</option>
+                </select>
+                <br>
+                <label for="value2">Entrer valeur</label>
+                <input type="text" class="form-control" id="value2" name="value2">            
+              </div>
+              <div id="form4">
+                <br>
+                <label id="critere3" style="text-decoration: underline;color:green">Critere 3</label><input type="checkbox" name="cocher3" value="" id="crt3" style="width:25%;padding: 10%;">
+                <br><br>
+                <label for="attributes3">Selection attribut</label>
+                <select class="form-control" id="attributes3" name="attributes3">
+                  <option value="">Selection attribut</option>
+                  <option value="NUMERO">Numéro</option>
+                  <option value="DENSITE">Densité</option>
+                  <option value="SUPERFICIE">Superficie</option>
+                  <option value="PARTENAIRE">Partenaire</option>
+                </select>
+                <br>
+                <label for="operator3">Selection operateur</label>
+                <select class="form-control" id="operator3" name="operator3">
+                  <option value="">Selection operateur</option>
+                  <option value="">Superier</option>
+                  <option value="">Inférieur</option>
+                  <option value="">Egal</option>
+                </select>
+                <br>
+                <label for="value3">Entrer valeur</label>
+                <input type="text" class="form-control" id="value3" name="value3">
+              </div>
+              <div id="form5">
+                <br>
+                <label id="critere4" style="text-decoration: underline;color:green">Critere 4</label><input type="checkbox" name="cocher4" value="" id="crt4" style="width:25%;padding: 10%;">
+                <br><br>
+                <label for="attributes4">Selection attribut</label>
+                <select class="form-control" id="attributes4" name="attributes4">
+                  <option value="">Selection attribut</option>
+                  <option value="NUMERO">Numéro</option>
+                  <option value="DENSITE">Densité</option>
+                  <option value="SUPERFICIE">Superficie</option>
+                  <option value="PARTENAIRE">Partenaire</option>
+                </select>
+                <br>
+                <label for="operator4">Selection operateur</label>
+                <select class="form-control" id="operator4" name="operator4">
+                  <option value="">Selection operateur</option>
+                  <option value="">Superier</option>
+                  <option value="">Inférieur</option>
+                  <option value="">Egal</option>
+                </select>
+                <br>
+                <label for="value4">Entrer valeur</label>
+                <input type="text" class="form-control" id="value4" name="value4">
+              </div>
+              <div id="form6">
+                <br>
+                <label id="critere5" style="text-decoration: underline;color:green">Critere 5</label><input type="checkbox" name="cocher5" value="" id="crt5" style="width:25%;padding: 10%;">
+                <br><br>
+                <label for="attributes5">Selection attribut</label>
+                <select class="form-control" id="attributes5" name="attributes5">
+                  <option value="">Select Attributes</option>
+                  <option value="NUMERO">Numéro</option>
+                  <option value="DENSITE">Densité</option>
+                  <option value="SUPERFICIE">Superficie</option>
+                  <option value="PARTENAIRE">Partenaire</option>
+                </select>
+                  <br>
+                  <label for="operator5">Select operator</label>
+                  <select class="form-control" id="operator5" name="operator5">
+                  <option value="">Select operator</option>
+                  <option value="">Superier</option>
+                  <option value="">Inférieur</option>
+                  <option value="">Egal</option>
+                </select>
+                <br>
+                <label for="value5">Enter Value</label>
+                <input type="text" class="form-control" id="value5" name="value5">
+              </div>
+              <br>
+              <div >
+                <br>
+                <button id="bouton_fermer_rqt" class="btn btn-warning" onclick="close_wms_window()">Fermer</button>
+                <button id="bouton_lancer_rqt" class="btn btn-success" onclick="query()">Filtrer</button>
+              </div>
+              
+              </form>
+          </div>
+          
+    </div>
+    <script src="js/carte_visiteur.js"></script>
+  </body>
+</html>

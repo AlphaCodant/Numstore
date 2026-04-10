@@ -1,0 +1,2108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dossiers d'inventaire | GESTREB</title>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <link rel="icon" type="image/jpeg" href="/img/Logo_gestreb.jpg">
+  
+  <style>
+    /* ===== PLAN MISSION STYLES ===== */
+    
+    /* Stats Summary Cards */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-box {
+      background: white;
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--gray-100);
+      transition: all 0.2s ease;
+    }
+    
+    .stat-box:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .stat-box-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .stat-box-icon.blue { background: linear-gradient(135deg, var(--primary-500), var(--primary-600)); color: white; }
+    .stat-box-icon.emerald { background: linear-gradient(135deg, var(--emerald-500), var(--emerald-600)); color: white; }
+    .stat-box-icon.amber { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+    .stat-box-icon.purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; }
+    
+    .stat-box-content h3 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--gray-900);
+      line-height: 1;
+    }
+    
+    .stat-box-content p {
+      font-size: 0.8125rem;
+      color: var(--gray-500);
+      margin-top: 0.25rem;
+    }
+    
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+    
+    .toolbar-left {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .search-box {
+      position: relative;
+      min-width: 280px;
+    }
+    
+    .search-box input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.75rem;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      font-size: 0.875rem;
+      background: white;
+      transition: all 0.2s ease;
+    }
+    
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--primary-500);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+    
+    .search-box .material-icons-outlined {
+      position: absolute;
+      left: 0.875rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-400);
+      font-size: 1.25rem;
+    }
+    
+    .filter-select {
+      padding: 0.75rem 2.5rem 0.75rem 1rem;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      font-size: 0.875rem;
+      background: white;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1.25rem;
+      cursor: pointer;
+    }
+    
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--primary-500);
+    }
+    
+    /* Missions Table */
+    .missions-card {
+      background: white;
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+    
+    .missions-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .missions-header h2 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .missions-count {
+      background: var(--primary-100);
+      color: var(--primary-700);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    
+    .table-container {
+      overflow-x: auto;
+    }
+    
+    .missions-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    
+    .missions-table th {
+      background: var(--gray-50);
+      padding: 1rem 1.25rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--gray-600);
+      border-bottom: 1px solid var(--gray-200);
+      white-space: nowrap;
+    }
+    
+    .missions-table td {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--gray-100);
+      color: var(--gray-700);
+    }
+    
+    .missions-table tbody tr {
+      transition: background 0.15s ease;
+    }
+    
+    .missions-table tbody tr:hover {
+      background: var(--gray-50);
+    }
+    
+    .mission-libele {
+      font-weight: 600;
+      color: var(--gray-900);
+      max-width: 250px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .mission-dates {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+    }
+    
+    .mission-dates span {
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      font-size: 0.8125rem;
+    }
+    
+    .mission-dates .material-icons-outlined {
+      font-size: 0.875rem;
+      color: var(--gray-400);
+    }
+    
+    /* Status Badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.375rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    
+    .status-badge.completed {
+      background: var(--emerald-100);
+      color: var(--emerald-700);
+    }
+    
+    .status-badge.in-progress {
+      background: var(--amber-100);
+      color: var(--amber-700);
+    }
+    
+    .status-badge.planned {
+      background: var(--primary-100);
+      color: var(--primary-700);
+    }
+    
+    .status-badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    
+    /* Cost Display */
+    .mission-cost {
+      font-weight: 700;
+      color: var(--gray-900);
+      font-family: 'Inter', monospace;
+    }
+    
+    /* Actions */
+    .action-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      background: transparent;
+      color: var(--gray-500);
+    }
+    
+    .action-btn:hover {
+      background: var(--gray-100);
+      color: var(--gray-700);
+    }
+    
+    .action-btn.view:hover { background: var(--primary-50); color: var(--primary-600); }
+    .action-btn.edit:hover { background: var(--amber-50); color: var(--amber-600); }
+    .action-btn.delete:hover { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+    
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+    
+    .empty-state-icon {
+      width: 80px;
+      height: 80px;
+      background: var(--gray-100);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      color: var(--gray-400);
+    }
+    
+    .empty-state h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 0.5rem;
+    }
+    
+    .empty-state p {
+      color: var(--gray-500);
+      margin-bottom: 1.5rem;
+    }
+    
+    /* FAB Button */
+    .fab-button {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+      color: white;
+      border: none;
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .fab-button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5);
+    }
+    
+    .fab-button .material-icons-outlined {
+      font-size: 1.5rem;
+      transition: transform 0.3s ease;
+    }
+    
+    .fab-button:hover .material-icons-outlined {
+      transform: rotate(90deg);
+    }
+    
+    /* Pagination */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--gray-100);
+    }
+    
+    .pagination-info {
+      font-size: 0.875rem;
+      color: var(--gray-500);
+    }
+    
+    .pagination-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .pagination-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--gray-200);
+      background: white;
+      color: var(--gray-600);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .pagination-btn:hover:not(:disabled) {
+      border-color: var(--primary-500);
+      color: var(--primary-600);
+    }
+    
+    .pagination-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .pagination-btn.active {
+      background: var(--primary-500);
+      border-color: var(--primary-500);
+      color: white;
+    }
+
+    /* ========== MODAL NOUVELLE MISSION ========== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 2rem 1rem;
+      overflow-y: auto;
+    }
+    
+    .modal-overlay.open {
+      display: flex;
+    }
+    
+    .modal-container {
+      background: white;
+      border-radius: var(--radius-2xl);
+      width: 100%;
+      max-width: 900px;
+      box-shadow: var(--shadow-xl);
+      animation: slideUp 0.3s ease-out;
+    }
+    
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    .modal-header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-header h2 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .modal-close {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--gray-100);
+      color: var(--gray-600);
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .modal-close:hover {
+      background: var(--gray-200);
+      color: var(--gray-900);
+    }
+    
+    .modal-body {
+      padding: 2rem;
+      max-height: calc(100vh - 200px);
+      overflow-y: auto;
+    }
+    
+    /* Stepper */
+    .stepper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 2rem;
+      padding: 1rem;
+      background: var(--gray-50);
+      border-radius: var(--radius-xl);
+    }
+    
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .step-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8125rem;
+      background: var(--gray-200);
+      color: var(--gray-500);
+      transition: all 0.3s ease;
+    }
+    
+    .step.active .step-number {
+      background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+      color: white;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    }
+    
+    .step.completed .step-number {
+      background: var(--emerald-500);
+      color: white;
+    }
+    
+    .step-label {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--gray-400);
+      display: none;
+    }
+    
+    @media (min-width: 640px) {
+      .step-label { display: block; }
+    }
+    
+    .step.active .step-label,
+    .step.completed .step-label {
+      color: var(--gray-700);
+    }
+    
+    .step-connector {
+      width: 40px;
+      height: 2px;
+      background: var(--gray-200);
+      margin: 0 0.75rem;
+      transition: background 0.3s ease;
+    }
+    
+    .step-connector.active {
+      background: var(--emerald-500);
+    }
+    
+    /* Form Grid */
+    .form-grid {
+      display: grid;
+      gap: 1.25rem;
+    }
+    
+    .form-grid-2 { grid-template-columns: repeat(1, 1fr); }
+    .form-grid-3 { grid-template-columns: repeat(1, 1fr); }
+    .form-grid-4 { grid-template-columns: repeat(1, 1fr); }
+    
+    @media (min-width: 640px) {
+      .form-grid-2 { grid-template-columns: repeat(2, 1fr); }
+      .form-grid-3 { grid-template-columns: repeat(2, 1fr); }
+      .form-grid-4 { grid-template-columns: repeat(2, 1fr); }
+    }
+    
+    @media (min-width: 1024px) {
+      .form-grid-3 { grid-template-columns: repeat(3, 1fr); }
+      .form-grid-4 { grid-template-columns: repeat(4, 1fr); }
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .form-label {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+    }
+    
+    .form-label .material-icons-outlined {
+      font-size: 1rem;
+      color: var(--gray-400);
+    }
+    
+    .form-input,
+    .form-select {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      font-size: 0.875rem;
+      background: white;
+      transition: all 0.2s ease;
+    }
+    
+    .form-input:focus,
+    .form-select:focus {
+      outline: none;
+      border-color: var(--primary-500);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+    
+    .form-divider {
+      border-top: 1px solid var(--gray-200);
+      padding-top: 1.25rem;
+      margin-top: 0.25rem;
+    }
+    
+    /* Selection Grid */
+    .selection-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .selection-counter {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--emerald-50);
+      border-radius: var(--radius-lg);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--emerald-700);
+    }
+    
+    .select-all-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: var(--primary-50);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--primary-700);
+    }
+    
+    .select-all-box input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary-600);
+    }
+    
+    .selection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1rem;
+      max-height: 250px;
+      overflow-y: auto;
+      padding: 0.25rem;
+    }
+    
+    .selection-card {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.875rem;
+      background: white;
+      border: 2px solid var(--gray-100);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .selection-card:hover {
+      border-color: var(--primary-200);
+    }
+    
+    .selection-card.selected {
+      border-color: var(--primary-500);
+      background: var(--primary-50);
+    }
+    
+    .selection-card input {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--primary-600);
+      flex-shrink: 0;
+    }
+    
+    .selection-card-info h4 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+    
+    .selection-card-info p {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+    }
+    
+    /* Séparateur avec texte */
+    .separator-with-text {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    
+    .separator-with-text::before,
+    .separator-with-text::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--gray-200);
+    }
+    
+    .separator-with-text span {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--gray-400);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    /* Parcelles ajoutées */
+    .parcelles-ajoutees-section {
+      background: rgba(16, 185, 129, 0.05);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: var(--radius-xl);
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .parcelles-ajoutees-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+    
+    .parcelles-ajoutees-header h4 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--emerald-700);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0;
+    }
+    
+    .parcelles-ajoutees-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    
+    .parcelle-ajoutee-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.625rem 0.875rem;
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-md);
+    }
+    
+    .parcelle-ajoutee-info {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+    }
+    
+    .parcelle-ajoutee-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--emerald-500), var(--emerald-600));
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+    
+    .parcelle-ajoutee-icon .material-icons-outlined {
+      font-size: 1rem;
+    }
+    
+    .parcelle-ajoutee-details h5 {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin: 0;
+    }
+    
+    .parcelle-ajoutee-details p {
+      font-size: 0.6875rem;
+      color: var(--gray-500);
+      margin: 0;
+    }
+    
+    .parcelle-ajoutee-delete {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: var(--gray-400);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .parcelle-ajoutee-delete:hover {
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+    }
+    
+    .parcelle-ajoutee-delete .material-icons-outlined {
+      font-size: 1rem;
+    }
+    
+    .parcelles-ajoutees-empty {
+      text-align: center;
+      padding: 1rem;
+      color: var(--gray-400);
+      font-size: 0.8125rem;
+    }
+    
+    /* Modal Actions */
+    .modal-actions {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 1.5rem;
+      margin-top: 1.5rem;
+      border-top: 1px solid var(--gray-200);
+      gap: 1rem;
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-lg);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+    }
+    
+    .btn-secondary {
+      background: var(--gray-100);
+      color: var(--gray-700);
+    }
+    
+    .btn-secondary:hover {
+      background: var(--gray-200);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+      color: white;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+    }
+    
+    .btn-success {
+      background: linear-gradient(135deg, var(--emerald-500), var(--emerald-600));
+      color: white;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+    
+    .btn-success:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
+    }
+    
+    .btn-outline-success {
+      background: white;
+      color: var(--emerald-600);
+      border: 2px solid var(--emerald-500);
+    }
+    
+    .btn-outline-success:hover {
+      background: var(--emerald-50);
+    }
+    
+    /* Section Hidden */
+    .section-hidden { display: none !important; }
+    
+    /* Loading */
+    .loading-spinner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      gap: 1rem;
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--gray-200);
+      border-top-color: var(--primary-500);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* ========== SOUS-MODAL AJOUT PARCELLE ========== */
+    .submodal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 150;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+    
+    .submodal-overlay.open {
+      display: flex;
+    }
+    
+    .submodal-container {
+      background: white;
+      border-radius: var(--radius-2xl);
+      width: 100%;
+      max-width: 500px;
+      box-shadow: var(--shadow-xl);
+      animation: slideUp 0.3s ease-out;
+      max-height: 90vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .submodal-header {
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(135deg, var(--emerald-500), var(--emerald-600));
+      color: white;
+    }
+    
+    .submodal-header h3 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0;
+    }
+    
+    .submodal-close {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .submodal-close:hover {
+      background: rgba(255,255,255,0.3);
+    }
+    
+    .submodal-body {
+      padding: 1.5rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    
+    .submodal-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      background: var(--gray-50);
+    }
+    
+    /* Form dans sous-modal */
+    .submodal-form-group {
+      margin-bottom: 1rem;
+    }
+    
+    .submodal-form-group:last-child {
+      margin-bottom: 0;
+    }
+    
+    .submodal-form-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 0.5rem;
+    }
+    
+    .submodal-form-label .material-icons-outlined {
+      font-size: 1.125rem;
+    }
+    
+    .submodal-form-label .material-icons-outlined.emerald { color: var(--emerald-500); }
+    .submodal-form-label .material-icons-outlined.amber { color: #f59e0b; }
+    .submodal-form-label .material-icons-outlined.blue { color: var(--primary-500); }
+    
+    .submodal-form-input,
+    .submodal-form-select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      font-size: 0.875rem;
+      background: white;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+    
+    .submodal-form-input:focus,
+    .submodal-form-select:focus {
+      outline: none;
+      border-color: var(--emerald-500);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+    
+    .submodal-form-select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1.25rem;
+      padding-right: 2.5rem;
+    }
+    
+    .submodal-form-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    
+    @media (max-width: 500px) {
+      .submodal-form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .fab-button {
+        bottom: 1.5rem;
+        right: 1.5rem;
+      }
+      
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .search-box {
+        min-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <a href="/"><img src="/img/Logo_gestreb.jpg" alt="Logo GestReb"></a>
+        </div>
+        <div class="sidebar-brand">
+          <h1>GestReb</h1>
+          <p>Gestion des reboisements</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <span class="nav-section-title">Menu principal</span>
+        
+        <a href="#" class="nav-item">
+          <span class="material-icons-outlined">eco</span>
+          Prod. de plants
+        </a>
+        
+        <a href="/mise_en_place/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">grid_view</span>
+          Parcelles
+        </a>
+        
+        <a href="/entretien_p/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">grass</span>
+          Entretien
+        </a>
+        
+        <a href="/sylviculture/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">park</span>
+          Sylviculture
+        </a>
+        
+        <span class="nav-section-title">Planification</span>
+        
+        <a href="/plan_mission/{{ id }}" class="nav-item ">
+          <span class="material-icons-outlined">event_note</span>
+          Plan de missions
+        </a>
+       <span class="nav-section-title">Outils</span>
+        
+        <a href="/page/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">map</span>
+          Carte interactive
+        </a>
+        <a href="/inventaire/dossier/{{ id }}" class="nav-item active">
+          <span class="material-icons-outlined">analytics</span>
+          Dossier inventaire
+        </a>
+        <span class="nav-section-title">Authentification</span>
+        
+        <a href="/log/deconnecter" class="nav-item">
+          <span class="material-icons-outlined">logout</span>
+          Se deconnecter
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <span class="material-icons-outlined">menu</span>
+        </button>
+        <div class="page-title">
+          <h1>Dossiers d'inventaire</h1>
+          <p>Gestion et suivi des inventaires</p>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="header-status">
+          <span class="dot"></span>
+          En ligne
+        </div>
+        
+        <div class="header-notifications">
+          <span class="material-icons-outlined">notifications</span>
+          <span class="badge"></span>
+        </div>
+        
+        <div class="header-user">
+          <div class="header-user-avatar">
+            <span class="material-icons-outlined">person</span>
+          </div>
+          <div class="header-user-info">
+            <p>Admin</p>
+            <span>Gestionnaire</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      
+      <!-- Stats Row -->
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-box-icon blue">
+            <span class="material-icons-outlined">assignment</span>
+          </div>
+          <div class="stat-box-content">
+            <h3 id="stat-total">--</h3>
+            <p>Total Inventaire</p>
+          </div>
+        </div>
+        
+        <div class="stat-box">
+          <div class="stat-box-icon emerald">
+            <span class="material-icons-outlined">check_circle</span>
+          </div>
+          <div class="stat-box-content">
+            <h3 id="stat-completed">--</h3>
+            <p>Terminées</p>
+          </div>
+        </div>
+        
+        <div class="stat-box">
+          <div class="stat-box-icon amber">
+            <span class="material-icons-outlined">pending</span>
+          </div>
+          <div class="stat-box-content">
+            <h3 id="stat-progress">--</h3>
+            <p>En cours</p>
+          </div>
+        </div>
+        
+      </div>
+      
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <div class="search-box">
+            <span class="material-icons-outlined">search</span>
+            <input type="text" id="searchInput" placeholder="Rechercher un inventaire...">
+          </div>
+         
+        </div>
+      </div>
+
+      <!-- Missions Table Card -->
+      <div class="missions-card">
+        <div class="missions-header">
+          <h2>
+            <span class="material-icons-outlined">list_alt</span>
+            Liste des inventaires
+            <span class="missions-count" id="missions-count">0</span>
+          </h2>
+        </div>
+        
+        <div class="table-container">
+          <table class="missions-table">
+            <thead>
+              <tr>
+                <th>Demandeur</th>
+                <th>Date de demande</th>
+                <th>Date de reception</th>
+                <th>Forêt</th>
+                <th>Type d'inventaire</th>
+                <th>Reference courier</th>
+              </tr>
+            </thead>
+            <tbody id="missions-tbody">
+              <tr>
+                <td colspan="8">
+                  <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <span style="color: var(--gray-500);">Chargement des missions...</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="pagination">
+          <div class="pagination-info">
+            Affichage de <strong id="page-start">0</strong> à <strong id="page-end">0</strong> sur <strong id="page-total">0</strong> missions
+          </div>
+          <div class="pagination-buttons">
+            <button class="pagination-btn" id="btn-prev" disabled>
+              <span class="material-icons-outlined">chevron_left</span>
+            </button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn" id="btn-next">
+              <span class="material-icons-outlined">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+    </main>
+  </div>
+      
+      
+  <!-- FAB Button -->
+  <button class="fab-button" onclick="openNewMissionModal()" title="Nouvelle demande d'inventaire">
+    <span class="material-icons-outlined">add</span>
+  </button>
+
+  <!-- ==================== MODAL NOUVELLE MISSION ==================== -->
+  <div class="modal-overlay" id="missionModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2>
+          <span class="material-icons-outlined">add_task</span>
+          Nouvelle demande d'inventaire
+        </h2>
+        <button class="modal-close" onclick="closeModal()">
+          <span class="material-icons-outlined">close</span>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <!-- Stepper -->
+        <div class="stepper">
+          <div class="step active" id="step1">
+            <div class="step-number">1</div>
+            <span class="step-label">Informations générales</span>
+          </div>
+          <div class="step-connector" id="connector1"></div>
+          <div class="step" id="step2">
+            <div class="step-number">2</div>
+            <span class="step-label">Parcelles</span>
+          </div>
+        </div>
+        
+        <!-- ÉTAPE 1 : INFORMATIONS -->
+        <section id="modal-step-1">
+          <div class="form-grid form-grid-4">
+            <div class="form-group">
+              <label class="form-label">
+                <span class="material-icons-outlined">label</span>
+                Demandeur
+              </label>
+              <input type="text" id="demandeur" class="form-input" placeholder="Ex: SNG" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">
+                <span class="material-icons-outlined">event_available</span>
+                Date de demande
+              </label>
+              <input type="date" id="date_demande" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">
+                <span class="material-icons-outlined">event_available</span>
+                Date de reception
+              </label>
+              <input type="date" id="date_reception" class="form-input" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">
+                <span class="material-icons-outlined">today</span>
+                Foret
+              </label>
+              <select id="foret" class="form-select" required>
+                <option value="0" selected>Sélectionner</option>
+                <option value="1">Téné</option>
+                <option value="2">Sangoué</option>
+                <option value="3">Marahoué</option>
+                <option value="4">Bétéfiat</option>
+                <option value="5">Boka kokoré</option>
+                <option value="6">Laouda</option>
+                <option value="7">Doka</option>
+                <option value="8">Gaga</option>
+                <option value="9">Nioiniourou</option>
+                <option value="10">Nizoro</option>
+                <option value="11">Do</option>
+                <option value="12">Okromodou Nord</option>
+                <option value="13">Okromodou Sud</option>
+                <option value="14">Plaine des éléphants</option>
+                <option value="15">Bayota</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">
+                <span class="material-icons-outlined">today</span>
+                Type d'inventaire
+              </label>
+              <select id="type" class="form-select" required>
+                <option value="0" selected>Sélectionner</option>
+                <option value="1">Inventaire en forêt naturelle</option>
+                <option value="2">Inventaire en forêt plantée</option>
+              </select>
+            </div>
+            <div class="form-group">
+            <label class="form-label">
+                <span class="material-icons-outlined">label</span>
+                Reference courier
+              </label>
+              <input type="text" id="ref" class="form-input" placeholder="Ex: 0123/XYZ/PDG/AZ" required>
+            </div>             
+            </div>
+            <div class="form-group">
+            <label class="form-label">
+                <span class="material-icons-outlined">label</span>
+                Courier numérisé
+              </label>
+              <input type="file" id="document" class="form-input" required>
+            </div>  
+            <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+            <button type="button" class="btn btn-primary" onclick="goToStep(2)">
+              Suivant
+              <span class="material-icons-outlined">arrow_forward</span>
+            </button>
+          </div>
+        </section>               
+       
+        
+        <!-- ÉTAPE 2 : PARCELLES -->
+        <section id="modal-step-2" class="section-hidden">
+          <!-- En-tête avec boutons d'action -->
+          <div class="selection-header">
+            <div class="search-box" style="min-width: 200px;">
+              <span class="material-icons-outlined">search</span>
+              <input type="text" id="search-parcelles" placeholder="Rechercher une parcelle...">
+            </div>
+            <button type="button" class="btn btn-outline-success parcelle_add" onclick="openParcelleSubModal()">
+              <span class="material-icons-outlined">add</span>
+              Ajouter parcelle
+            </button>
+            <div class="selection-counter">
+              <span class="material-icons-outlined">forest</span>
+              <span id="parcelles-count">0</span> parcelle(s)
+            </div>
+            <label class="select-all-box">
+              <input type="checkbox" id="select-all-parcelles">
+              Tout sélectionner
+            </label>
+          </div>
+          
+          <!-- Grille de sélection des parcelles existantes -->
+          <div class="selection-grid" id="parcelles-grid">
+            <div class="loading-spinner">
+              <div class="spinner"></div>
+            </div>
+          </div>
+          
+          <!-- Séparateur -->
+          <div class="separator-with-text">
+            <span>Parcelles ajoutées manuellement</span>
+          </div>
+          
+          <!-- Section des parcelles ajoutées manuellement -->
+          <div class="parcelles-ajoutees-section">
+            <div class="parcelles-ajoutees-header">
+              <h4>
+                <span class="material-icons-outlined">add_location_alt</span>
+                Nouvelles parcelles (<span id="parcelles-ajoutees-count">0</span>)
+              </h4>
+            </div>
+            <div class="parcelles-ajoutees-list" id="parcelles-ajoutees-list">
+              <div class="parcelles-ajoutees-empty">
+                Aucune parcelle ajoutée. Cliquez sur "Ajouter parcelle" pour en créer une nouvelle.
+              </div>
+            </div>
+          </div>
+          
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" onclick="goToStep(1)">
+              <span class="material-icons-outlined">arrow_back</span>
+              Retour
+            </button>
+            <button type="button" class="btn btn-success" onclick="submitMission()">
+              <span class="material-icons-outlined">check</span>
+              Valider la demande
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SOUS-MODAL AJOUT PARCELLE ==================== -->
+  <div class="submodal-overlay" id="parcelleSubModal">
+    <div class="submodal-container">
+      <div class="submodal-header">
+        <h3>
+          <span class="material-icons-outlined">add_location_alt</span>
+          Ajouter une parcelle
+        </h3>
+        <button class="submodal-close" onclick="closeParcelleSubModal()">
+          <span class="material-icons-outlined">close</span>
+        </button>
+      </div>
+      
+      <div class="submodal-body">
+        <div class="submodal-form-group">
+          <label class="submodal-form-label">
+            <span class="material-icons-outlined emerald">park</span>
+            Forêt
+          </label>
+          <select id="parcelle-foret" class="submodal-form-select">
+            <option value="">Sélectionner une forêt</option>
+            <option value="1">Téné</option>
+            <option value="2">Sangoué</option>
+            <option value="3">Marahoué</option>
+            <option value="4">Bétéfiat</option>
+            <option value="5">Boka kokoré</option>
+            <option value="6">Laouda</option>
+            <option value="7">Doka</option>
+            <option value="8">Gaga</option>
+            <option value="9">Nioiniourou</option>
+            <option value="10">Nizoro</option>
+            <option value="11">Do</option>
+            <option value="12">Okromodou Nord</option>
+            <option value="13">Okromodou Sud</option>
+            <option value="14">Plaine des éléphants</option>
+            <option value="15">Bayota</option>
+          </select>
+        </div>
+        
+        <div class="submodal-form-group">
+          <label class="submodal-form-label">
+            <span class="material-icons-outlined blue">pin_drop</span>
+            Numéro de parcelle
+          </label>
+          <input type="text" id="parcelle-numero" class="submodal-form-input" placeholder="Ex: P001">
+        </div>
+        
+        <div class="submodal-form-row">
+          <div class="submodal-form-group">
+            <label class="submodal-form-label">
+              <span class="material-icons-outlined amber">event</span>
+              Date de création
+            </label>
+            <input type="date" id="parcelle-date" class="submodal-form-input">
+          </div>
+          
+          <div class="submodal-form-group">
+            <label class="submodal-form-label">
+              <span class="material-icons-outlined">straighten</span>
+              Superficie (ha)
+            </label>
+            <input type="number" id="parcelle-superficie" class="submodal-form-input" placeholder="Ex: 10.5" step="0.01" min="0">
+          </div>
+        </div>
+      </div>
+      
+      <div class="submodal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeParcelleSubModal()">Annuler</button>
+        <button type="button" class="btn btn-success" onclick="addParcelleToList()">
+          <span class="material-icons-outlined">check</span>
+          Ajouter
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // CONFIGURATION
+    // ==========================================
+    const FORETS = {
+      '1': 'Téné',
+      '2': 'Sangoué',
+      '3': 'Marahoué',
+      '4': 'Bétéfiat',
+      '5': 'Boka kokoré',
+      '6': 'Laouda',
+      '7': 'Doka',
+      '8': 'Gaga',
+      '9': 'Nioiniourou',
+      '10': 'Nizoro',
+      '11': 'Do',
+      '12': 'Okromodou Nord',
+      '13': 'Okromodou Sud',
+      '14': 'Plaine des éléphants',
+      '15': 'Bayota'
+    };
+
+    const TYPES_INVENTAIRE = {
+      '1': 'Inventaire en forêt naturelle',
+      '2': 'Inventaire en forêt plantée'
+    };
+
+    // ==========================================
+    // ÉTAT DE L'APPLICATION
+    // ==========================================
+    let parcellesExistantes = [];        // Parcelles chargées depuis l'API
+    let parcellesSelectionnees = [];     // Numéros des parcelles sélectionnées
+    let parcellesAjoutees = [];          // Nouvelles parcelles créées manuellement
+    let missionsData = [];
+    let currentStep = 1;
+
+    // ==========================================
+    // INITIALISATION
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      loadMissions();
+      initSidebar();
+      initModalEvents();
+    });
+
+    // ==========================================
+    // SIDEBAR MOBILE
+    // ==========================================
+    function initSidebar() {
+      document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('open');
+        document.getElementById('sidebarOverlay').classList.toggle('open');
+      });
+
+      document.getElementById('sidebarOverlay').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebarOverlay').classList.remove('open');
+      });
+    }
+
+    // ==========================================
+    // ÉVÉNEMENTS MODAL
+    // ==========================================
+    function initModalEvents() {
+      // Fermer modal avec Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (document.getElementById('parcelleSubModal').classList.contains('open')) {
+            closeParcelleSubModal();
+          } else {
+            closeModal();
+          }
+        }
+      });
+
+      // Fermer modals en cliquant en dehors
+      document.getElementById('missionModal').addEventListener('click', (e) => {
+        if (e.target.id === 'missionModal') closeModal();
+      });
+
+      document.getElementById('parcelleSubModal').addEventListener('click', (e) => {
+        if (e.target.id === 'parcelleSubModal') closeParcelleSubModal();
+      });
+
+      // Tout sélectionner
+      document.getElementById('select-all-parcelles')?.addEventListener('change', function() {
+        const checkboxes = document.querySelectorAll('#parcelles-grid .selection-card input[type="checkbox"]');
+        checkboxes.forEach(cb => {
+          cb.checked = this.checked;
+          cb.closest('.selection-card').classList.toggle('selected', this.checked);
+        });
+        updateParcellesCount();
+        saveSelectionsToStorage();
+      });
+
+      // Recherche parcelles
+      document.getElementById('search-parcelles')?.addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        document.querySelectorAll('#parcelles-grid .selection-card').forEach(card => {
+          const text = card.textContent.toLowerCase();
+          card.style.display = text.includes(term) ? 'flex' : 'none';
+        });
+      });
+    }
+
+    // ==========================================
+    // CHARGER LES MISSIONS (DOSSIERS D'INVENTAIRE)
+    // ==========================================
+    async function loadMissions() {
+      
+      try {
+        const response = await fetch('/inventaire', {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        missionsData = await response.json();
+        renderMissions(missionsData);
+        updateStatsDisplay();
+      } catch (error) {
+        console.error('Erreur:', error);
+        missionsData = [];
+        renderMissions(missionsData);
+        updateStatsDisplay();
+      }
+    }
+
+    function updateStatsDisplay() {
+      document.getElementById('stat-total').textContent = missionsData.length;
+      document.getElementById('stat-completed').textContent = missionsData.filter(m => m.statut === 'completed').length;
+      document.getElementById('stat-progress').textContent = missionsData.filter(m => m.statut === 'in-progress').length;
+    }
+
+    function renderMissions(missions) {
+      const tbody = document.getElementById('missions-tbody');
+      
+      if (!missions || missions.length === 0) {
+        tbody.innerHTML = `
+          <tr><td colspan="6">
+            <div class="empty-state">
+              <div class="empty-state-icon"><span class="material-icons-outlined" style="font-size: 2.5rem;">assignment</span></div>
+              <h3>Aucun dossier d'inventaire trouvé</h3>
+              <p>Cliquez sur le bouton + pour créer un nouveau dossier</p>
+            </div>
+          </td></tr>`;
+        document.getElementById('missions-count').textContent = '0';
+        return;
+      }
+
+      document.getElementById('missions-count').textContent = missions.length;
+      document.getElementById('page-start').textContent = '1';
+      document.getElementById('page-end').textContent = missions.length;
+      document.getElementById('page-total').textContent = missions.length;
+
+      tbody.innerHTML = missions.map(m => `
+        <tr>
+          <td><strong>${m.nom_demandeur || m.demandeur || '--'}</strong></td>
+          <td>${formatDate(m.date_demande)}</td>
+          <td>${formatDate(m.date_reception)}</td>
+          <td>${m.foret || '--'}</td>
+          <td>${m.type_inventaire || m.type || '--'}</td>
+          <td style="font-family: monospace;">${m.num_courrier || m.reference || '--'}</td>
+        </tr>
+      `).join('');
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '--/--/--';
+      return new Date(dateStr).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: '2-digit' });
+    }
+
+    // ==========================================
+    // RECHERCHE
+    // ==========================================
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase();
+      const filtered = missionsData.filter(m => 
+        (m.nom_demandeur && m.nom_demandeur.toLowerCase().includes(term)) ||
+        (m.demandeur && m.demandeur.toLowerCase().includes(term)) ||
+        (m.foret && m.foret.toLowerCase().includes(term)) ||
+        (m.num_courrier && m.num_courrier.toLowerCase().includes(term))
+      );
+      renderMissions(filtered);
+    });
+
+    // ==========================================
+    // MODAL PRINCIPALE
+    // ==========================================
+    function openNewMissionModal() {
+      parcellesSelectionnees = [];
+      parcellesAjoutees = [];
+      renderParcellesAjoutees();
+      document.getElementById('missionModal').classList.add('open');
+      goToStep(1);
+    }
+
+    function closeModal() {
+      document.getElementById('missionModal').classList.remove('open');
+      resetForm();
+    }
+
+    function resetForm() {
+      document.getElementById('demandeur').value = '';
+      document.getElementById('date_demande').value = '';
+      document.getElementById('date_reception').value = '';
+      document.getElementById('foret').value = '0';
+      document.getElementById('type').value = '0';
+      document.getElementById('ref').value = '';
+      document.getElementById('document').value = '';
+      
+      parcellesSelectionnees = [];
+      parcellesAjoutees = [];
+      
+      // Nettoyer localStorage
+      localStorage.removeItem('mission_data');
+      localStorage.removeItem('parcelles_selectionnees');
+      localStorage.removeItem('parcelles_ajoutees');
+      
+      document.querySelectorAll('#parcelles-grid .selection-card.selected').forEach(card => {
+        card.classList.remove('selected');
+        const checkbox = card.querySelector('input[type="checkbox"]');
+        if (checkbox) checkbox.checked = false;
+      });
+      
+      renderParcellesAjoutees();
+      updateParcellesCount();
+      goToStep(1);
+    }
+
+    function goToStep(step) {
+      currentStep = step;
+      
+      document.querySelectorAll('[id^="modal-step-"]').forEach(s => s.classList.add('section-hidden'));
+      document.getElementById(`modal-step-${step}`).classList.remove('section-hidden');
+      
+      for (let i = 1; i <= 2; i++) {
+        const stepEl = document.getElementById(`step${i}`);
+        const connEl = document.getElementById(`connector${i}`);
+        
+        stepEl.classList.remove('active', 'completed');
+        if (connEl) connEl.classList.remove('active');
+
+        if (i < step) {
+          stepEl.classList.add('completed');
+          if (connEl) connEl.classList.add('active');
+        } else if (i === step) {
+          stepEl.classList.add('active');
+        }
+      }
+      
+      if (step === 2) {
+        saveMissionInfo();
+        loadParcelles();
+      }
+    }
+
+    // ==========================================
+    // SAUVEGARDE DES INFORMATIONS DE MISSION
+    // ==========================================
+    function saveMissionInfo() {
+      const foretId = document.getElementById('foret').value;
+      const typeId = document.getElementById('type').value;
+      
+      const missionData = {
+        demandeur: document.getElementById('demandeur').value,
+        date_demande: document.getElementById('date_demande').value,
+        date_reception: document.getElementById('date_reception').value,
+        foret: foretId,
+        foret_nom: FORETS[foretId] || '',
+        type: typeId,
+        type_nom: TYPES_INVENTAIRE[typeId] || '',
+        ref: document.getElementById('ref').value,
+        document: document.getElementById('document').files[0]?.name || ''
+      };
+      
+      localStorage.setItem('mission_data', JSON.stringify(missionData));
+      console.log('Mission data saved:', missionData);
+    }
+
+    // ==========================================
+    // PARCELLES EXISTANTES (SÉLECTION)
+    // ==========================================
+    async function loadParcelles() {
+      const grid = document.getElementById('parcelles-grid');
+      grid.innerHTML = `<div class="loading-spinner"><div class="spinner"></div></div>`;
+      
+      try {
+        const response = await fetch('/api/parcelles');
+        parcellesExistantes = await response.json();
+      } catch (error) {
+        console.error("Erreur chargement parcelles:", error);
+        parcellesExistantes = [];
+      }
+      renderParcelles(parcellesExistantes);
+    }
+
+    function renderParcelles(parcelles) {
+      const grid = document.getElementById('parcelles-grid');
+      
+      if (parcelles.length === 0) {
+        grid.innerHTML = `<p style="padding: 2rem; text-align: center; color: var(--gray-500);">Aucune parcelle existante trouvée.</p>`;
+        return;
+      }
+
+      grid.innerHTML = parcelles.map(p => `
+        <div class="selection-card" data-id="${p.id}" data-numero="${p.numero}" onclick="toggleParcelleSelection(this)">
+          <input type="checkbox" value="${p.numero}">
+          <div class="selection-card-info">
+            <h4>Parcelle ${p.numero}</h4>
+            <p>${p.nom || p.foret || ''} • ${p.superficie || 0} ha • ${p.essence || ''}</p>
+          </div>
+        </div>
+      `).join('');
+      
+      // Restaurer sélections précédentes
+      parcellesSelectionnees.forEach(numero => {
+        const card = document.querySelector(`#parcelles-grid .selection-card[data-numero="${numero}"]`);
+        if (card) {
+          card.classList.add('selected');
+          card.querySelector('input').checked = true;
+        }
+      });
+      
+      updateParcellesCount();
+    }
+
+    function toggleParcelleSelection(card) {
+      const checkbox = card.querySelector('input[type="checkbox"]');
+      checkbox.checked = !checkbox.checked;
+      card.classList.toggle('selected', checkbox.checked);
+      updateParcellesCount();
+      saveSelectionsToStorage();
+    }
+
+    function updateParcellesCount() {
+      const selectedCount = document.querySelectorAll('#parcelles-grid .selection-card.selected').length;
+      const ajouteesCount = parcellesAjoutees.length;
+      document.getElementById('parcelles-count').textContent = selectedCount + ajouteesCount;
+    }
+
+    function saveSelectionsToStorage() {
+      parcellesSelectionnees = Array.from(document.querySelectorAll('#parcelles-grid input:checked')).map(cb => cb.value);
+      localStorage.setItem('parcelles_selectionnees', JSON.stringify(parcellesSelectionnees));
+    }
+
+    // ==========================================
+    // PARCELLES AJOUTÉES (SOUS-MODAL)
+    // ==========================================
+    function openParcelleSubModal() {
+      document.getElementById('parcelle-foret').value = '';
+      document.getElementById('parcelle-numero').value = '';
+      document.getElementById('parcelle-date').value = '';
+      document.getElementById('parcelle-superficie').value = '';
+      document.getElementById('parcelleSubModal').classList.add('open');
+    }
+
+    function closeParcelleSubModal() {
+      document.getElementById('parcelleSubModal').classList.remove('open');
+    }
+
+    function addParcelleToList() {
+      const foretId = document.getElementById('parcelle-foret').value;
+      const numero = document.getElementById('parcelle-numero').value.trim();
+      const date = document.getElementById('parcelle-date').value;
+      const superficie = document.getElementById('parcelle-superficie').value;
+
+      if (!foretId || !numero || !date || !superficie) {
+        alert('Veuillez remplir tous les champs.');
+        return;
+      }
+
+      const parcelle = {
+        id: Date.now(),
+        foret_id: foretId,
+        foret_nom: FORETS[foretId] || '',
+        numero: numero,
+        date_creation: date,
+        superficie: parseFloat(superficie),
+        isNew: true
+      };
+
+      parcellesAjoutees.push(parcelle);
+      
+      // Sauvegarder dans localStorage
+      localStorage.setItem('parcelles_ajoutees', JSON.stringify(parcellesAjoutees));
+      
+      renderParcellesAjoutees();
+      updateParcellesCount();
+      closeParcelleSubModal();
+    }
+
+    function removeParcelleAjoutee(id) {
+      parcellesAjoutees = parcellesAjoutees.filter(p => p.id !== id);
+      localStorage.setItem('parcelles_ajoutees', JSON.stringify(parcellesAjoutees));
+      renderParcellesAjoutees();
+      updateParcellesCount();
+    }
+
+    function renderParcellesAjoutees() {
+      const container = document.getElementById('parcelles-ajoutees-list');
+      const countEl = document.getElementById('parcelles-ajoutees-count');
+      
+      countEl.textContent = parcellesAjoutees.length;
+      
+      if (parcellesAjoutees.length === 0) {
+        container.innerHTML = `<div class="parcelles-ajoutees-empty">Aucune parcelle ajoutée. Cliquez sur "Ajouter parcelle" pour en créer une nouvelle.</div>`;
+        return;
+      }
+
+      container.innerHTML = parcellesAjoutees.map(p => `
+        <div class="parcelle-ajoutee-item">
+          <div class="parcelle-ajoutee-info">
+            <div class="parcelle-ajoutee-icon">
+              <span class="material-icons-outlined">park</span>
+            </div>
+            <div class="parcelle-ajoutee-details">
+              <h5>${p.foret_nom} - ${p.numero}</h5>
+              <p>${p.superficie} ha • ${formatDate(p.date_creation)}</p>
+            </div>
+          </div>
+          <button class="parcelle-ajoutee-delete" onclick="removeParcelleAjoutee(${p.id})" title="Supprimer">
+            <span class="material-icons-outlined">close</span>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    // ==========================================
+    // SOUMISSION
+    // ==========================================
+    async function submitMission() {
+      // Récupérer les données du formulaire
+      const demandeur = document.getElementById('demandeur').value;
+      const date_demande = document.getElementById('date_demande').value;
+      const date_reception = document.getElementById('date_reception').value;
+      const foretId = document.getElementById('foret').value;
+      const typeId = document.getElementById('type').value;
+      const ref = document.getElementById('ref').value;
+      const fileInput = document.getElementById('document');
+
+      // Validation des champs obligatoires
+      if (!demandeur || !date_demande || !date_reception || foretId === '0' || typeId === '0' || !ref) {
+        alert('Veuillez remplir toutes les informations générales.');
+        goToStep(1);
+        return;
+      }
+
+      // Récupérer les parcelles sélectionnées
+      saveSelectionsToStorage();
+      
+      // Combiner les numéros de parcelles sélectionnées et ajoutées
+      const parcellesAjouteesNumeros = parcellesAjoutees.map(p => p.numero);
+      const toutesLesParcelles = [...parcellesSelectionnees, ...parcellesAjouteesNumeros];
+      
+      const totalParcelles = toutesLesParcelles.length;
+      
+      if (totalParcelles === 0) {
+        alert('Veuillez sélectionner ou ajouter au moins une parcelle.');
+        return;
+      }
+
+      // Préparer les données de la mission
+      const missionData = {
+        demandeur: demandeur,
+        date_demande: date_demande,
+        date_reception: date_reception,
+        foret: FORETS[foretId] || foretId,
+        type: TYPES_INVENTAIRE[typeId] || typeId,
+        ref: ref,
+        document: fileInput.files[0]?.name || ''
+      };
+
+      // Fonction utilitaire pour convertir un fichier en Base64
+      const toBase64 = file => new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+      });
+
+      try {
+        const fileInput = document.getElementById('document');
+        //const message = document.getElementById('message');
+        
+        if (fileInput.files.length === 0) return;
+
+        const fichier = fileInput.files[0];
+
+        // Option A : Envoyer en tant que JSON avec Base64
+        // (C'est ce qui correspond à votre code initial avec Buffer.from(contenu, 'base64'))
+        const base64Content = await toBase64(fichier);
+
+        const payload = {
+            nom: fichier.name,
+            typeFichier: fichier.type,
+            contenuFc: base64Content.split(',')[1] // On retire le préfixe "data:image/png;base64,"
+        };
+        // Envoi au serveur
+        const response = await fetch('/api/dossier_ivt', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            missionData: missionData,
+            parcellesSelectionnees: toutesLesParcelles,
+            parcellesAjoutees: parcellesAjoutees,
+            contenuFichier: payload
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Erreur lors de l\'enregistrement');
+        }
+
+        const result = await response.json();
+        console.log('Dossier d\'inventaire créé avec succès:', result);
+
+        // Nettoyer localStorage
+        /*localStorage.removeItem('mission_data');
+        localStorage.removeItem('parcelles_selectionnees');
+        localStorage.removeItem('parcelles_ajoutees');*/
+
+        alert(`Demande d'inventaire soumise avec succès!\n\n• ${parcellesSelectionnees.length} parcelle(s) sélectionnée(s)\n• ${parcellesAjoutees.length} parcelle(s) ajoutée(s)`);
+        
+        closeModal();
+        loadMissions();
+
+        // Rediriger vers la page de confirmation (optionnel)
+        // window.location.href = '/confirm_ivt/{{ id }}';
+
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Une erreur est survenue lors de la soumission. Veuillez réessayer.');
+      }
+      
+      try {
+        
+        const response = await fetch('/api/valider_ivt', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            missionData: missionData,
+            parcellesSelectionnees: toutesLesParcelles,
+          }),
+        });
+      } catch (error) {
+        console.error('Erreur lors de la validation de l\'inventaire:', error);
+      }
+      //window.location.href = '/confirm_ivt/{{ id }}';
+    }
+</script>
+</body>
+</html>

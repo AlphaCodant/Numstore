@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <!-- Montserrat Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/tailStyle.css">
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body>
+    <div class="grid-container">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="menu-icon" onclick="openSidebar()">
+          <span class="material-icons-outlined">menu</span>
+        </div>
+        <div class="header-left">
+          <div class="main-title">
+          <h2>TABLEAU DE BORD</h2>
+        </div>
+        </div>
+        <div class="header-right">
+          <span class="material-icons-outlined">notifications</span>
+          <span class="material-icons-outlined">email</span>
+          <span class="material-icons-outlined">account_circle</span>
+        </div>
+      </header>
+      <!-- End Header -->
+
+      <!-- Sidebar -->
+      <aside id="sidebar">
+        <div class="sidebar-title">
+          <div class="sidebar-brand">
+            <a href="#" class="flex ms-2 md:me-24">
+              <img src="/img/logo2.jpg" class="h-8 me-2" alt="Logo Sodefor" />
+              <span class="self-center text-blue text-md font-semibold md:text-xl whitespace-nowrap text-blue-500">CG Gagnoa</span>
+              </a>
+          </div>
+          <span class="material-icons-outlined" onclick="closeSidebar()">close</span>
+        </div>
+        <div class="px-2 pb-4 bg-green  shadow-zinc-600">
+          <ul class="space-y-2 font-medium">
+            <li>
+              <a href="/admin" class="flex items-center py-3 px-1 mt-16 text-black  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined">dashboard</span>
+                <span class="ms-3">Tableau de bord</span>
+              </a>
+            </li>   
+            <li>
+              <a href="/admin/inscrit" class="flex items-center mt-16 p-2 dark:text-black  hover:border-y hover:border-blue-700 group">
+                <span style="color: blue;" class="material-icons-outlined">description</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Inscrits</span>
+              </a>
+            </li>  
+            <li>
+              <a href="/admin/membre" class="flex items-center mt-16 p-2 text-black  hover:border-y hover:border-orange-500 group">
+                <span style="color: orange;" class="material-icons-outlined">group</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Membres</span>
+              </a>
+            </li>  
+            <li>
+              <a href="/admin/connecte" class="flex items-center mt-16 p-2 text-black  hover:border-y hover:border-green-700 group">
+                <span style="color: green;" class="material-icons-outlined">wifi</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Connectés</span>
+              </a>
+            </li>  
+            <li>
+              <a href="/admin/demande" class="flex items-center mt-16 p-2 text-black  border-y border-red-700 group">
+                <span style="color: red;" class="material-icons-outlined">notification_important</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">En attente</span>
+              </a>
+            </li>            
+          </ul>
+        </div>
+      </aside>
+      <!-- End Sidebar -->
+
+      <!-- Main -->
+      <main class="main-container">
+        <div class=" bottom-0 mt-4">
+          <div class="items-center space-y-2 md:space-y-0 pb-1 dark:bg-gray-900 scroll-my-2">
+            <table class="w-full bottom-0 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-lg ">
+                <thead class="text-xs text-white uppercase  bg-gray-900">
+                    <tr>
+                        <th scope="col" class="p-4">
+                            <div class="flex items-center">
+                                <input id="checkbox-all-search" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <label for="checkbox-all-search" class="sr-only">checkbox</label>
+                            </div>
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Nom
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Lieu de travail
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            Statut
+                        </th>
+                        <th scope="col" class="px-6 py-2">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                        <td class="w-4 p-4">
+                            <div class="flex items-center">
+                                <input id="checkbox-table-search-1" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
+                            </div>
+                        </td>
+                        <th scope="row" class="flex items-center px-4 py-1 text-gray-900 whitespace-nowrap dark:text-white">
+                            <img class="w-10 h-10 rounded-full" src="/img/logo2.jpg" alt="Jese image">
+                            <div class="ps-3">
+                                <div class="text-base font-semibold">Sodefor</div>
+                                <div class="font-normal text-gray-500">sodefor@sodefor.com</div>
+                            </div>  
+                        </th>
+                        <td class="px-4 py-1">
+                            Côte d'Ivoire
+                        </td>
+                        <td class="px-4 py-1">
+                            <div class="flex items-center">
+                                <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div> Connecté
+                            </div>
+                        </td>
+                        <td class="px-4 py-1">
+                            <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Voir profil</a>
+                        </td>
+                    </tr>
+                    <tr class="bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                      <td class="w-4 p-4">
+                          <div class="flex items-center">
+                              <input id="checkbox-table-search-1" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                              <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
+                          </div>
+                      </td>
+                      <th scope="row" class="flex items-center px-4 py-1 text-gray-900 whitespace-nowrap dark:text-white">
+                          <img class="w-10 h-10 rounded-full" src="/img/logo2.jpg" alt="Jese image">
+                          <div class="ps-3">
+                              <div class="text-base font-semibold">Sodefor</div>
+                              <div class="font-normal text-gray-500">sodefor@sodefor.com</div>
+                          </div>  
+                      </th>
+                      <td class="px-4 py-1">
+                          Côte d'Ivoire
+                      </td>
+                      <td class="px-4 py-1">
+                          <div class="flex items-center">
+                              <div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div> Connecté
+                          </div>
+                      </td>
+                      <td class="px-4 py-1">
+                          <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Voir profil</a>
+                      </td>
+                  </tr>
+                    
+                </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+      <!-- End Main -->
+
+    </div>
+
+    <!-- Scripts -->
+    <!-- ApexCharts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/scripts.js"></script>
+  </body>
+</html>

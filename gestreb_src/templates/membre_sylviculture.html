@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sylviculture | GESTREB</title>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <link rel="icon" type="image/jpeg" href="/img/Logo_gestreb.jpg">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <a href="/"><img src="img/Logo_gestreb.jpg" alt="Logo GestReb"></a>
+        </div>
+        <div class="sidebar-brand">
+          <h1>GestReb</h1>
+          <p>Gestion des reboisements</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <span class="nav-section-title">Menu principal</span>
+        
+        <a href="#" class="nav-item">
+          <span class="material-icons-outlined">eco</span>
+          Prod. de plants
+        </a>
+        
+        <a href="/mise_en_place/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">grid_view</span>
+          Parcelles
+        </a>
+        
+        <a href="/entretien_p/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">grass</span>
+          Entretien
+        </a>
+        
+        <a href="/sylviculture/{{ id }}" class="nav-item active">
+          <span class="material-icons-outlined">park</span>
+          Sylviculture
+        </a>
+
+        <span class="nav-section-title">Planification</span>
+        
+        <a href="/plan_mission/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">event_note</span>
+          Plan de missions
+        </a>
+        
+        <span class="nav-section-title">Outils</span>
+        
+        <a href="/page/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">map</span>
+          Carte interactive
+        </a>
+        <a href="/inventaire/dossier/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">map</span>
+          Dossier inventaire
+        </a>
+        <span class="nav-section-title">Authentification</span>
+        <a href="/log/deconnecter" class="nav-item">
+          <span class="material-icons-outlined">logout</span>
+          Se deconnecter
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <span class="material-icons-outlined">menu</span>
+        </button>
+        <div class="page-title">
+          <h1>Sylviculture</h1>
+          <p>Gestion technique des peuplements</p>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="header-status">
+          <span class="dot"></span>
+          En ligne
+        </div>
+        
+        <div class="header-notifications">
+          <span class="material-icons-outlined">notifications</span>
+          <span class="badge"></span>
+        </div>
+        
+        <div class="header-user">
+          <div class="header-user-avatar">
+            <span class="material-icons-outlined">person</span>
+          </div>
+          <div class="header-user-info">
+            <p>Admin</p>
+            <span>Gestionnaire</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Filters Card -->
+      <div class="filters-card">
+        <form id="filterForm">
+          <div class="filters-grid">
+            <!-- Forêts Filter -->
+            <div class="filter-group">
+              <label class="filter-label">Forêts</label>
+              <div class="filter-checkbox-group">
+                <label class="filter-checkbox">
+                  <input type="checkbox" id="tene" name="foret" value="1" checked>
+                  <span>Téné</span>
+                </label>
+                <label class="filter-checkbox">
+                  <input type="checkbox" id="sangoue" name="foret" value="2" checked>
+                  <span>Sangoué</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Années Filter -->
+            <div class="filter-group">
+              <label class="filter-label">Exercice</label>
+              <div class="filter-dropdown">
+                <button type="button" class="filter-button" id="anneeBtn" onclick="toggleDropdown('anneeDropdown')">
+                  <span id="anneeCount">Toutes les années</span>
+                  <span class="material-icons-outlined">expand_more</span>
+                </button>
+                <div class="filter-dropdown-menu" id="anneeDropdown">
+                  <label class="filter-checkbox" style="border-bottom: 1px solid var(--gray-200); padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+                    <input type="checkbox" id="checkAllAnnee" checked>
+                    <span style="font-weight: 600;">Tout sélectionner</span>
+                  </label>
+                  <div id="anneeOptions"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="filter-group" style="justify-content: flex-end;">
+              <button type="submit" class="btn-submit">
+                <span class="material-icons-outlined">refresh</span>
+                Actualiser
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Stats Bar -->
+      <div class="stats-bar" id="statsBar">
+        <div class="stat-card">
+          <div class="stat-icon primary">
+            <span class="material-icons-outlined">grid_view</span>
+          </div>
+          <div class="stat-content">
+            <h3 id="totalParcelles">--</h3>
+            <p>Parcelles</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon emerald">
+            <span class="material-icons-outlined">straighten</span>
+          </div>
+          <div class="stat-content">
+            <h3 id="totalSuperficie">-- ha</h3>
+            <p>Superficie totale</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon sky">
+            <span class="material-icons-outlined">park</span>
+          </div>
+          <div class="stat-content">
+            <h3 id="essenceDominante">--</h3>
+            <p>Essence dominante</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon amber">
+            <span class="material-icons-outlined">engineering</span>
+          </div>
+          <div class="stat-content">
+            <h3 id="operateurPrincipal">--</h3>
+            <p>Opérateur principal</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Parcelles Grid -->
+      <div class="parcelles-grid" id="parcellesGrid">
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <span class="material-icons-outlined" style="font-size: 2.5rem;">park</span>
+          </div>
+          <h3>Sélectionnez vos critères</h3>
+          <p>Choisissez une forêt et une année puis cliquez sur "Actualiser"</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal Rapport -->
+  <div class="modal-overlay" id="reportModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2 id="modalTitle">Rapport Sylvicole</h2>
+        <div class="modal-header-actions">
+          <button class="btn-print no-print" onclick="window.print()">
+            <span class="material-icons-outlined">print</span>
+            Imprimer
+          </button>
+          <button class="modal-close no-print" onclick="closeModal()">
+            <span class="material-icons-outlined">close</span>
+          </button>
+        </div>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Report content will be injected here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // CONFIGURATION
+    // ==========================================
+    const currentYear = new Date().getFullYear();
+    const startYear = 2020;
+
+    // ==========================================
+    // SIDEBAR MOBILE
+    // ==========================================
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+
+    mobileMenuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      sidebarOverlay.classList.toggle('open');
+    });
+
+    sidebarOverlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      sidebarOverlay.classList.remove('open');
+    });
+
+    // ==========================================
+    // DROPDOWN ANNÉES
+    // ==========================================
+    function generateYearOptions() {
+      const container = document.getElementById('anneeOptions');
+      for (let year = currentYear; year >= startYear; year--) {
+        const label = document.createElement('label');
+        label.className = 'filter-checkbox';
+        label.innerHTML = `
+          <input type="checkbox" name="years[]" value="${year}" data-year checked>
+          <span>${year}</span>
+        `;
+        container.appendChild(label);
+      }
+    }
+
+    function toggleDropdown(id) {
+      const dropdown = document.getElementById(id);
+      dropdown.classList.toggle('open');
+    }
+
+    function updateYearDisplay() {
+      const checkboxes = document.querySelectorAll('input[data-year]');
+      const checked = Array.from(checkboxes).filter(c => c.checked);
+      const display = document.getElementById('anneeCount');
+      
+      if (checked.length === 0) {
+        display.textContent = 'Aucune année';
+      } else if (checked.length === checkboxes.length) {
+        display.textContent = 'Toutes les années';
+        document.getElementById('checkAllAnnee').checked = true;
+      } else {
+        display.textContent = `${checked.length} année(s)`;
+        document.getElementById('checkAllAnnee').checked = false;
+      }
+    }
+
+    document.getElementById('checkAllAnnee').addEventListener('change', function() {
+      document.querySelectorAll('input[data-year]').forEach(cb => cb.checked = this.checked);
+      updateYearDisplay();
+    });
+
+    document.addEventListener('click', (e) => {
+      const dropdown = document.getElementById('anneeDropdown');
+      const btn = document.getElementById('anneeBtn');
+      if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.remove('open');
+      }
+    });
+
+    // ==========================================
+    // FORMULAIRE ET DONNÉES
+    // ==========================================
+    document.getElementById('filterForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const forets = [];
+      if (document.getElementById('tene').checked) forets.push(1);
+      if (document.getElementById('sangoue').checked) forets.push(2);
+      
+      const annees = Array.from(document.querySelectorAll('input[data-year]:checked'))
+        .map(cb => cb.value);
+      
+      if (forets.length === 0) {
+        alert('Veuillez sélectionner au moins une forêt.');
+        return;
+      }
+      
+      if (annees.length === 0) {
+        alert('Veuillez sélectionner au moins une année.');
+        return;
+      }
+
+      try {
+        const response = await fetch('/sylviculture', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ foret: forets, annees })
+        });
+        
+        if (!response.ok) throw new Error('Erreur serveur');
+        
+        const data = await response.json();
+        renderData(data);
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Une erreur est survenue lors de la récupération des données.');
+      }
+    });
+
+    function renderData(data) {
+      const grid = document.getElementById('parcellesGrid');
+      
+      if (!data || data.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">
+              <span class="material-icons-outlined" style="font-size: 2.5rem;">inbox</span>
+            </div>
+            <h3>Aucune parcelle trouvée</h3>
+            <p>Essayez de modifier vos critères de recherche</p>
+          </div>
+        `;
+        updateStats(0, 0, '--', '--');
+        return;
+      }
+
+      // Calculs statistiques
+      const totalParcelles = data.length;
+      const totalSuperficie = data.reduce((sum, p) => sum + (parseFloat(p.superficie) || 0), 0);
+      
+      const essences = {};
+      const partenaires = {};
+      data.forEach(p => {
+        essences[p.essence] = (essences[p.essence] || 0) + 1;
+        partenaires[p.partenaire] = (partenaires[p.partenaire] || 0) + 1;
+      });
+      
+      const essenceDominante = Object.keys(essences).reduce((a, b) => essences[a] > essences[b] ? a : b, '--');
+      const operateurPrincipal = Object.keys(partenaires).reduce((a, b) => partenaires[a] > partenaires[b] ? a : b, '--');
+      
+      updateStats(totalParcelles, totalSuperficie, essenceDominante, operateurPrincipal);
+
+      // Rendu des cartes avec indicateur de travaux sylvicoles
+      grid.innerHTML = data.map(p => {
+        const age = currentYear - parseInt(p.annee);
+        let sylviStatus = 'Non éligible';
+        let statusClass = '';
+        
+        if (age >= 4 && age < 6) {
+          sylviStatus = 'Élagage prévu';
+          statusClass = 'style="background: var(--amber-50); color: var(--amber-500);"';
+        } else if (age >= 6 && age < 10) {
+          sylviStatus = 'Éclaircie prévue';
+          statusClass = 'style="background: var(--sky-50); color: var(--sky-600);"';
+        } else if (age >= 10) {
+          sylviStatus = 'Mature';
+          statusClass = 'style="background: var(--emerald-50); color: var(--emerald-600);"';
+        }
+        
+        return `
+          <div class="parcelle-card" data-id="${p.numero}">
+            <div class="parcelle-header">
+              <div class="parcelle-title">
+                <h3>Parcelle ${p.numero}</h3>
+              </div>
+         
+            </div>
+            <div class="parcelle-body">
+              <div class="parcelle-info">
+                <div class="parcelle-info-item">
+                  <span>Forêt</span>
+                  <span>${p.foret === 1 ? 'Téné' : p.foret === 2 ? 'Sangoué' : p.foret}</span>
+                </div>
+                <div class="parcelle-info-item">
+                  <span>Superficie</span>
+                  <span>${p.superficie} ha</span>
+                </div>
+                <div class="parcelle-info-item">
+                  <span>Essence</span>
+                  <span>${p.essence}</span>
+                </div>
+                <div class="parcelle-info-item">
+                  <span>Âge</span>
+                  <span>${age} ans (${p.annee})</span>
+                </div>
+              </div>
+            </div>
+            <div class="parcelle-footer">
+              <button class="btn-action primary" onclick="">
+                <span class="material-icons-outlined">assessment</span>
+                Rapport
+              </button>
+             
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function updateStats(parcelles, superficie, essence, operateur) {
+      document.getElementById('totalParcelles').textContent = parcelles;
+      document.getElementById('totalSuperficie').textContent = `${superficie.toFixed(1)} ha`;
+      document.getElementById('essenceDominante').textContent = essence;
+      document.getElementById('operateurPrincipal').textContent = operateur;
+    }
+
+    // ==========================================
+    // MODAL RAPPORT
+    // ==========================================
+    async function openReport(parcelleId) {
+      const modal = document.getElementById('reportModal');
+      const modalBody = document.getElementById('modalBody');
+      const modalTitle = document.getElementById('modalTitle');
+      
+      modalTitle.textContent = `Rapport Sylvicole - Parcelle ${parcelleId}`;
+      modalBody.innerHTML = `
+        <div style="text-align: center; padding: 3rem;">
+          <span class="material-icons-outlined" style="font-size: 3rem; color: var(--primary-500); animation: spin 1s linear infinite;">autorenew</span>
+          <p style="margin-top: 1rem; color: var(--gray-500);">Chargement du rapport...</p>
+        </div>
+      `;
+      modal.classList.add('open');
+      
+      // Simulation de rapport sylvicole
+      setTimeout(() => {
+        renderSylvicultureReport(parcelleId);
+      }, 800);
+    }
+
+    function renderSylvicultureReport(parcelleId) {
+      const modalBody = document.getElementById('modalBody');
+      const formatCurrency = (val) => new Intl.NumberFormat('fr-FR').format(Math.round(val || 0)) + ' XOF';
+
+      modalBody.innerHTML = `
+        <div class="report-summary">
+          <div class="report-summary-item">
+            <span>Parcelle</span>
+            <span>${parcelleId}</span>
+          </div>
+          <div class="report-summary-item">
+            <span>Superficie</span>
+            <span>25 ha</span>
+          </div>
+          <div class="report-summary-item">
+            <span>Essence</span>
+            <span>Teck</span>
+          </div>
+          <div class="report-summary-item">
+            <span>Âge</span>
+            <span>6 ans</span>
+          </div>
+        </div>
+
+        <div class="report-section">
+          <h3 class="report-section-title">Travaux Sylvicoles Réalisés</h3>
+          
+          <div style="overflow-x: auto;">
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Type de travail</th>
+                  <th>Surface</th>
+                  <th>Opérateur</th>
+                  <th>Coût</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>15/03/2024</td>
+                  <td>Élagage (1er passage)</td>
+                  <td>25 ha</td>
+                  <td>Équipe interne</td>
+                  <td>${formatCurrency(625000)}</td>
+                </tr>
+                <tr>
+                  <td>10/08/2024</td>
+                  <td>Élagage (2e passage)</td>
+                  <td>25 ha</td>
+                  <td>Équipe interne</td>
+                  <td>${formatCurrency(500000)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="report-section">
+          <h3 class="report-section-title">Prochains Travaux Prévus</h3>
+          <div style="background: var(--primary-50); padding: 1rem; border-radius: var(--radius-lg); border-left: 4px solid var(--primary-500);">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem;">
+              <span class="material-icons-outlined" style="color: var(--primary-600);">event</span>
+              <div>
+                <p style="font-weight: 600; color: var(--gray-900);">Première éclaircie</p>
+                <p style="font-size: 0.875rem; color: var(--gray-600);">Prévue pour Année 7 (2025)</p>
+              </div>
+            </div>
+            <p style="font-size: 0.875rem; color: var(--gray-600); line-height: 1.6;">
+              L'éclaircie consiste à enlever certains arbres pour réduire la densité 
+              et favoriser le développement des arbres restants. Cette opération est 
+              essentielle pour obtenir des fûts de qualité.
+            </p>
+          </div>
+        </div>
+
+        <div class="report-section">
+          <h3 class="report-section-title">Indicateurs de Croissance</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+            <div style="background: var(--gray-50); padding: 1rem; border-radius: var(--radius-lg); text-align: center;">
+              <p style="font-size: 1.5rem; font-weight: 700; color: var(--emerald-600);">12 m</p>
+              <p style="font-size: 0.75rem; color: var(--gray-500);">Hauteur moyenne</p>
+            </div>
+            <div style="background: var(--gray-50); padding: 1rem; border-radius: var(--radius-lg); text-align: center;">
+              <p style="font-size: 1.5rem; font-weight: 700; color: var(--sky-600);">18 cm</p>
+              <p style="font-size: 0.75rem; color: var(--gray-500);">Diamètre moyen</p>
+            </div>
+            <div style="background: var(--gray-50); padding: 1rem; border-radius: var(--radius-lg); text-align: center;">
+              <p style="font-size: 1.5rem; font-weight: 700; color: var(--primary-600);">1100</p>
+              <p style="font-size: 0.75rem; color: var(--gray-500);">Arbres/ha</p>
+            </div>
+            <div style="background: var(--gray-50); padding: 1rem; border-radius: var(--radius-lg); text-align: center;">
+              <p style="font-size: 1.5rem; font-weight: 700; color: var(--amber-500);">92%</p>
+              <p style="font-size: 0.75rem; color: var(--gray-500);">Taux de survie</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="report-total">
+          <span>COÛT TOTAL SYLVICULTURE</span>
+          <span>${formatCurrency(1125000)}</span>
+        </div>
+      `;
+    }
+
+    function closeModal() {
+      document.getElementById('reportModal').classList.remove('open');
+    }
+
+    function planifierTravaux(parcelleId) {
+      console.log('Planification des travaux pour la parcelle:', parcelleId);
+      alert('Fonctionnalité de planification en cours de développement');
+    }
+
+    // Close modal on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // Close modal on overlay click
+    document.getElementById('reportModal').addEventListener('click', (e) => {
+      if (e.target.id === 'reportModal') closeModal();
+    });
+
+    // ==========================================
+    // INITIALISATION
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      generateYearOptions();
+      document.querySelectorAll('input[data-year]').forEach(cb => {
+        cb.addEventListener('change', updateYearDisplay);
+      });
+    });
+  </script>
+
+  <style>
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</body>
+</html>

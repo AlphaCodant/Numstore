@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <head>
+  <meta charset="UTF-8">
+  <title>Mise en place</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/membres.css">
+  <link rel="stylesheet" href="/css/tailStyle.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  
+</head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Entretiens de Parcelles</title>
+    <!-- Chargement de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chargement des icônes Material Icons Outlined -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    
+</head>
+<body>
+    <div class="grid-container">
+    <header class="header">
+      <div id="tableau_bord">
+        <div style="font-size: larger; font-weight: bolder;"><p>Entretien</p></div>
+        <div style="font-size: smaller; font-weight:lighter; font-style: italic;">
+          <p>Reboisement</p>
+        </div>
+      </div>
+      <div class="alignement">
+        <div id="etat">
+          <span class="material-icons-outlined">wifi</span>
+          <p style="padding-left: 5px;">En ligne</p>
+        </div>
+        <div id="notification">
+          <span class="material-icons-outlined">notifications</span>
+          <div style="width : 2px; height: 2px; padding-left: 1px;border: 5px solid red; border-radius: 100%; background-color: red;">  </div>
+        </div>
+        <div id="admin">
+          <span class="material-icons-outlined" style="color: rgb(2, 27, 95);">account_circle</span>
+          <p style="padding-left: 5px;">Admin</p>
+        </div>
+      </div>
+    </header>
+    <aside class="sidebar">
+      <div id="entete" style="height: 11%; border-bottom: 0.1px solid rgb(126, 126, 126);">
+        <div style="display: flex; justify-content: center; align-items: center;
+          width: 20%; height: 65%; background-color: rgb(255, 255, 255); border-radius: 50%;">
+          <img src="/img/Logo_gestreb.jpg" alt="Logo GestReb" style="border-radius: 50%;" />
+        </div>
+        <a href="/">
+          <div id="entete_ecrit">
+            <p style="color:white; font-size: larger; font-weight: bolder;">GestReb</p>
+            <p style="font-size: smaller; font-weight:lighter; font-style: italic; color: rgb(251, 251, 251);">
+              Gestion des reboisements</p>
+          </div>
+        </a>
+      </div>
+      <div id="boutons">
+        
+        
+        <a href="#">
+          <div class="rubrique" id="membre" >
+            <span class="material-icons-outlined">group</span>
+            <p style="padding-left: 5px;">Prod. de plants</p>
+          </div>
+        </a>
+        <a href="/mise_en_place/{{ id }}">
+          <div class="rubrique" id="membre" >
+            <span class="material-icons-outlined">group</span>
+            <p style="padding-left: 5px;">Parcelles</p>
+          </div>
+        </a>
+        <a href="/entretien_p/{{ id }}">
+        <div class="rubrique" id="recolte" style=" border : 1px solid rgb(26, 83, 206);border-radius: 2.5%;
+          background-color: rgb(26, 83, 206);" >
+          <span class="material-icons-outlined">grain</span>
+          <p style="padding-left: 5px;">Entretien</p>
+        </div>
+        </a>
+        <a href="/sylviculture/{{ id }}">
+        <div class="rubrique" id="vente">
+          <span class="material-icons-outlined">shopping_cart</span>
+          <p style="padding-left: 5px;">Sylviculture</p>
+        </div>
+        </a>
+        
+        <a href="/page/{{ id }}">
+        <div class="rubrique" id="document">
+          <span class="material-icons-outlined">area_chart</span>
+          <p style="padding-left: 5px;">Carte interactive</p>
+        </div>
+        </a>
+        
+      </div>
+      
+    </aside>
+    <main class="main-container">
+        
+
+        <!-- Formulaire de Filtre -->
+        <form class="alignement" style="padding-top: 1%; padding-bottom: 1%" method="POST" action="#">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <!-- Filtre Année -->
+                <div class="relative">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Exercice</label>
+                    <button type="button" id="annee-button" onclick="toggleDropdown('annee-dropdown')" 
+                            class="w-full bg-white border border-gray-300 rounded-lg shadow-sm px-4 py-2 text-left cursor-default focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150 ease-in-out flex justify-between items-center">
+                        <span id="annee-count">Toutes les années</span>
+                        <span class="material-icons-outlined text-gray-400 text-lg">expand_more</span>
+                    </button>
+                    
+                    <div id="annee-dropdown" class="absolute z-10 mt-1 w-full bg-white rounded-lg shadow-xl border border-gray-200 p-3 max-h-60 overflow-y-auto" style="display: none;">
+                        <label class="flex items-center text-sm font-bold text-gray-900 border-b pb-1.5 mb-1 hover:bg-gray-50 p-1.5 rounded cursor-pointer">
+                            <input type="checkbox" id="check-all-annee" data-select-all="annee" 
+                                   class="form-checkbox h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+                            <span class="ml-2">Tout sélectionner</span>
+                        </label>
+                        <div data-group="annee" class="space-y-1 mt-1">
+                            <!-- Les options d'année seront injectées ici par generateYearOptions() -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtre Forêt -->
+               <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Forêt</label>
+                    <div class="flex flex-row">
+                        <div>
+                            <label class="flex items-center text-sm font-medium text-gray-700 hover:bg-blue-50 p-1.5 rounded cursor-pointer">
+                            <input type="checkbox" id="téné" name="foret[]" value="1" 
+                                   class="form-checkbox h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500" checked>
+                            <span class="ml-2">Téné</span>
+                        </label>
+                        </div>
+                        <div>
+                            <label class="flex items-center text-sm font-medium text-gray-700 hover:bg-blue-50 p-1.5 rounded cursor-pointer">
+                            <input type="checkbox" id="sangoue" name="foret[]" value="2" 
+                                   class="form-checkbox h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500" checked>
+                            <span class="ml-2">Sangoué</span>
+                        </label>
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+
+                <!-- Filtre Entretien (Année 0 à 3) -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Entretien</label>
+                    <div class="flex flex-row">
+                        <div>
+                            <label class="flex items-center text-sm font-medium text-gray-700 hover:bg-blue-50 p-1.5 rounded cursor-pointer">
+                            <input type="checkbox" id="0" name="entretien_annee[]" value="0" 
+                                   class="form-checkbox h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500" checked>
+                            <span class="ml-2">Année 0</span>
+                        </label>
+                        <label class="flex items-center text-sm font-medium text-gray-700 hover:bg-blue-50 p-1.5 rounded cursor-pointer">
+                            <input type="checkbox" id="1" name="entretien_annee[]" value="1" 
+                                   class="form-checkbox h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500" checked>
+                            <span class="ml-2">Année 1</span>
+                        </label>
+                        </div>
+                        <div>
+                            <label class="flex items-center text-sm font-medium text-gray-700 hover:bg-blue-50 p-1.5 rounded cursor-pointer">
+                            <input type="checkbox" id="2" name="entretien_annee[]" value="2" 
+                                   class="form-checkbox h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500" checked>
+                            <span class="ml-2">Année 2</span>
+                        </label>
+                        <label class="flex items-center text-sm font-medium text-gray-700 hover:bg-blue-50 p-1.5 rounded cursor-pointer">
+                            <input type="checkbox" id="3" name="entretien_annee[]" value="3" 
+                                   class="form-checkbox h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500" checked>
+                            <span class="ml-2">Année 3</span>
+                        </label>
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="mt-6 flex justify-center">
+                <button type="submit" class="w-full md:w-auto px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out">
+                    Actualiser
+                </button>
+            </div>
+        </form>
+
+        <div id="caneva_parcelles" class="flex flex-wrap gap-6 justify-start">
+            <!-- Les cartes des parcelles seront affichées ici après la soumission du formulaire -->
+            <p class="p-4 text-center w-full text-gray-500"></p>
+        </div>
+
+    
+
+    </main>
+
+    <script>
+        // --- CONSTATNTES ET FONCTIONS DE FILTRE ---
+        const GROUP_NAME = 'annee';
+        const currentYear = new Date().getFullYear();
+        const startYear = 2020; 
+
+        /**
+         * Génère les options d'année et les insère dans le conteneur.
+         */
+        function generateYearOptions() {
+            const container = document.querySelector(`div[data-group="${GROUP_NAME}"]`);
+            if (!container) return;
+            
+            for (let year = currentYear; year >= startYear; year--) {
+                const label = document.createElement('label');
+                label.className = 'flex items-center text-sm font-medium text-gray-700 hover:bg-blue-50 p-1.5 rounded cursor-pointer';
+                label.innerHTML = `
+                    <input type="checkbox" name="years[]" value="${year}" data-group-item="${GROUP_NAME}" 
+                            class="form-checkbox h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500" checked>
+                    <span class="ml-2">${year}</span>
+                `;
+                container.appendChild(label);
+            }
+        }
+
+        /**
+         * Gère l'affichage/masquage de la liste déroulante.
+         * @param {string} dropdownId - L'ID du conteneur de la liste déroulante.
+         */
+        function toggleDropdown(dropdownId) {
+            const dropdown = document.getElementById(dropdownId);
+            if (dropdown) {
+                 // S'assurer que le bouton n'est pas focusé pour ne pas interférer avec le document.addEventListener('click')
+                dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+            }
+        }
+
+        /**
+         * Met à jour le texte du bouton en fonction des sélections.
+         */
+        function updateSelectionDisplay() {
+            const items = document.querySelectorAll(`input[type="checkbox"][data-group-item="${GROUP_NAME}"]`);
+            const selectAll = document.querySelector(`input[data-select-all="${GROUP_NAME}"]`);
+            const displayElement = document.getElementById(`${GROUP_NAME}-count`);
+            
+            const selectedCount = Array.from(items).filter(item => item.checked).length;
+            const totalCount = items.length;
+            
+            if (!displayElement) return;
+
+            if (selectedCount === 0) {
+                displayElement.textContent = `Aucune année sélectionnée`;
+                if (selectAll) selectAll.checked = false;
+            } else if (selectedCount === totalCount) {
+                displayElement.textContent = `Toutes les années`;
+                if (selectAll) selectAll.checked = true;
+            } else {
+                displayElement.textContent = `${selectedCount} année(s) sélectionnée(s)`;
+                if (selectAll) selectAll.checked = false;
+            }
+        }
+
+        /**
+         * Récupère les valeurs des années sélectionnées (cochées).
+         */
+        function getSelectedYears() {
+            const selectedCheckboxes = document.querySelectorAll('input[type="checkbox"][data-group-item="annee"]:checked');
+            return Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
+        }
+
+        // --- NOUVELLES FONCTIONS DE GESTION DU RAPPORT ---
+
+        /**
+         * Fonction pour simuler le téléchargement/impression du rapport en PDF.
+         */
+        function downloadReport() {
+            // Lance la boîte de dialogue d'impression du navigateur.
+            window.print();
+        }
+        window.downloadReport = downloadReport;
+
+        /**
+         * Fonction pour simuler l'ouverture du document de réception.
+         */
+        function viewDocument(url) {
+            console.log(`Ouverture simulée du document de réception (PDF) : ${url}`);
+            // Dans une application réelle, on utiliserait window.open(url, '_blank')
+            // Remplaçons l'alerte par un message d'information dans la console.
+            console.log("Avertissement: Le document ne peut pas être ouvert dans cet environnement simulé.");
+        }
+        window.viewDocument = viewDocument;
+        
+        /**
+         * Récupère les données détaillées d'entretien pour une parcelle depuis l'API.
+         * @param {string} parcelleId - L'identifiant de la parcelle.
+         * @returns {Promise<Object>} Les données détaillées de l'entretien.
+         */
+        async function fetchReportDetails(parcelleId) {
+            console.log(`Tentative de récupération du rapport pour la parcelle ID: ${parcelleId} via /rapport_entretien`);
+            try {
+                // Utilisation de l'endpoint spécifié par l'utilisateur
+                const response = await fetch('/rapport_entretien', {
+                    method: 'POST', // Requête POST car on envoie une donnée (parcelleId)
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ parcelleId: parcelleId }),
+                });
+
+                if (!response.ok) {
+                    // Si la réponse n'est pas dans le range 200-299, c'est une erreur HTTP
+                    const errorText = await response.text();
+                    console.error(`Erreur du serveur lors du chargement du rapport (Status: ${response.status}): ${errorText}`);
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('Données du rapport reçues:', data);
+                return data;
+
+            } catch (error) {
+                console.error("Échec de la récupération des détails du rapport:", error);
+                // Propage l'erreur pour que handleAction puisse afficher un message à l'utilisateur
+                throw new Error("Erreur de connexion ou de traitement des données du rapport.");
+            }
+        }
+
+        /**
+         * Génère le HTML du rapport d'entretien en utilisant les données.
+         * Note: Cette fonction suppose que la structure de données retournée par le serveur
+         * correspond à la structure mock précédente pour assurer l'affichage.
+         */
+        function generateReportHTML(data) {
+            // Helper pour formater les devises
+            const formatCurrency = (value) => {
+                // S'assurer que la valeur est un nombre pour toLocaleString
+                const numValue = parseFloat(value);
+                return (numValue && !isNaN(numValue)) ? `${numValue.toLocaleString('fr-FR')} XOF` : 'N/A';
+            };
+
+            let reportContent = `
+                <div class="p-4 space-y-6 bg-white text-gray-800">
+                    
+                    <section class="text-lg font-semibold border-b pb-2 mb-4 flex flex-col md:flex-row justify-between items-start md:items-center">
+                        <span>Année de plantation : <span class="text-blue-700">${data[0].numéro_parcelle || 'N/A'}</span></span>
+                        <span class="text-sm font-normal text-gray-500 mt-2 md:mt-0">Superficie : ${data[0].numéro_parcelle || 'N/A'} ha | Essence : ${data.essence_principale || 'N/A'}</span>
+                    </section>
+            `;
+
+            // Génération des sections Entretien Année 0 à 3
+            for (let annee = 0; annee <= 3; annee++) {
+                const anneeKey = String(annee);
+                const entretienAnnee = data.entretien ? data.entretien[anneeKey] : null;
+
+                if (!entretienAnnee) continue; 
+
+                reportContent += `
+                    <h2 class="text-xl font-extrabold mt-6 mb-3 text-gray-900 pb-1">${entretienAnnee.titre || `Entretien Année ${anneeKey}`}</h2>
+                `;
+
+                // Helper pour générer la section de passage
+                const generatePassageSection = (passageData, titrePassage, parcelleId) => {
+                    if (!passageData) {
+                        return `<p class="italic text-gray-500 ml-4 mb-4">-- ${titrePassage} : Non effectué ou données non disponibles.</p>`;
+                    }
+                    
+                    let tableHtml = '';
+                    if (passageData.table_data && passageData.table_data.length > 0) {
+                        tableHtml = `
+                            <div class="mt-4 overflow-x-auto shadow-md rounded-lg border">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-100">
+                                        <tr>
+                                            <th class="px-3 py-2 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Ordre</th>
+                                            <th class="px-6 py-2 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Activité</th>
+                                            <th class="px-6 py-2 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Coût / ha</th>
+                                            <th class="px-6 py-2 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Surface (ha)</th>
+                                            <th class="px-6 py-2 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Opérateur</th>
+                                            <th class="px-6 py-2 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        ${passageData.table_data.map(row => `
+                                            <tr>
+                                                <td class="px-3 py-3 whitespace-nowrap text-sm text-gray-500">${row.ordre || 'N/A'}</td>
+                                                <td class="px-6 py-3 whitespace-nowrap text-sm font-medium text-gray-900">${row.activite || 'N/A'}</td>
+                                                <td class="px-6 py-3 whitespace-nowrap text-sm text-blue-600 font-semibold">${formatCurrency(row.cout_ha)}</td>
+                                                <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-500">${row.surface_traitee ? parseFloat(row.surface_traitee).toFixed(2) : 'N/A'}</td>
+                                                <td class="px-6 py-3 whitespace-nowrap text-sm text-gray-500">${row.operateur || 'N/A'}</td>
+                                                <td class="px-6 py-3 whitespace-nowrap text-sm text-green-600 font-medium">${row.status || 'N/A'}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        `;
+                    }
+                    
+                    // Bouton/Lien de Réception
+                    const receptionButton = passageData.reception_doc_url ? `
+                        <button onclick="viewDocument('${passageData.reception_doc_url}')"
+                            class="text-xs ml-3 mt-2 px-3 py-1 bg-yellow-500 text-white rounded-full font-bold shadow-md hover:bg-yellow-600 transition flex items-center no-print">
+                            <span class="material-icons-outlined text-sm mr-1">file_download</span>
+                            Voir Réception Travaux (PDF)
+                        </button>
+                    ` : '';
+
+
+                    return `
+                        <div class="ml-4 mt-3 space-y-2 pb-4 border-l-2 pl-3 border-gray-100">
+                            <div class="flex flex-col md:flex-row items-start md:items-center">
+                                <h3 class="text-lg font-bold text-gray-700 underline">${titrePassage} (Effectué le ${passageData.date || 'N/A'})</h3>
+                                ${receptionButton}
+                            </div>
+                            <p class="text-gray-600 text-sm leading-relaxed">${passageData.texte_intro || 'Aucune description disponible pour ce passage.'}</p>
+                            ${tableHtml}
+                        </div>
+                    `;
+                };
+
+                // Ajout du Premier Passage
+                reportContent += generatePassageSection(entretienAnnee.premier_passage, 'Premier passage', data.parcelle_numero);
+                
+                // Ajout du Deuxième Passage
+                reportContent += generatePassageSection(entretienAnnee.deuxieme_passage, 'Deuxième passage', data.parcelle_numero);
+            }
+
+            // --- Synthèse Finale ---
+            const synthese = data.synthese || {};
+            reportContent += `
+                <h2 class="text-xl font-bold mt-8 pt-4 border-t-2 border-blue-500">V- Synthèse Globale des Entretiens</h2>
+                <div class="bg-blue-50 p-4 rounded-lg shadow-inner text-sm">
+                    <p class="mb-3 text-gray-700">
+                        L'ensemble des opérations d'entretien sur la parcelle n°${data.parcelle_numero || 'N/A'} a couvert <strong class="text-blue-600">${synthese.total_passages || 'N/A'}</strong> passages depuis la plantation en ${data.annee_plantation || 'N/A'}.
+                    </p>
+                    <ul class="list-disc ml-5 space-y-1 text-gray-700">
+                        <li>Surface totale traitée cumulativement : <strong class="text-blue-600">${synthese.surface_traitee_cumulative ? parseFloat(synthese.surface_traitee_cumulative).toFixed(2) + ' ha' : 'N/A'}</strong>.</li>
+                        <li>Taux de survie final moyen des plants : <strong class="text-green-600">${synthese.taux_survie_final ? synthese.taux_survie_final + '%' : 'N/A'}</strong>.</li>
+                        <li>Coût moyen de l'entretien par hectare (estimation) : <strong class="text-blue-600">${formatCurrency(synthese.cout_moyen_ha)}</strong>.</li>
+                    </ul>
+                    <p class="font-semibold mt-3 pt-3 border-t border-blue-200">Conclusion : ${synthese.conclusion || 'Analyse de conclusion non fournie par le serveur.'}</p>
+                </div>
+            `;
+            
+            reportContent += `</div>`;
+            return reportContent;
+        }
+        
+        /**
+         * Gère les actions de clic sur les boutons d'une parcelle (Rapport, Éditer, Carte).
+         */
+        async function handleAction(action, parcelleId) {
+            console.log(`Action: ${action} déclenchée pour la Parcelle ID: ${parcelleId}`);
+            const modal = document.getElementById("myModal");
+            const rapportContent = document.getElementById('rapport-content');
+            const rapportTitle = document.getElementById('no_parcelle_rapport');
+
+            if (action === 'rapport') {
+                if (modal && rapportContent && rapportTitle) {
+                    // 1. Mise à jour du titre
+                    rapportTitle.innerHTML = `Rapport d'Entretien de la Parcelle ${parcelleId}`;
+                    
+                    // 2. Affichage d'un état de chargement
+                    rapportContent.innerHTML = '<div class="p-8 text-center text-blue-500 flex flex-col items-center"><span class="material-icons-outlined animate-spin text-4xl">autorenew</span><p class="mt-2">Chargement du rapport...</p></div>';
+                    modal.style.display = "flex"; // Afficher la modale
+                    
+                    try {
+                        // 3. Récupération des données détaillées (avec le nouvel appel API)
+                        const reportData = await fetchReportDetails(parcelleId); 
+                        
+                        // 4. Génération et affichage du HTML
+                        const reportHtml = generateReportHTML(reportData);
+                        rapportContent.innerHTML = reportHtml;
+                        
+                    } catch (error) {
+                        // 5. Affichage de l'erreur
+                        console.error("Erreur détaillée lors du chargement du rapport:", error);
+                        rapportContent.innerHTML = `<div class="p-8 text-center text-red-600 border border-red-300 bg-red-50 rounded-lg">
+                            <p class="font-bold mb-2">Erreur de Chargement</p>
+                            <p>Impossible de charger les données détaillées du rapport pour la parcelle ${parcelleId}.</p>
+                            <p class="text-sm mt-1 italic">${error.message}</p>
+                        </div>`;
+                    }
+                } else {
+                    console.error("Éléments de la modale (myModal, rapport-content, no_parcelle_rapport) non trouvés.");
+                }
+            } else if (action === 'edit' || action === 'map') {
+                // Remplacement des alertes par un message console pour les actions non implémentées
+                 console.log(`L'action '${action}' pour la parcelle ${parcelleId} n'est pas encore implémentée.`);
+            }
+        }
+        window.handleAction = handleAction; 
+        
+        // --- LOGIQUE DE SOUMISSION DU FORMULAIRE ET D'AFFICHAGE ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. Initialisation des filtres d'année
+            generateYearOptions();
+
+            // 2. Logique 'Tout sélectionner/désélectionner'
+            const selectAll = document.getElementById(`check-all-${GROUP_NAME}`);
+            if (selectAll) {
+                selectAll.addEventListener('change', function() {
+                    const isChecked = this.checked;
+                    document.querySelectorAll(`input[data-group-item="${GROUP_NAME}"]`).forEach(checkbox => {
+                        checkbox.checked = isChecked;
+                    });
+                    updateSelectionDisplay();
+                });
+            }
+
+            // 3. Logique de mise à jour du compteur pour les éléments individuels
+            document.querySelectorAll(`input[data-group-item="${GROUP_NAME}"]`).forEach(item => {
+                item.addEventListener('change', () => updateSelectionDisplay());
+            });
+
+            // 4. Fermer la liste si l'utilisateur clique en dehors
+            document.addEventListener('click', function(event) {
+                const dropdown = document.getElementById('annee-dropdown');
+                const button = document.getElementById('annee-button');
+                
+                if (dropdown && button && !button.contains(event.target) && !dropdown.contains(event.target)) {
+                    dropdown.style.display = 'none';
+                }
+            });
+
+            // 5. Initialiser l'affichage
+            updateSelectionDisplay();
+            
+            // 6. LOGIQUE DE LA MODALE
+            var modal = document.getElementById("myModal");
+            var span = document.querySelector("#myModal .close");
+
+            if (span && modal) {
+                span.onclick = function() { modal.style.display = "none"; }
+            }
+
+            window.onclick = function(event) {
+                 if (modal && event.target == modal) {
+                     modal.style.display = "none";
+                 }
+            }
+        });
+        
+        // --- GESTIONNAIRE DE SOUMISSION PRINCIPAL ---
+
+        document.querySelector('form').addEventListener('submit', async (event) => {
+            event.preventDefault(); // Empêche le rechargement par défaut
+
+            // 1. Récupération des données du formulaire
+            const annees = getSelectedYears();
+            const foret = [];
+            if (document.getElementById('téné')?.checked) foret.push(1);
+            if (document.getElementById('sangoue')?.checked) foret.push(2);
+
+            const entretien_annee = [];
+            if (document.getElementById('0')?.checked) entretien_annee.push(0);
+            if (document.getElementById('1')?.checked) entretien_annee.push(1);
+            if (document.getElementById('2')?.checked) entretien_annee.push(2);
+            if (document.getElementById('3')?.checked) entretien_annee.push(3);
+
+            // Remplacement des alertes par console.error pour éviter les popups bloquants dans l'iframe
+            const containerParcelles = document.getElementById('caneva_parcelles');
+            const showMessage = (msg, isError = false) => {
+                 if(containerParcelles) {
+                    containerParcelles.innerHTML = `<p class="p-4 text-center ${isError ? 'text-red-600' : 'text-orange-500'} font-semibold">${msg}</p>`;
+                 }
+                 console.error(`Erreur de validation: ${msg}`);
+            };
+
+
+            if (annees.length === 0) {
+                showMessage("Veuillez sélectionner au moins une année.", true);
+                return;
+            }
+            if (foret.length === 0) {
+                showMessage("Veuillez sélectionner au moins une forêt.", true);
+                return;
+            }
+
+            // 2. Préparation des conteneurs pour le chargement
+            let containerParcellesDisplay = document.getElementById('caneva_parcelles');
+            let tableauBord = document.getElementById('tableau_bord');
+            
+            if (tableauBord) tableauBord.innerHTML = '';
+
+
+            // 3. Envoi des données au serveur
+            try {
+                const responsePost = await fetch('/entretien_p', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ foret, annees, entretien_annee }),
+                });
+                
+                if (!responsePost.ok) {
+                    showMessage(`Erreur lors de la récupération des données: ${responsePost.status}`, true);
+                    return;
+                }
+
+                const data = await responsePost.json();
+                console.log('Réponse du serveur:', data);
+
+                // 4. Réinitialisation des conteneurs
+                if (containerParcellesDisplay) containerParcellesDisplay.innerHTML = "";
+                
+                if (data.length === 0) {
+                    if (containerParcellesDisplay) {
+                        containerParcellesDisplay.innerHTML = '<p class="p-4 text-center w-full text-gray-500">Aucune parcelle ne correspond à vos critères de sélection.</p>';
+                    }
+                    if (tableauBord) tableauBord.innerHTML = '<p class="text-gray-500">0 Parcelle trouvée</p>';
+                    return;
+                }
+
+                // 5. CALCULS DES STATISTIQUES (effectués une seule fois)
+                const totalMembres = data.length;
+                const superficieTotale = data.reduce((total, m) => total + (parseFloat(m.superficie) || 0), 0).toFixed(2);
+                
+                const essenceCounts = {};
+                const partenaireCounts = {};
+                data.forEach(m => {
+                    essenceCounts[m.essence] = (essenceCounts[m.essence] || 0) + 1;
+                    partenaireCounts[m.partenaire] = (partenaireCounts[m.partenaire] || 0) + 1;
+                });
+                
+                const getPredominant = (counts) => {
+                    let maxCount = 0;
+                    let predominant = 'N/A';
+                    for (const item in counts) {
+                        if (counts[item] > maxCount) {
+                            maxCount = counts[item];
+                            predominant = item;
+                        }
+                    }
+                    return predominant;
+                };
+
+                const predominantEssence = getPredominant(essenceCounts);
+                const predominantPartenaire = getPredominant(partenaireCounts);
+                
+                // 6. AFFICHAGE DES STATISTIQUES
+                if (tableauBord) {
+                    tableauBord.innerHTML = `
+                        <div class="space-y-2">
+                            <div class="text-2xl font-bold text-gray-800"><p>${totalMembres} Parcelles</p></div>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
+                                
+                                <p>Essence dominante: <span class="font-semibold">${predominantEssence}</span></p>
+                                <p>Opérateur Principal: <span class="font-semibold">${predominantPartenaire}</span></p>
+                               
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // 7. AFFICHAGE DES CARTES (Boucle)
+                data.forEach(m => {
+                    if (containerParcellesDisplay) {
+                        const foretDisplay = m.foret === 1 ? 'Téné' : m.foret === 2 ? 'Sangoué' : m.foret;
+                        
+                        containerParcellesDisplay.innerHTML += `
+                            <div class="flex flex-col w-full sm:w-[48%] md:w-[30%] bg-white rounded-xl border border-gray-200 p-4 shadow-md transition hover:shadow-lg" data-parcelle-id="${m.numero}">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h2 class="font-bold text-xl text-gray-900">Parcelle ${m.numero} </h2>
+                                    
+                                </div>
+                                <div class="text-sm space-y-1 text-gray-600 italic mb-4">
+                                    <p><span class="font-medium">Forêt :</span> ${foretDisplay}</p> 
+                                    <p><span class="font-medium">Superficie :</span> ${m.superficie} ha</p> 
+                                    <p><span class="font-medium">Essence :</span> ${m.essence} </p>
+                                    <p><span class="font-medium">Année de création :</span> ${m.annee}</p>
+                                </div>
+                                
+                            </div>
+                        `;
+                    }
+                });
+
+            } catch (error) {
+                console.error('Erreur fatale lors de la communication avec le serveur /entretien_p:', error);
+                // Affichage d'un message d'erreur plus clair pour l'utilisateur
+                showMessage('Une erreur s\'est produite lors de la communication avec le serveur (vérifiez l\'URL /entretien_p et la console).', true);
+            }
+        });
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Statistiques</title>
+    <link rel="icon" 
+     type="image/png" 
+     href="/img/Logo_gestreb.jpg">
+    <!-- Montserrat Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/libs/jquery-ui-1.12.1/jquery-ui.css">
+    <script src="/libs/jquery-ui-1.12.1/external/jquery/jquery.js"></script>
+    <script src="/libs/jquery-ui-1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" href="/css/tailStyle.css">
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body>
+    <div class="grid-container">
+
+      <!-- Header -->
+      <header class="header" style="color:white;">
+        <div class="menu-icon" onclick="openSidebar()">
+          <span class="material-icons-outlined">menu</span>
+        </div>
+        <div class="header-left">
+          <div class="main-title">
+            <span style="color: green;" class="material-icons-outlined">query_stats</span>
+            <span><p>STATISTIQUES</p></span>
+          </div>
+        </div>
+        <!--<div class="header-right">
+          <span class="material-icons-outlined">notifications</span>
+          <span class="material-icons-outlined">email</span>
+          <span class="material-icons-outlined">account_circle</span>
+        </div>-->
+      </header>
+      <!-- End Header -->
+
+      <!-- Sidebar -->
+      <aside id="sidebar">
+        <div class="sidebar-title">
+          <div class="sidebar-brand">
+            <a href="#" class="flex mt-2 ms-2 md:me-24">
+              <img src="/img/Logo_gestreb.jpg" class="ml-4" alt="Logo GestReb" />
+              </a>
+          </div>
+          <span class="material-icons-outlined" onclick="closeSidebar()">close</span>
+        </div>
+        <div class="px-2 pb-4 bg-green  shadow-zinc-600">
+          <ul class="space-y-2 font-medium">
+            <li>
+              <span class="flex items-center py-3 px-1 mt-16 dark:text-black  border-y border-gray-300 group">
+                <span style="color: green;" class="material-icons-outlined">query_stats</span>
+                <span class="ms-3">Statistiques</span>
+              </span>
+            </li>   
+            <li>
+              <button onclick="effacer_tout()">
+              <a href="/page/{{ id }}" class="flex items-center mt-16 p-2 dark:text-black  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined" style="color:orange">map</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Carte interactive</span>
+              </a>
+            </button>
+            </li>        
+          </ul>
+        </div>
+      </aside>
+      <!-- End Sidebar -->
+
+      <!-- Main -->
+      <main class="main-container">
+
+        <div class="main-cards">
+
+          <div class="card">
+            <div class="card-inner">
+              <h3 style="color:black;font-weight:bolder;">SUPERFICIE TOTALE</h3>
+              <span style="color:green;" class="material-icons-outlined">all_inclusive</span>
+            </div>
+            <h1 style="color:black;" id="sup_totale"></h1>
+          </div>
+
+          <div class="card">
+            <div class="card-inner">
+              <h3 style="color:black;font-weight:bolder;">SUPERFICIE MAXIMALE</h3>
+              <span style="color:red;" class="material-icons-outlined">trending_up</span>
+            </div>
+            <h1 style="color:black;" id="sup_max"></h1>
+          </div>
+
+          <div class="card">
+            <div class="card-inner">
+              <h3 style="color:black;font-weight:bolder;">SUPERFICIE MINIMALE</h3>
+              <span style="color:blue;" class="material-icons-outlined">trending_down</span>
+            </div>
+            <h1 style="color:black;" id="sup_min"></h1>
+          </div>
+
+          <div class="card">
+            <div class="card-inner">
+              <h3 style="color:black;font-weight:bolder;">NOMBRE DE PARCELLES</h3>
+              <span style="color:purple;" class="material-icons-outlined">area_chart</span>
+            </div>
+            <h1 style="color:black;" id="nb_parcelles"></h1>
+          </div>
+
+        </div>
+
+        <div class="charts">
+
+          <div class="charts-card">
+            <h2 class="chart-title">Superficie par essence</h2>
+            <div id="bar-chart"></div>
+          </div>
+
+          <div class="charts-card">
+            <h2 class="chart-title">Proportion des essences</h2>
+            <div id="bar-chart2"></div>
+          </div>
+
+          <div class="charts-card">
+            <h2 class="chart-title">Superficie par opérateurs</h2>
+            <div id="area-chart2"></div>
+          </div>
+
+          <div class="charts-card">
+            <h2 class="chart-title">Proportion des opérateurs</h2>
+            <div id="funnel-chart"></div>
+          </div>
+
+        </div>
+      </main>
+      <!-- End Main -->
+
+    </div>
+
+    <!-- Scripts -->
+    <!-- ApexCharts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.js"></script>
+    <!-- Custom JS -->
+    <!--<script src="/js/scripts_stats.js"></script>-->
+    <div id="postData" post="{{ id }}"></div>
+
+    <script>
+
+// Sidebar actionneur
+
+let sidebarOpen = false;
+const sidebar = document.getElementById('sidebar');
+
+function openSidebar() {
+  if (!sidebarOpen) {
+    sidebar.classList.add('sidebar-responsive');
+    sidebarOpen = true;
+  }
+}
+
+function closeSidebar() {
+  if (sidebarOpen) {
+    sidebar.classList.remove('sidebar-responsive');
+    sidebarOpen = false;
+  }
+}
+        //const loader2 = document.getElementById('loader2');
+        //loader2.style.display = 'inline-block';
+       /*setTimeout(()=>{
+            loader2.style.display = 'none';   
+        },3000);*/
+let ids = document.getElementById('postData').getAttribute('post');
+$(document).ready(()=>{
+    var donnees_stats = [];
+    $.ajax({
+        url:`/json/fichier-${ids}.geojson`,
+        success: (data)=>{
+            //donnees_stats.push(data.features.properties);
+            console.log(data);
+            let sup = 0;
+            let superf = 0;
+            let data_operateur = [];
+            let sup_operateur =[];   
+            let data_essence = [];
+            let sup_essence =[];           
+            for(let i=0;i<data.features.length;i++){
+                sup+=data.features[i].properties['superficie'];
+                superf = data.features[i].properties['superficie']
+                donnees_stats.push(superf)
+                
+                if (data.features[i].properties['partenaire'] in data_operateur){
+                            console.log("ok");
+                    }
+                    else{
+                        data_operateur.push(data.features[i].properties['partenaire']);
+                    }
+
+                if (data.features[i].properties['essence'] in data_essence){
+                        console.log("ok");
+                }
+                else{
+                    data_essence.push(data.features[i].properties['essence']);
+                }
+                
+}
+            
+
+console.log(data_operateur);
+document.getElementById("sup_totale").innerHTML=(Math.round(sup * 100)/100).toFixed(2)+ ' ha';
+//document.getElementById("sup_moyenne").innerHTML=(Math.round(sup/data.features.length * 100)/100).toFixed(2)+ ' ha';
+document.getElementById("sup_min").innerHTML=(Math.round(Math.min(...donnees_stats) * 100)/100).toFixed(2)+ ' ha';       
+document.getElementById("sup_max").innerHTML=(Math.round((Math.max(...donnees_stats)) * 100)/100).toFixed(2)+ ' ha';  
+console.log(donnees_stats.sort())  
+function uniqueFilter(value, index, self) {
+    return self.indexOf(value) === index;
+}         
+
+let operateur = data_operateur.filter(uniqueFilter);
+console.log(operateur); 
+let essence = data_essence.filter(uniqueFilter);
+console.log(essence); 
+let donnees_zik = [];
+//donnees_zik_pyr = [];
+let donnee_duo_op_sup = [];
+for(let j=0;j<operateur.length;j++){
+    let sup_op =0;
+    for(let k=0;k<data.features.length;k++){
+        if(data.features[k].properties['partenaire'] == operateur[j]){
+            sup_op+=data.features[k].properties['superficie'];
+        }
+    
+    }
+    var zik = {y:`${Math.round((sup_op*100/sup)*100)/100}`,legendText:`${operateur[j]} ${Math.round((sup_op*100/sup)*100)/100}%`,indexLabel:operateur[j]};
+    //var zik2 = {y:`${Math.round((sup_op*100/sup)*100)/100}`,legendText:`${operateur[j]} ${Math.round((sup_op*100/sup)*100)/100}%`,label:operateur[j]}
+    donnees_zik.push(zik);
+    //donnees_zik_pyr.push(zik2);
+    sup_operateur.push(sup_op);
+    donnee_duo_op_sup.push({x:operateur[j],y:Math.round((sup_operateur[j]*100/sup)*100)/100});
+    
+}
+donnee_duo_op_sup.sort((a, b) => b.y - a.y);
+
+for(let j=0;j<essence.length;j++){
+    let sup_es =0;
+    for(let k=0;k<data.features.length;k++){
+        if(data.features[k].properties['essence'] == essence[j]){
+            sup_es+=data.features[k].properties['superficie'];
+        }
+    
+    }
+    sup_essence.push(sup_es);
+    
+}
+//Donnees graphique des operateurs en fonction des superficies ==> graph1
+var donnees_graph1=[];
+let sup_oper_graph = [];
+let oper_graph = [];
+for (let k=0;k<operateur.length;k++){
+    var dict ={y:Math.round(sup_operateur[k]*100)/100,label:operateur[k]};
+    donnees_graph1.push(dict);
+    oper_graph.push(operateur[k]);
+    sup_oper_graph.push(Math.round(sup_operateur[k]*100)/100);
+}
+//Donnees graphique des essences en fonction des superficies ==> graph1
+var donnees_graph2=[];
+var donnees_graph3= [];
+let sup_essence_graph = [];
+let sup_essence_graph_mean = [];
+let essence_graph = [];
+for (let l=0;l<essence.length;l++){
+    var dict2 ={y:Math.round((sup_essence[l])*100)/100,label:essence[l]};
+    var dict3 ={y:Math.round((sup_essence[l]*100/sup)*100)/100,label:essence[l]};
+    sup_essence_graph.push(Math.round((sup_essence[l])*100)/100);
+    sup_essence_graph_mean.push(Math.round((sup_essence[l]*100/sup)*100)/100);
+    essence_graph.push(essence[l]);
+    donnees_graph2.push(dict2);
+    donnees_graph3.push(dict3);
+
+}
+
+/*for (operateurs in operateur){
+    let ul = document.getElementById("nom_operateurs");
+    let li = document.createElement('li');
+    li.appendChild(document.createTextNode(`${operateur[operateurs]} ${(Math.round(sup_operateur[operateurs] * 100)/100).toFixed(2)} ha`));
+    ul.appendChild(li);
+}*/
+// document.getElementById("nom_operateurs").innerHTML=operateur[sup_operateur.indexOf(Math.max(...sup_operateur))];
+//document.getElementById("sup_operateurs").innerHTML=(Math.round(Math.max(...sup_operateur)* 100)/100).toFixed(2)+' ha';
+//document.getElementById("nb_operateur").innerHTML=(Math.round(operateur.length * 100)/100);
+document.getElementById("nb_parcelles").innerHTML=(Math.round(data.features.length * 100)/100);
+
+console.log(sup_operateur);
+                    
+// Graph en barre
+
+const barChartOptions = {
+  series: [
+    {
+      data: sup_essence_graph,
+      name: 'ESSENCES',
+    },
+  ],
+  chart: {
+    type: 'bar',
+    background: 'transparent',
+    height: 350,
+    toolbar: {
+      show: false,
+    },
+  },
+  colors: ['#2962ff', '#d50000', '#2e7d32', '#ff6d00', '#583cb3','#0E233D','#56B82B','#B707FF','#168082','#CC4D66','#2338B8',
+  '#EA3F3A','#398278','#F9358C','#B73841'],
+  plotOptions: {
+    bar: {
+      distributed: true,
+      borderRadius: 4,
+      horizontal: false,
+      columnWidth: '40%',
+    },
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  fill: {
+    opacity: 1,
+  },
+  grid: {
+    borderColor: '#55596e',
+    yaxis: {
+      lines: {
+        show: true,
+      },
+    },
+    xaxis: {
+      lines: {
+        show: true,
+      },
+    },
+  },
+  legend: {
+    labels: {
+      colors: '#f5f7ff',
+    },
+    show: false,
+    position: 'top',
+  },
+  stroke: {
+    colors: ['transparent'],
+    show: true,
+    width: 2,
+  },
+  tooltip: {
+    shared: true,
+    intersect: false,
+    theme: 'dark',
+  },
+  xaxis: {
+    categories: essence_graph,
+    title: {
+      style: {
+        color: '#f5f7ff',
+      },
+    },
+    axisBorder: {
+      show: true,
+      color: '#55596e',
+    },
+    axisTicks: {
+      show: true,
+      color: '#55596e',
+    },
+    labels: {
+      style: {
+        colors: '#f5f7ff',
+      },
+    },
+  },
+  yaxis: {
+    title: {
+      text: 'Superficie (ha)',
+      style: {
+        color: '#f5f7ff',
+      },
+    },
+    axisBorder: {
+      color: '#55596e',
+      show: true,
+    },
+    axisTicks: {
+      color: '#55596e',
+      show: true,
+    },
+    labels: {
+      style: {
+        colors: '#f5f7ff',
+      },
+    },
+  },
+};
+
+const barChart = new ApexCharts(
+  document.querySelector('#bar-chart'),
+  barChartOptions
+);
+barChart.render();
+
+// Graph en donut
+
+var options = {
+          series: sup_essence_graph_mean,
+          labels:essence_graph,
+          chart: {
+          type: 'donut',
+        },
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 200
+            },
+            legend: {
+              position: 'top',
+            }
+          }
+        }],
+        colors: ['#2962ff', '#d50000', '#2e7d32', '#ff6d00', '#583cb3','#0E233D','#56B82B','#B707FF','#168082','#CC4D66','#2338B8',
+        '#EA3F3A','#398278','#F9358C','#B73841'],
+        dataLabels: {
+    enabled: true,
+  },
+  fill: {
+    opacity: 1,
+  },
+  grid: {
+    borderColor: '#55596e',
+  },
+  legend: {
+    labels: {
+      colors: '#f5f7ff',
+    },
+    show: false,
+    position: 'right',
+  },
+  stroke :{
+    width :0.5,
+  }
+  
+        };
+
+        var chart = new ApexCharts(document.querySelector("#bar-chart2"), options);
+        chart.render();
+
+
+//-------------
+
+const funnelChartOptions = {
+  chart: {
+  type: 'bar',
+  height: 350,
+},
+plotOptions: {
+  bar: {
+    horizontal: true,
+    isFunnel: true,
+  },
+},
+series: [
+  {
+    name: "Funnel Series",
+    data: donnee_duo_op_sup,
+  },
+],
+colors: ['#2962ff', '#d50000', '#2e7d32', '#ff6d00', '#583cb3','#0E233D','#56B82B','#B707FF','#168082','#CC4D66','#2338B8',
+'#EA3F3A','#398278','#F9358C','#B73841'],
+  plotOptions: {
+    bar: {
+      distributed: true,
+      borderRadius: 4,
+      horizontal: true,
+      columnWidth: '40%',
+    },
+  },
+  dataLabels: {
+    enabled: true,
+  },
+  fill: {
+    opacity: 1,
+  },
+  grid: {
+    borderColor: '#55596e',
+    yaxis: {
+      lines: {
+        show: false,
+      },
+    },
+    xaxis: {
+      lines: {
+        show: false,
+      },
+    },
+  },
+  legend: {
+    labels: {
+      colors: '#f5f7ff',
+    },
+    show: false,
+    position: 'top',
+  },
+  stroke: {
+    colors: ['transparent'],
+    show: true,
+    width: 2,
+  },
+  tooltip: {
+    shared: true,
+    intersect: false,
+    theme: 'dark',
+  },
+  xaxis: {
+    title: {
+      text : 'Pourcentage (%)',
+      style: {
+        color: '#f5f7ff',
+      },
+    },
+    axisBorder: {
+      show: true,
+      color: '#55596e',
+    },
+    axisTicks: {
+      show: true,
+      color: '#55596e',
+    },
+    labels: {
+      style: {
+        colors: '#f5f7ff',
+      },
+    },
+  },
+  yaxis: {
+    title: {
+      text: 'Opérateur',
+      style: {
+        color: '#f5f7ff',
+      },
+    },
+    axisBorder: {
+      color: '#55596e',
+      show: true,
+    },
+    axisTicks: {
+      color: '#55596e',
+      show: true,
+    },
+    labels: {
+      style: {
+        colors: '#f5f7ff',
+      },
+    },
+  },
+};
+
+const funnelChart = new ApexCharts(
+  document.querySelector('#funnel-chart'),
+  funnelChartOptions
+);
+funnelChart.render();
+
+
+//Sup par opérateur
+
+const barChartOptions2 = {
+  series: [
+    {
+      data:sup_oper_graph ,
+      name: 'Opérateur',
+    },
+  ],
+  chart: {
+    type: 'bar',
+    background: 'transparent',
+    height: 350,
+    toolbar: {
+      show: false,
+    },
+  },
+  colors: ['#2962ff', '#d50000', '#2e7d32', '#ff6d00', '#583cb3','#0E233D','#56B82B','#B707FF','#168082','#CC4D66','#2338B8',
+  '#EA3F3A','#398278','#F9358C','#B73841'],
+  plotOptions: {
+    bar: {
+      distributed: true,
+      borderRadius: 4,
+      horizontal: false,
+      columnWidth: '40%',
+    },
+  },
+  dataLabels: {
+    enabled: false,
+  },
+  fill: {
+    opacity: 1,
+  },
+  grid: {
+    borderColor: '#55596e',
+    yaxis: {
+      lines: {
+        show: true,
+      },
+    },
+    xaxis: {
+      lines: {
+        show: true,
+      },
+    },
+  },
+  legend: {
+    labels: {
+      colors: '#f5f7ff',
+    },
+    show: false,
+    position: 'top',
+  },
+  stroke: {
+    colors: ['transparent'],
+    show: true,
+    width: 2,
+  },
+  tooltip: {
+    shared: true,
+    intersect: false,
+    theme: 'dark',
+  },
+  xaxis: {
+    categories: oper_graph,
+    title: {
+      style: {
+        color: '#f5f7ff',
+      },
+    },
+    axisBorder: {
+      show: true,
+      color: '#55596e',
+    },
+    axisTicks: {
+      show: true,
+      color: '#55596e',
+    },
+    labels: {
+      style: {
+        colors: '#f5f7ff',
+      },
+    },
+  },
+  yaxis: {
+    title: {
+      text: 'Superficie (ha)',
+      style: {
+        color: '#f5f7ff',
+      },
+    },
+    axisBorder: {
+      color: '#55596e',
+      show: true,
+    },
+    axisTicks: {
+      color: '#55596e',
+      show: true,
+    },
+    labels: {
+      style: {
+        colors: '#f5f7ff',
+      },
+    },
+  },
+};
+
+const barChart2 = new ApexCharts(
+  document.querySelector('#area-chart2'),
+  barChartOptions2
+);
+barChart2.render();
+
+                }
+            })
+            
+        })
+        
+        
+    </script>
+    </body>
+</html>

@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entretien - Parcelles | GESTREB</title>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <link rel="icon" type="image/jpeg" href="/img/Logo_gestreb.jpg">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <a href="/"><img src="/img/Logo_gestreb.jpg" alt="Logo GestReb"></a>
+        </div>
+        <div class="sidebar-brand">
+          <h1>GestReb</h1>
+          <p>Gestion des reboisements</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <span class="nav-section-title">Menu principal</span>
+        
+        <a href="#" class="nav-item">
+          <span class="material-icons-outlined">eco</span>
+          Prod. de plants
+        </a>
+        
+        <a href="/mise_en_place/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">grid_view</span>
+          Parcelles
+        </a>
+        
+        <a href="/entretien_p/{{ id }}" class="nav-item active">
+          <span class="material-icons-outlined">grass</span>
+          Entretien
+        </a>
+        
+        <a href="/sylviculture/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">park</span>
+          Sylviculture
+        </a>
+
+        <span class="nav-section-title">Planification</span>
+        
+        <a href="/plan_mission/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">event_note</span>
+          Plan de missions
+        </a>
+        
+        <span class="nav-section-title">Outils</span>
+        
+        <a href="/page/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">map</span>
+          Carte interactive
+        </a>
+        <a href="/inventaire/dossier/{{ id }}" class="nav-item">
+          <span class="material-icons-outlined">map</span>
+          Dossier inventaire
+        </a>
+        <span class="nav-section-title">Authentification</span>
+        <a href="/log/deconnecter" class="nav-item">
+          <span class="material-icons-outlined">logout</span>
+          Se deconnecter
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <span class="material-icons-outlined">menu</span>
+        </button>
+        <div class="page-title">
+          <h1>Entretien</h1>
+          <p>Suivi des travaux d'entretien</p>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="header-status">
+          <span class="dot"></span>
+          En ligne
+        </div>
+        
+        <div class="header-notifications">
+          <span class="material-icons-outlined">notifications</span>
+          <span class="badge"></span>
+        </div>
+        
+        <div class="header-user">
+          <div class="header-user-avatar">
+            <span class="material-icons-outlined">person</span>
+          </div>
+          <div class="header-user-info">
+            <p>Admin</p>
+            <span>Gestionnaire</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Filters Card -->
+      <div class="filters-card">
+        <form id="filterForm">
+          <div class="filters-grid">
+            <!-- Forêts Filter -->
+            <div class="filter-group">
+              <label class="filter-label">Forêts</label>
+              <div class="filter-checkbox-group">
+                <label class="filter-checkbox">
+                  <input type="checkbox" id="tene" name="foret" value="1" checked>
+                  <span>Téné</span>
+                </label>
+                <label class="filter-checkbox">
+                  <input type="checkbox" id="sangoue" name="foret" value="2" checked>
+                  <span>Sangoué</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Années Filter -->
+            <div class="filter-group">
+              <label class="filter-label">Exercice</label>
+              <div class="filter-dropdown">
+                <button type="button" class="filter-button" id="anneeBtn" onclick="toggleDropdown('anneeDropdown')">
+                  <span id="anneeCount">Toutes les années</span>
+                  <span class="material-icons-outlined">expand_more</span>
+                </button>
+                <div class="filter-dropdown-menu" id="anneeDropdown">
+                  <label class="filter-checkbox" style="border-bottom: 1px solid var(--gray-200); padding-bottom: 0.5rem; margin-bottom: 0.5rem;">
+                    <input type="checkbox" id="checkAllAnnee" checked>
+                    <span style="font-weight: 600;">Tout sélectionner</span>
+                  </label>
+                  <div id="anneeOptions"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Entretien Année Filter -->
+            <div class="filter-group">
+              <label class="filter-label">Année d'entretien</label>
+              <div class="filter-checkbox-group">
+                <label class="filter-checkbox">
+                  <input type="checkbox" id="ent0" name="entretien" value="0" checked>
+                  <span>Année 0</span>
+                </label>
+                <label class="filter-checkbox">
+                  <input type="checkbox" id="ent1" name="entretien" value="1" checked>
+                  <span>Année 1</span>
+                </label>
+                <label class="filter-checkbox">
+                  <input type="checkbox" id="ent2" name="entretien" value="2" checked>
+                  <span>Année 2</span>
+                </label>
+                <label class="filter-checkbox">
+                  <input type="checkbox" id="ent3" name="entretien" value="3" checked>
+                  <span>Année 3</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="filter-group" style="justify-content: flex-end;">
+              <button type="submit" class="btn-submit">
+                <span class="material-icons-outlined">refresh</span>
+                Actualiser
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Stats Bar -->
+      <div class="stats-bar" id="statsBar">
+        <div class="stat-card">
+          <div class="stat-icon primary">
+            <span class="material-icons-outlined">grid_view</span>
+          </div>
+          <div class="stat-content">
+            <h3 id="totalParcelles">--</h3>
+            <p>Parcelles</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon emerald">
+            <span class="material-icons-outlined">straighten</span>
+          </div>
+          <div class="stat-content">
+            <h3 id="totalSuperficie">-- ha</h3>
+            <p>Superficie totale</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon sky">
+            <span class="material-icons-outlined">park</span>
+          </div>
+          <div class="stat-content">
+            <h3 id="essenceDominante">--</h3>
+            <p>Essence dominante</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon amber">
+            <span class="material-icons-outlined">engineering</span>
+          </div>
+          <div class="stat-content">
+            <h3 id="operateurPrincipal">--</h3>
+            <p>Opérateur principal</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Parcelles Grid -->
+      <div class="parcelles-grid" id="parcellesGrid">
+        <div class="empty-state">
+          <div class="empty-state-icon">
+            <span class="material-icons-outlined" style="font-size: 2.5rem;">grass</span>
+          </div>
+          <h3>Sélectionnez vos critères</h3>
+          <p>Choisissez une forêt, une année et le type d'entretien puis cliquez sur "Actualiser"</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal Rapport -->
+  <div class="modal-overlay" id="reportModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2 id="modalTitle">Rapport d'Entretien</h2>
+        <div class="modal-header-actions">
+          <button class="btn-print no-print" onclick="window.print()">
+            <span class="material-icons-outlined">print</span>
+            Imprimer
+          </button>
+          <button class="modal-close no-print" onclick="closeModal()">
+            <span class="material-icons-outlined">close</span>
+          </button>
+        </div>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Report content will be injected here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // CONFIGURATION
+    // ==========================================
+    const currentYear = new Date().getFullYear();
+    const startYear = 2020;
+
+    // ==========================================
+    // SIDEBAR MOBILE
+    // ==========================================
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+
+    mobileMenuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      sidebarOverlay.classList.toggle('open');
+    });
+
+    sidebarOverlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      sidebarOverlay.classList.remove('open');
+    });
+
+    // ==========================================
+    // DROPDOWN ANNÉES
+    // ==========================================
+    function generateYearOptions() {
+      const container = document.getElementById('anneeOptions');
+      for (let year = currentYear; year >= startYear; year--) {
+        const label = document.createElement('label');
+        label.className = 'filter-checkbox';
+        label.innerHTML = `
+          <input type="checkbox" name="years[]" value="${year}" data-year checked>
+          <span>${year}</span>
+        `;
+        container.appendChild(label);
+      }
+    }
+
+    function toggleDropdown(id) {
+      const dropdown = document.getElementById(id);
+      dropdown.classList.toggle('open');
+    }
+
+    function updateYearDisplay() {
+      const checkboxes = document.querySelectorAll('input[data-year]');
+      const checked = Array.from(checkboxes).filter(c => c.checked);
+      const display = document.getElementById('anneeCount');
+      
+      if (checked.length === 0) {
+        display.textContent = 'Aucune année';
+      } else if (checked.length === checkboxes.length) {
+        display.textContent = 'Toutes les années';
+        document.getElementById('checkAllAnnee').checked = true;
+      } else {
+        display.textContent = `${checked.length} année(s)`;
+        document.getElementById('checkAllAnnee').checked = false;
+      }
+    }
+
+    document.getElementById('checkAllAnnee').addEventListener('change', function() {
+      document.querySelectorAll('input[data-year]').forEach(cb => cb.checked = this.checked);
+      updateYearDisplay();
+    });
+
+    document.addEventListener('click', (e) => {
+      const dropdown = document.getElementById('anneeDropdown');
+      const btn = document.getElementById('anneeBtn');
+      if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.remove('open');
+      }
+    });
+
+    // ==========================================
+    // FORMULAIRE ET DONNÉES
+    // ==========================================
+    document.getElementById('filterForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const forets = [];
+      if (document.getElementById('tene').checked) forets.push(1);
+      if (document.getElementById('sangoue').checked) forets.push(2);
+      
+      const annees = Array.from(document.querySelectorAll('input[data-year]:checked'))
+        .map(cb => cb.value);
+      
+      const entretien_annee = [];
+      if (document.getElementById('ent0').checked) entretien_annee.push(0);
+      if (document.getElementById('ent1').checked) entretien_annee.push(1);
+      if (document.getElementById('ent2').checked) entretien_annee.push(2);
+      if (document.getElementById('ent3').checked) entretien_annee.push(3);
+      
+      if (forets.length === 0) {
+        alert('Veuillez sélectionner au moins une forêt.');
+        return;
+      }
+      
+      if (annees.length === 0) {
+        alert('Veuillez sélectionner au moins une année.');
+        return;
+      }
+
+      try {
+        const response = await fetch('/entretien_p', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ foret: forets, annees, entretien_annee })
+        });
+        
+        if (!response.ok) throw new Error('Erreur serveur');
+        
+        const data = await response.json();
+        renderData(data);
+      } catch (error) {
+        console.error('Erreur:', error);
+        alert('Une erreur est survenue lors de la récupération des données.');
+      }
+    });
+
+    function renderData(data) {
+      const grid = document.getElementById('parcellesGrid');
+      
+      if (!data || data.length === 0) {
+        grid.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">
+              <span class="material-icons-outlined" style="font-size: 2.5rem;">inbox</span>
+            </div>
+            <h3>Aucune parcelle trouvée</h3>
+            <p>Essayez de modifier vos critères de recherche</p>
+          </div>
+        `;
+        updateStats(0, 0, '--', '--');
+        return;
+      }
+
+      // Calculs statistiques
+      const totalParcelles = data.length;
+      const totalSuperficie = data.reduce((sum, p) => sum + (parseFloat(p.superficie) || 0), 0);
+      
+      const essences = {};
+      const partenaires = {};
+      data.forEach(p => {
+        essences[p.essence] = (essences[p.essence] || 0) + 1;
+        partenaires[p.partenaire] = (partenaires[p.partenaire] || 0) + 1;
+      });
+      
+      const essenceDominante = Object.keys(essences).reduce((a, b) => essences[a] > essences[b] ? a : b, '--');
+      const operateurPrincipal = Object.keys(partenaires).reduce((a, b) => partenaires[a] > partenaires[b] ? a : b, '--');
+      
+      updateStats(totalParcelles, totalSuperficie, essenceDominante, operateurPrincipal);
+
+      // Rendu des cartes
+      grid.innerHTML = data.map(p => `
+        <div class="parcelle-card" data-id="${p.numero}">
+          <div class="parcelle-header">
+            <div class="parcelle-title">
+              <h3>Parcelle ${p.numero}</h3>
+            </div>
+
+          </div>
+          <div class="parcelle-body">
+            <div class="parcelle-info">
+              <div class="parcelle-info-item">
+                <span>Forêt</span>
+                <span>${p.foret === 1 ? 'Téné' : p.foret === 2 ? 'Sangoué' : p.foret}</span>
+              </div>
+              <div class="parcelle-info-item">
+                <span>Superficie</span>
+                <span>${p.superficie} ha</span>
+              </div>
+              <div class="parcelle-info-item">
+                <span>Essence</span>
+                <span>${p.essence}</span>
+              </div>
+              <div class="parcelle-info-item">
+                <span>Année de création</span>
+                <span>${p.annee}</span>
+              </div>
+            </div>
+          </div>
+          <div class="parcelle-footer">
+            <button class="btn-action primary" onclick="">
+              <span class="material-icons-outlined">assessment</span>
+              Rapport
+            </button>
+            
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateStats(parcelles, superficie, essence, operateur) {
+      document.getElementById('totalParcelles').textContent = parcelles;
+      document.getElementById('totalSuperficie').textContent = `${superficie.toFixed(1)} ha`;
+      document.getElementById('essenceDominante').textContent = essence;
+      document.getElementById('operateurPrincipal').textContent = operateur;
+    }
+
+    // ==========================================
+    // MODAL RAPPORT
+    // ==========================================
+    async function openReport(parcelleId) {
+      const modal = document.getElementById('reportModal');
+      const modalBody = document.getElementById('modalBody');
+      const modalTitle = document.getElementById('modalTitle');
+      
+      modalTitle.textContent = `Rapport d'Entretien - Parcelle ${parcelleId}`;
+      modalBody.innerHTML = `
+        <div style="text-align: center; padding: 3rem;">
+          <span class="material-icons-outlined" style="font-size: 3rem; color: var(--primary-500); animation: spin 1s linear infinite;">autorenew</span>
+          <p style="margin-top: 1rem; color: var(--gray-500);">Chargement du rapport...</p>
+        </div>
+      `;
+      modal.classList.add('open');
+      
+      try {
+        const response = await fetch('/rapport_entretien', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ parcelleId })
+        });
+        const data = await response.json();
+        renderEntretienReport(data, parcelleId);
+      } catch (error) {
+        modalBody.innerHTML = `
+          <div style="text-align: center; padding: 3rem; color: #ef4444;">
+            <span class="material-icons-outlined" style="font-size: 3rem;">error</span>
+            <p style="margin-top: 1rem;">Erreur lors du chargement du rapport</p>
+          </div>
+        `;
+      }
+    }
+
+    function renderEntretienReport(data, parcelleId) {
+      const modalBody = document.getElementById('modalBody');
+      
+      if (!data || data.length === 0) {
+        modalBody.innerHTML = '<p style="text-align:center; padding: 2rem;">Aucune donnée disponible pour cette parcelle</p>';
+        return;
+      }
+
+      const formatCurrency = (val) => new Intl.NumberFormat('fr-FR').format(Math.round(val || 0)) + ' XOF';
+
+      modalBody.innerHTML = `
+        <div class="report-summary">
+          <div class="report-summary-item">
+            <span>Parcelle</span>
+            <span>${data[0]?.numéro_parcelle || parcelleId}</span>
+          </div>
+          <div class="report-summary-item">
+            <span>Superficie</span>
+            <span>${data[0]?.superficie || '--'} ha</span>
+          </div>
+          <div class="report-summary-item">
+            <span>Essence</span>
+            <span>${data[0]?.essence || '--'}</span>
+          </div>
+          <div class="report-summary-item">
+            <span>Année plantation</span>
+            <span>${data[0]?.annee || '--'}</span>
+          </div>
+        </div>
+
+        <div class="report-section">
+          <h3 class="report-section-title">Historique des entretiens</h3>
+          <p style="color: var(--gray-600); margin-bottom: 1rem;">
+            Les entretiens se réalisent sur 4 années à partir de la plantation. 
+            Deux passages sont effectués chaque année pour assurer le bon développement des plants.
+          </p>
+          
+          <div style="overflow-x: auto;">
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th>Année</th>
+                  <th>Passage</th>
+                  <th>Date</th>
+                  <th>Activité</th>
+                  <th>Surface</th>
+                  <th>Coût</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Année 0</td>
+                  <td>1er</td>
+                  <td>15/06/2024</td>
+                  <td>Entretien ligne + interligne</td>
+                  <td>15 ha</td>
+                  <td>${formatCurrency(450000)}</td>
+                </tr>
+                <tr>
+                  <td>Année 0</td>
+                  <td>2e</td>
+                  <td>20/09/2024</td>
+                  <td>Remplacement + entretien</td>
+                  <td>15 ha</td>
+                  <td>${formatCurrency(380000)}</td>
+                </tr>
+                <tr>
+                  <td>Année 1</td>
+                  <td>1er</td>
+                  <td>--</td>
+                  <td>Non réalisé</td>
+                  <td>--</td>
+                  <td>--</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="report-section">
+          <h3 class="report-section-title">Synthèse</h3>
+          <div style="background: var(--sky-50); padding: 1rem; border-radius: var(--radius-lg); border-left: 4px solid var(--sky-500);">
+            <p style="color: var(--gray-700); line-height: 1.7;">
+              <strong>Taux de survie estimé:</strong> 85%<br>
+              <strong>Surface totale entretenue:</strong> 30 ha (cumulatif)<br>
+              <strong>Prochain entretien prévu:</strong> Mai 2025 (Année 1, 1er passage)
+            </p>
+          </div>
+        </div>
+
+        <div class="report-total">
+          <span>COÛT TOTAL DES ENTRETIENS</span>
+          <span>${formatCurrency(830000)}</span>
+        </div>
+      `;
+    }
+
+    function closeModal() {
+      document.getElementById('reportModal').classList.remove('open');
+    }
+
+    function openEdit(parcelleId) {
+      console.log('Édition de la parcelle:', parcelleId);
+      alert('Fonctionnalité d\'édition en cours de développement');
+    }
+
+    // Close modal on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // Close modal on overlay click
+    document.getElementById('reportModal').addEventListener('click', (e) => {
+      if (e.target.id === 'reportModal') closeModal();
+    });
+
+    // ==========================================
+    // INITIALISATION
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      generateYearOptions();
+      document.querySelectorAll('input[data-year]').forEach(cb => {
+        cb.addEventListener('change', updateYearDisplay);
+      });
+    });
+  </script>
+
+  <style>
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Mise en place</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/membres.css">
+  <link rel="stylesheet" href="/css/tailStyle.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen">
+<div class="grid-container">
+    <header class="header">
+      <div id="tableau_bord">
+        <div style="font-size: larger; font-weight: bolder;"><p>Parcelles</p></div>
+        <div style="font-size: smaller; font-weight:lighter; font-style: italic;">
+          <p>Reboisement</p>
+        </div>
+      </div>
+      <div class="alignement">
+        <div id="etat">
+          <span class="material-icons-outlined">wifi</span>
+          <p style="padding-left: 5px;">En ligne</p>
+        </div>
+        <div id="notification">
+          <span class="material-icons-outlined">notifications</span>
+          <div style="width : 2px; height: 2px; padding-left: 1px;border: 5px solid red; border-radius: 100%; background-color: red;">  </div>
+        </div>
+        <div id="admin">
+          <span class="material-icons-outlined" style="color: rgb(2, 27, 95);">account_circle</span>
+          <p style="padding-left: 5px;">Admin</p>
+        </div>
+      </div>
+    </header>
+    <aside class="sidebar">
+      <div id="entete" style="height: 11%; border-bottom: 0.1px solid rgb(126, 126, 126);">
+        <div style="width: 20%; height: 65%; background-color: rgb(177, 186, 0); border-radius: 50%;">
+        </div>
+        <a href="/">
+          <div id="entete_ecrit">
+            <p style="font-size: larger; font-weight: bolder;">GestCoop</p>
+            <p style="font-size: smaller; font-weight:lighter; font-style: italic; color: aqua;">
+              Gestion Coopérative</p>
+          </div>
+        </a>
+      </div>
+      <div id="boutons">
+        
+        <a href="#">
+        <div class="rubrique" id="parcelle" style=" border : 1px solid rgb(26, 83, 206);border-radius: 2.5%;
+          background-color: rgb(26, 83, 206);">
+          <span class="material-icons-outlined">area_chart</span>
+          <p style="padding-left: 5px;">Parcelles</p>
+        </div>
+        </a>
+        <a href="/membres">
+          <div class="rubrique" id="membre" >
+            <span class="material-icons-outlined">group</span>
+            <p style="padding-left: 5px;">Prod. de plants</p>
+          </div>
+        </a>
+        <a href="/mise_en_place">
+          <div class="rubrique" id="membre" >
+            <span class="material-icons-outlined">group</span>
+            <p style="padding-left: 5px;">Mise en place</p>
+          </div>
+        </a>
+        <a href="/productions">
+        <div class="rubrique" id="recolte">
+          <span class="material-icons-outlined">grain</span>
+          <p style="padding-left: 5px;">Entretien</p>
+        </div>
+        </a>
+        <a href="#">
+        <div class="rubrique" id="vente">
+          <span class="material-icons-outlined">shopping_cart</span>
+          <p style="padding-left: 5px;">Sylviculture</p>
+        </div>
+        </a>
+        <a href="#">
+        <div class="rubrique" id="rapport">
+          <span class="material-icons-outlined">article</span>
+          <p style="padding-left: 5px;">Rapports</p>
+        </div>
+        </a>
+        <a href="#">
+        <div class="rubrique" id="document">
+          <span class="material-icons-outlined">area_chart</span>
+          <p style="padding-left: 5px;">Carte interactive</p>
+        </div>
+        </a>
+        <a href="#">
+        <div class="rubrique" id="parametre">
+          <span class="material-icons-outlined">settings</span>
+          <p style="padding-left: 5px;">Parametres</p>
+        </div>
+        </a>
+      </div>
+      
+    </aside>
+    <main class="main-container">
+      <div class="alignement">
+        <div id="tableau_bord">
+          <div style="display:flex;flex-direction: column;">
+            <div>
+              <div style="font-size: larger; font-weight: light;"><p> {{ totalMembres }} Parcelles ({{ superficieTotale }} Ha)</p></div>
+            </div>
+            <div>
+              <div style="font-size: larger; font-weight: light;"><p>Essence dominante : {{ predominantEssence }} ({{ occurance }} / {{ totalMembres }}) </p></div>
+              <div style="font-size: larger; font-weight: light;"><p>Opérateur principal : {{ predominantPartenaire }} </p></div>
+            </div>
+          </div>
+          
+          <div style="font-size: smaller; font-weight:lighter; font-style: italic;">
+          </div>
+        </div>
+        <div class="alignement" id="rubrique" style="background-color: rgb(13, 51, 222);border-radius: 3%;">
+          <span class="material-icons-outlined">add</span>
+          <button type="submit" class="text-white px-4 py-1" id="myBtn">Ajouter une activité</button>
+        </div>
+      </div>
+      <!-- Modal -->
+      <div id="myModal" class="modal">
+        <!-- Contenu du Modal -->
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <p>Ajouter membre</p>
+          <div class="elements_modal_col">
+            <div class="elements_modal_col">
+              <label>Nom et prénoms</label>
+              <input name="nom" type="text" placeholder="Entrer nom et prénoms">
+            </div>
+            <div class="elements_modal_col">
+              <label>Numéro d'adhérent</label>
+              <input name="nom" type="text" placeholder="Entrer numéro d'adhérent">
+            </div>
+            <div class="elements_modal_ligne" style="margin: 0;">
+              <div class="elements_modal_col">
+                <label>Sexe</label>
+                <input name="nom" type="text" placeholder="Entrer sexe">
+              </div>
+              <div class="elements_modal_col">
+                <label>Age</label>
+                <input name="nom" type="text" placeholder="Entrer age">
+              </div>
+            </div>
+            <div class="elements_modal_col">
+              <label>Numéro de Téléphone</label>
+              <input name="nom" type="text" placeholder="Entrer numéro de téléphone">
+            </div>
+            <div class="elements_modal_col">
+              <label>Adresse</label>
+              <input name="nom" type="text" placeholder="Entrer adresse">
+            </div>
+            <div class="elements_modal_col">
+              <label>Statut</label>
+              <select>
+                <option>Statut</option>
+                <option>Actif</option>
+                <option>Inactif</option>
+              </select>
+            </div>
+          </div>
+          <div class="elements_modal_ligne" id="bouton_ajout">
+            <button id="bout_annuler">Annuler</button>
+            <button id="bout_ajouter">Ajouter</button>
+          </div>
+        </div>
+      </div>
+      <div class="alignement" style="padding-top: 1%; padding-bottom: 1%;display: none;">
+        
+        <div style="width: 20%;">
+          <select style="padding: 3%; border-radius: 3%;">
+            <option>Forêt</option>
+            <option>Toutes les forêts</option>
+          </select>
+        </div>
+        <div style="width: 20%;">
+          <select style="padding: 3%; border-radius: 3%;">
+            <option>Année de création</option>e
+            <option>Toutes les années</option>
+          </select>
+        </div>
+        <div style="width: 20%;">
+          <select style="padding: 3%; border-radius: 2%;">
+            <option>Numéro de parcelles</option>
+            <option>Tous les numéros</option>
+          </select>
+        </div>
+        <div style="width: 40%;">
+          <button type="submit" class="btn-text">Actualiser</button>
+        </div>
+      </div>
+      <div class="align_membres">
+        {% for m in membre %}
+          <div class="alignement_col" id="div_membre" style=" width: 30%;border-radius: 5%;">
+            <div class="alignement" style="margin-top: 3%;">
+              <h2 style="font-weight: bold;"> Parcelle {{ m.numero }}</h2>
+              <p style="margin-left: 10px; background-color: rgb(215, 249, 215); border-radius: 15%;
+               padding-left: 10px; padding-right: 10px;">En cours</p>
+            </div>
+            <div class="alignement_col" style="font-weight: lighter; font-style: italic; margin-top: 1px;">
+              <p>Forêt : {{ m.foret }}</p> 
+              <p>Superficie : {{ m.superficie }} ha</p> 
+              <p>Essence : {{ m.essence }}</p>
+              <p>Annee de création : {{ m.annee }}</p>
+            </div>
+            <div class="alignement" style="margin-top: 2%;">
+              <div class="alignement" style="margin-left: 10px; background-color: rgb(193, 221, 248); 
+                border-radius: 10%; padding-left: 10px; padding-right: 10px;">
+                <span class="material-icons-outlined" style="color: blue;">visibility</span>
+                <button>Rapport</button>
+              </div>
+              <div class="alignement" style="margin-left: 10px; background-color: rgb(215, 249, 215); 
+                border-radius: 10%; padding-left: 10px; padding-right: 10px;">
+                <span class="material-icons-outlined" style="color:green ;">edit</span>
+                <button>Editer</button>
+              </div>
+              <button>
+                <div class="alignement" style="margin-left: 10px; background-color: rgb(250, 251, 201); 
+                  border-radius: 10%; padding-left: 10px; padding-right: 10px;">
+                  <span class="material-icons-outlined" style="color:rgb(0, 0, 0);">map</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        {# }) #}
+        
+      </div>
+    </div>
+      
+
+</main>
+    <footer>
+    </footer>
+    <script src="/js/script.js"></script>
+    <script src="/js/membres.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/js/dashboard.js"></script>
+  </div>
+</body>
+</html>

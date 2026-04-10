@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>ENTRETIEN</title>
+
+    <!-- Montserrat Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link rel="icon" 
+     type="image/png" 
+     href="/img/Logo_gestreb.jpg">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/tailStyle.css">
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body>
+    <div class="grid-container">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="menu-icon" onclick="openSidebar()">
+          <span class="material-icons-outlined">menu</span>
+        </div>
+        <div class="header-left">
+          <div class="main-title">
+          <h2>TABLEAU DE BORD</h2>
+        </div>
+        </div>
+        <div class="header-right">
+        </div>
+      </header>
+      <!-- End Header -->
+
+      <!-- Sidebar -->
+      <aside id="sidebar">
+        <div class="sidebar-title">
+          <div class="sidebar-brand">
+            <a href="#" class="flex ms-2 md:me-24">
+              <img src="/img/Logo_gestreb.jpg" class="ml-4" alt="Logo GestReb" />
+              </a>
+          </div>
+          <span class="material-icons-outlined" onclick="closeSidebar()">close</span>
+        </div>
+        <div class="px-2 pb-4 bg-green  shadow-zinc-600">
+          <ul class="space-y-2 font-medium">
+            <li>
+              <a href="/api/cugf/{{ foret }}" class="flex items-center py-3 px-1 mt-16 text-black   hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined">dashboard</span>
+                <span class="ms-3">Tableau de bord</span>
+              </a>
+            </li>   
+            <li>
+              <a href="/api/cugf/mise_en_place/{{ foret }}" class="flex items-center mt-16 p-2 dark:text-black  hover:border-y hover:border-gray-500 group">
+                <span style="color: black;" class="material-icons-outlined">description</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Mise en place</span>
+              </a>
+            </li>  
+            <li>
+              <a href="/api/cugf/entretien/{{ foret }}" class="flex items-center mt-16 p-2 dark:text-black border-y border-black hover:border-y hover:border-gray-500 group">
+                <span style="color: black;" class="material-icons-outlined">description</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Entretien</span>
+              </a>
+            </li> 
+            <li>
+              <a href="#" class="flex items-center mt-16 p-2 dark:text-black  hover:border-y hover:border-gray-500 group">
+                <span style="color: black;" class="material-icons-outlined">description</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Sylviculture</span>
+              </a>
+            </li> 
+                       
+          </ul>
+        </div>
+      </aside>
+      <!-- End Sidebar -->
+
+     <!-- Main -->
+     <main class="main-container">
+
+      <div class="sticky-buttons" style="border-bottom:solid 1px white; justify-items :flex-start; font-size: larger;">
+        <h2 class="main-title">ENTRETIEN - {{ travail }}</h2>
+      </div>
+
+      <div class="main-lignes" style="overflow-y: auto; height: 70%;">
+        
+        <div class=" m-4">
+          <div class="items-center space-y-2 md:space-y-0 pb-1 dark:bg-gray-900">
+            <table class="w-full bottom-0 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-lg overflow-auto">
+                <thead class="relative text-xs text-white uppercase  bg-gray-900">
+                    <tr>
+                      <th scope="col" class="px-6 py-3">
+                        Id
+                    </th>
+                        <th scope="col" class="px-6 py-3">
+                            N° Parcelle
+                        </th>
+                        
+                        <th scope="col" class="px-6 py-3">
+                            Année
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                          Essence
+                      </th>
+                      <th scope="col" class="px-6 py-3">
+                        Objectif (ha)
+                    </th>
+                        <th scope="col" class="px-6 py-2">
+                            Réalisé (ha)
+                        </th>
+                        <th scope="col" class="hidden px-6 py-2">
+                          Editer
+                      </th>
+                        <th scope="col" class="px-6 py-2">
+                          Taux de réalisation (%)
+                      </th>
+                      <th scope="col" class="px-6 py-2">
+                        Réliquat
+                    </th>
+                    </tr>
+                </thead>
+                <tbody class="overflow-auto">            
+                </tbody>
+            </table>
+          </div>
+        </div>
+        
+      </div>
+      <div class="sticky-buttons" style=" margin-top: 10px;margin-bottom: 20px;display: flex; justify-content:end; font-size:medium;">
+        <div style="margin-top:15px; color : black; background-color: rgb(157, 174, 7); padding: 0px; border-radius: 7%;">
+          <button id="editer">EDITER</button>
+        </div>    
+        <div style="margin-top:15px; color : black; background-color: rgb(157, 174, 7); padding: 0px; border-radius: 7%;">
+          <button id="enreg" class="hidden"><a href="/api/cugf/entretien/{{ annee }}/{{ foret }}/{{ travail }}">ENREGISTRER</a></button>
+        </div>    
+      </div>
+      <div class="sticky-buttons" style=" border-top:solid 1px white;display: flex; justify-content:end; font-size:medium;">
+        
+        <div style="margin-top:15px; background-color: green; padding: 0px; border-radius: 7%;">
+          <button id="valider"><a href="/api/cugf/entretien_1/1/{{ foret }}">VALIDER</a></button>
+        </div>
+        
+      </div>
+     
+    </main>
+    <!-- End Main -->
+      </div>
+    
+      <div id="travail" post="{{ travail }}"></div>
+    <!-- Scripts -->
+    <!-- ApexCharts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/scripts.js"></script>
+    <script>
+      
+      document.addEventListener('DOMContentLoaded', async () => {
+        try {
+          const response = await fetch('/get/parcelles/entretien/{{ annee }}/{{ foret }}/{{ travail }}');
+          const parcelles = await response.json();
+          const tableBody = document.querySelector('tbody');
+          const travail = document.getElementById('travail').getAttribute('post');
+          if (travail==10 || travail==16 ){
+            parcelles.forEach(parcelle => {
+            const row = document.createElement('tr');
+            row.setAttribute('class', 'bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600');
+            row.innerHTML = `
+              <td class="px-4 py-1">${parcelle.id}</td>
+              <td class="px-4 py-1">${parcelle.numero}</td>
+              <td class="px-4 py-1">${parcelle.annee}</td>
+              <td class="px-4 py-1">${parcelle.essence}</td>
+              <td class="px-4 py-1">${(Math.round(parcelle.superficie/5 * 100)/100).toFixed(2)}</td>
+              <td class="px-4 py-1">${(Math.round(parcelle.superficie_traitee * 100)/100).toFixed(2)}</td>
+              <td class="hidden px-4 py-1"><input type="text" class="rounded-16 font-medium text-blue-600 dark:text-blue-500 hover:underline" 
+                data-id=${parcelle.id} data-field="superficie_traitee"></td>
+              <td class="px-4 py-1">${(Math.round((parcelle.superficie_traitee/(parcelle.superficie/5)*100) * 100)/100).toFixed(2)}</td>
+              <td class="px-4 py-1">${(Math.round(((parcelle.superficie/5)-parcelle.superficie_traitee) * 100)/100).toFixed(2)}</td>
+            `;
+            tableBody.appendChild(row);
+          });
+          }else{
+          parcelles.forEach(parcelle => {
+            const row = document.createElement('tr');
+            row.setAttribute('class', 'bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600');
+            row.innerHTML = `
+              <td class="px-4 py-1">${parcelle.id}</td>
+              <td class="px-4 py-1">${parcelle.numero}</td>
+              <td class="px-4 py-1">${parcelle.annee}</td>
+              <td class="px-4 py-1">${parcelle.essence}</td>
+              <td class="px-4 py-1">${(Math.round(parcelle.superficie * 100)/100).toFixed(2)}</td>
+              <td class="px-4 py-1">${(Math.round(parcelle.superficie_traitee * 100)/100).toFixed(2)}</td>
+              <td class="hidden px-4 py-1"><input type="text" class="rounded-16 font-medium text-blue-600 dark:text-blue-500 hover:underline" 
+                data-id=${parcelle.id} data-field="superficie_traitee"></td>
+              <td class="px-4 py-1">${(Math.round((parcelle.superficie_traitee/parcelle.superficie*100) * 100)/100).toFixed(2)}</td>
+              <td class="px-4 py-1">${(Math.round((parcelle.superficie-parcelle.superficie_traitee) * 100)/100).toFixed(2)}</td>
+            `;
+            tableBody.appendChild(row);
+          })};
+        } catch (error) {
+          console.error('Erreur lors de la récupération des parcelles:', error);
+        }
+      });
+
+      document.addEventListener('DOMContentLoaded', () => {
+    const validerButton = document.getElementById('enreg');
+    validerButton.addEventListener('click', async () => {
+      const inputs = document.querySelectorAll('input[data-field="superficie_traitee"]');
+      const updates = [];
+      inputs.forEach(input => {
+        const id = input.getAttribute('data-id');
+        const value = input.value;
+        updates.push({ id, value });
+        
+      });
+      console.log(updates)
+      try {
+        const response = await fetch('/get/parcelles/entretien/{{ annee }}/{{ foret }}/{{ travail }}', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({updates}),
+        });
+        if (!response.ok) {
+          throw new Error('Erreur lors de la mise à jour');
+        }
+        console.log('Mise à jour réussie');
+      } catch (error) {
+        console.error('Erreur:', error);
+      }
+    });
+  });
+  document.addEventListener('DOMContentLoaded', () => {
+  const editerButton = document.getElementById('editer');
+  
+  editerButton.addEventListener('click', () => {
+    // Sélectionner les éléments avec la classe 'hidden' dans les 'th'
+    const thElements = document.querySelectorAll('th.hidden');
+    thElements.forEach(th => {
+      th.classList.remove('hidden'); // Supprime la classe 'hidden'
+      th.classList.add('inline-block'); // Ajoute la classe 'inline-block'
+    });
+
+    // Sélectionner les éléments avec la classe 'hidden' dans les 'td'
+    const tdElements = document.querySelectorAll('td.hidden');
+    tdElements.forEach(td => {
+      td.classList.remove('hidden'); // Supprime la classe 'hidden'
+      td.classList.add('inline-block'); // Ajoute la classe 'inline-block'
+    });
+
+    const valider = document.getElementById('enreg');
+    valider.classList.remove('hidden'); // Supprime la classe 'hidden'
+    valider.classList.add('inline-block'); // Ajoute la classe 'inline-block'
+    editerButton.classList.remove('inline-block'); // Supprime la classe 'hidden'
+    editerButton.classList.add('hidden'); // Ajoute la classe 'inline-block'
+    });
+});
+
+    </script>
+  </body>
+</html>

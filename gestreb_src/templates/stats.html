@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="icon" 
+        type="image/png" 
+        href="/img/logo_gestreb_v7.png">
+        <script src="libs/jquery.js"></script>
+        <script src="libs/v6.13.0-dist/ol.js"></script>
+        <link rel="stylesheet" href="libs/v6.13.0-dist/ol.css">
+        <script src="libs/ol-layerswitcher-master/dist/ol-layerswitcher.js"></script>
+        <link rel="stylesheet" href="libs/ol-layerswitcher-master/dist/ol-layerswitcher.css" />
+        <script src="libs/ol-geocoder/ol-geocoder.js"></script>
+        <link rel="stylesheet" href="libs/ol-geocoder/ol-geocoder.css" />
+        <script src="libs/ol-popup/ol-popup.js"></script>
+        <link rel="stylesheet" href="libs/ol-popup/ol-popup.css" />
+        <link rel="stylesheet" href="libs/jquery-ui-1.12.1/jquery-ui.css">
+        <script src="libs/jquery-ui-1.12.1/external/jquery/jquery.js"></script>
+        <script src="libs/jquery-ui-1.12.1/jquery-ui.js"></script>
+        <link href="css/tailStyle.css" rel="stylesheet" />
+        <link href="css/style_perso.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    <body >
+            <div style="position: absolute;"  class="mt-0 h-screen w-full font-[sans-serif]  bg-white">
+                
+                    <div style="background-color: #4CAF50; top:0%;display:inline-block; position:absolute; width: 40%; height: 90%; border-width: 1px;border-color: grey; border-radius: 5%; padding : 4%; margin:4%;">
+                        <div style="height: 7%;">
+                            <div style="align-items: center;text-align: center;">
+                                <h2 style="font-weight: bold;color: white;">Superficie totale</h2>
+                            </div>
+                        </div>
+                        <div style="background-color: #006fb3;border-width: 1px;border-radius: 10%; height: 15%;">
+                            <div style="align-items: center;text-align: center;">
+                                <h1 id ="sup_totale" style="font-weight: bold;font-size: 20px;color:white">Superficie totale</h1>
+                            </div>
+                        </div>
+                        <div style="height: 7%;">
+                            <div style="align-items: center;text-align: center;">
+                                <h2 style="font-weight: bold;color: white;">Superficie Moyenne</h2>
+                            </div>
+                        </div>
+                        <div style="background-color: #006fb3;border-width: 1px;border-radius: 10%;height: 15%;">
+                            <div style="align-items: center;text-align: center;">
+                                <h1 id ="sup_moyenne" style="font-weight: bold;font-size: 30px;color:white">Superficie Moyenne</h1>
+                            </div>
+                        </div>
+                        <div style="height: 7%;">
+                            <div style="align-items: center;text-align: center;">
+                                <h2 style="font-weight: bold;color: white;">Superficie min</h2>
+                            </div>
+                        </div>
+                        <div style="background-color: #006fb3;border-width: 1px;border-radius: 10%;height: 15%;">
+                            <div style="align-items: center;text-align: center;">
+                                <h1 id ="sup_min" style="font-weight: bold;font-size: 20px;color:white">Superficie minimale</h1>
+                            </div>
+                        </div>
+                        <div style="height: 7%;">
+                            <div style="align-items: center;text-align: center;">
+                                <h2 style="font-weight: bold;color: white;">Superficie max</h2>
+                            </div>
+                        </div>
+                        <div style="background-color: #006fb3;border-width: 1px;border-radius: 10%; height: 15%;">
+                            <div style="align-items: center;text-align: center;">
+                                <h1 id ="sup_max" style="font-weight: bold;font-size: 20px;color:white">Superficie maximale</h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="background-color: #4CAF50;top :0%; left:50%; display: inline-block; position:absolute; width: 40%; height: 90%; border-width: 1px;border-color: grey; border-radius: 5%; padding : 4%; margin:4%;">
+                        <div style="height: 5%;">
+                            <div style="align-items: center;text-align: center;">
+                                <h2 style="font-weight: bold;color: white;">Nombre d'opérateurs</h2>
+                            </div>
+                        </div>
+                        <div style="background-color: #006fb3;border-width: 1px;border-radius: 10%;height: 10%;">
+                            <div style="align-items: center;text-align: center;">
+                                <h1 id ="nb_operateur" style="font-weight: bold;font-size: 20px;color:white">Nb</h1>
+                            </div>
+                        </div>
+                        <div style="height: 5%;">
+                            <div style="align-items: center;text-align: center;">
+                                <h2 style="font-weight: bold;color: white;">Nom des opérateurs</h2>
+                            </div>
+                        </div>
+                        <div style="background-color: #006fb3;border-width: 1px;border-radius: 10%;height: 60%;">
+                            <div style="align-items: center;text-align: left; padding: 5%;">
+                                
+                                <ul id ="nom_operateurs" style="font-weight: bold;font-size: 11px;color:white">
+
+                                </ul>
+                            </div>
+                        </div>
+                                                       
+                    
+                </div>
+            </div>
+            
+    </body>
+</html>

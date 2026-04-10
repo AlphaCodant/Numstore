@@ -1,0 +1,86 @@
+<div id="myModal" class="modal">
+        <div class="modal-content">
+            
+            <!-- HEADER : Titre et Boutons d'Action (Structure fournie par l'utilisateur) -->
+            <div class="flex justify-between items-center border-b pb-3 mb-4 no-print">
+                <h2 id="no_parcelle_rapport" class="text-2xl font-bold text-gray-800">FICHE PARCELLAIRE</h2>
+            </div>
+            
+            <!-- CONTENU DU RAPPORT (Contenu de la Fiche Parcellaire stylisée inséré ici) -->
+            <div id="rapport-content" class="text-sm space-y-4">
+                <!-- Résumé des Données (Numéro, Essence, Superficie, Financement) -->
+                <div class="flex flex-col sm:flex-row justify-between border-b border-gray-200 p-2">
+                    <!-- Colonne 1 -->
+                    <div class="flex flex-col w-full sm:w-1/2 sm:pr-4">
+                        <div class="data-summary-row flex justify-between text-sm">
+                            <p class="font-medium text-gray-700">Numéro:</p>
+                            <p id="fp_num" class="font-extrabold text-gray-900">P-101</p>
+                        </div>
+                        <div class="data-summary-row flex justify-between text-sm">
+                            <p class="font-medium text-gray-700">Superficie:</p>
+                            <p id="fp_sup" class="font-extrabold text-gray-900">15.5 ha</p>
+                        </div>
+                    </div>
+                    <!-- Colonne 2 -->
+                    <div class="flex flex-col w-full sm:w-1/2 sm:pl-4 mt-2 sm:mt-0">
+                        <div class="data-summary-row flex justify-between text-sm">
+                            <p class="font-medium text-gray-700">Essence:</p>
+                            <p id="fp_ess" class="font-extrabold text-gray-900">Acacia</p>
+                        </div>
+                        <div class="data-summary-row flex justify-between text-sm">
+                            <p class="font-medium text-gray-700">Financement:</p>
+                            <p id="fp_fin" class="font-extrabold text-gray-900">Banque Mondiale</p>
+                        </div>
+                    </div>
+                </div>      
+                <h4 class="text-md font-semibold text-gray-800 mt-6 mb-2 pt-2 border-t border-gray-100">Historique des Travaux</h4>
+                <!--Travaux de preparation de terain-->
+                <h4 class="text-md font-semibold text-gray-800 mt-6 mb-2 pt-2 border-t border-gray-100 underline">I-Préparation de terrain</h4>
+                <p>La préparation de terrain est l'ensemble des opérations 
+                  effectuées sur une parcelle avant la plantation. Les travaux 
+                  de préparation terrain effectués sont mentionnés dans le tableau ci-dessous :
+                </p>
+                <!-- Tableau des Activités -->
+                <div class="table-container">
+                    <table class="w-full text-xs text-left styled-table">
+                        <!-- En-tête -->
+                        <thead class="text-white uppercase" 
+                            style="background-image: linear-gradient(to right, rgb(0, 140, 255), rgb(0, 238, 255));">
+                            <tr>
+                                <th scope="col" class="px-3 py-2">Date</th>
+                                <th scope="col" class="px-3 py-2">Travail</th>
+                                <th scope="col" class="px-3 py-2" id="taux_td">Coût (F CFA)</th>
+                                <th scope="col" class="px-3 py-2">Réalisé (ha)</th>
+                                <th scope="col" class="px-3 py-2">Montant</th>                               
+                            </tr>
+                        </thead>
+                        <!-- Corps du tableau -->
+                        <tbody id="tbody2" class="bg-white text-gray-700 border-b"> 
+                            <!-- Données factices -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex justify-between items-center mt-6 p-4 bg-blue-100">
+                    <div><h5 class="text-black text-base font-semibold">Coût des travaux de préparation de terrain </h5></div>
+                    <div><h5 class="text-black text-xl font-extrabold" id="cout_preparation">360 000 F CFA</h5></div>
+                </div>
+                <h4 class="text-md font-semibold text-gray-800 mt-6 mb-2 pt-2 border-t border-gray-100 underline">II-Planting</h4>
+                <p>Les travaux 
+                  de plantation effectués sont présentés dans le tableau ci-dessous :
+                </p>
+                </div>
+                <div class="flex justify-between items-center mt-6 p-4 bg-blue-100">
+                    <div><h5 class="text-black text-base font-semibold">Coût des travaux d'entretien Annee 0 (2e Passage) </h5></div>
+                    <div><h5 class="text-black text-xl font-extrabold" id="cout_entretien_0_2">360 000 F CFA</h5></div>
+                </div>
+
+
+                <!-- Pied de Page (Coût de Reviens) -->
+                <div class="footer-gradient-style flex justify-between items-center mt-6 p-4 rounded-lg">
+                    <div><h5 class="text-white text-base font-bold">COÛT TOTAL</h5></div>
+                    <div><h5 class="text-yellow-300 text-xl font-extrabold" id="cout_reviens">360 000 F CFA</h5></div>
+                </div>
+
+            </div>            
+        </div>
+    </div>

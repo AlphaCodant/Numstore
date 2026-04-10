@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, shrink-to-fit=no"
+		/>
+		<title>WebStylePress</title>
+    <script src="/libs/jquery.js"></script>
+    <link rel="stylesheet" href="/libs/jquery-ui-1.12.1/jquery-ui.css">
+    <script src="/libs/jquery-ui-1.12.1/external/jquery/jquery.js"></script>
+    <script src="/libs/jquery-ui-1.12.1/jquery-ui.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css"/>
+		<link rel="stylesheet" href="/css/custom2.css" />
+        <link rel="stylesheet" href="/css/style_perso.css" />
+      <!-- Charger jsPDF depuis un CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- Charger le plugin autoTable depuis un CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.21/jspdf.plugin.autotable.min.js"></script>
+
+	</head>
+	<body>
+        <div id="loader3" class="loader3">
+            <img src="/img/loader.gif" alt="Loading...">
+          </div>
+    
+		<div class="container receipt-wrap" id="receipt-wrap">
+			<div class="row justify-content-md-center">
+				<div class="receipt-main col-xs-12 col-sm-12 col-md-12">
+                    <h5 style="font-size: 15px;"
+					>Tableau : Dévis de création de plantation industrielle</h5
+					<div>						
+                        <table border="1" id="table2" class="table col-xs-12 col-sm-12 col-md-12">
+                            <thead>
+                                <tr>
+                                    <th >Travaux</th>
+                                    <th >Unité</th>
+                                    <th >Coût activité</th>
+                                    <th >Superficie (Ha)</th>
+                                    <th >Montant (FCFA)</th>
+                                </tr>
+                                
+                            </thead>
+                            <tbody id="table10">
+
+                              <tr id="ligne_table1">
+                                <td>Rabattage</td><td>Ha</td><td id="td3">40000</td><td id="td41"></td><td id="td51"></td>
+                              </tr>
+                              <tr id="ligne_table2">
+                                <td>Abattage et tronçonnage</td><td>Ha</td><td id="td3">45000</td><td id="td42"></td><td id="td52"></td>
+                              </tr>
+                              <tr id="ligne_table3">
+                                <td>Brûlage</td><td>Ha</td><td id="td3">8000</td><td id="td43"></td><td id="td53"></td>
+                              </tr>
+                              <tr id="ligne_table4">
+                                <td>Piquetage de base des lignes de plantation</td><td>Ha</td><td id="td3">10000</td><td id="td44"></td><td id="td54"></td>
+                              </tr>
+                              <tr id="ligne_table13">
+                                <td>Ouverture des lignes de plantation</td><td>Ha</td><td id="td3">25000</td><td id="td413"></td><td id="td513"></td>
+                              </tr>
+                              <tr id="ligne_table5">
+                                <td>Trouaison</td><td>Ha</td><td id="td3">15000</td><td id="td45"></td><td id="td55"></td>
+                              </tr>
+                              <!--<tr id="ligne_table6">
+                                <td>Trouaison</td><td>Ha</td><td id="td3"></td><td id="td4"></td><td id="td5"></td><td id="td6"></td>
+                              </tr>-->
+                              <tr id="ligne_table6">
+                                <td>Planting</td><td>Ha</td><td id="td3">20000</td><td id="td46"></td><td id="td56"></td>
+                              </tr>
+                              <tr id="ligne_table7">
+                                <td>Entretien 1 ligne</td><td>Ha</td><td id="td3">20000</td><td id="td47"></td><td id="td57"></td>
+                              </tr>
+                              <tr id="ligne_table8">
+                                <td>Entretien 1 interligne</td><td>Ha</td><td id="td3">10000</td><td id="td48"></td><td id="td58"></td>
+                              </tr>
+                              <tr id="ligne_table9">
+                                <td>Remplacement plants morts</td><td>Ha</td><td id="td3">10000</td><td id="td49"></td><td id="td59"></td>
+                              </tr>
+                              <tr id="ligne_table10">
+                                <td>Entretien en puits</td><td>Ha</td><td id="td3">10000</td><td id="td410"></td><td id="td510"></td>
+                              </tr>
+                              <tr id="ligne_table11">
+                                <td>Entretien 2 ligne</td><td>Ha</td><td id="td3">25000</td><td id="td411"></td><td id="td511"></td>
+                              </tr>
+                              <tr id="ligne_table12">
+                                <td>Entretien 2 interligne</td><td>Ha</td><td id="td3">15000</td><td id="td412"></td><td id="td512"></td>
+                              </tr>
+      
+                              <tr id="ligne_total">
+                                <td>Total</td><td></td><td id="td3"></td><td id="td414"></td><td id="td514"></td>
+                              </tr>
+                              <tr id="ligne_table15"></tr>
+                              <tr id="ligne_table16"></tr>
+                              <tr id="ligne_table17"></tr>
+                              <tr id="ligne_table18"></tr>
+                              <tr id="ligne_table19"></tr>
+                              <tr id="ligne_table20"></tr>
+                            </tbody>
+                        </table>
+					</div>
+					<br>
+					<div class="row">
+						<div class="col-xs-8 col-sm-8 col-md-8 text-left">
+							<div class="receipt-right">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+    <br>
+    <!--<button id="generatePdfButton" style="position: absolute; color :white; width:50%;background-color: green; border-width: 0%;left: 25%;">Enrégistrer PDF</button>-->
+    <div id="postData" post="{{ id }}"></div>
+    
+	</body>
+	<script>
+        const loader2 = document.getElementById('loader3');
+        loader2.style.display = 'inline-block';
+        setTimeout(()=>{
+            loader2.style.display = 'none';   
+        },3000);
+        let ids = document.getElementById('postData').getAttribute('post');
+        
+let donnee_get =[];
+let liste_num = [];
+let sup = {"Rabattage":0,"Abattage et tronçonnage":0,"Brûlage":0,"Piquetage de base des lignes de plantation":0,"Ouverture de lignes de plantation":0,"Trouaison":0,"Planting":0,"Entretien 1 ligne":0,"Entretien 1 interligne":0,
+"Planting":0,"Remplacement plants morts":0,"Entretien en puits":0,"Entretien 2 ligne":0,"Entretien 2 interligne":0}
+let mont = {"Rabattage ":0,"Abattage et tronçonnage ":0,"Brûlage ":0,"Piquetage de base des lignes de plantation ":0,"Trouaison ":0,"Planting ":0,"Entretien 1 ligne":0,"Entretien 1 interligne":0,
+"Planting ":0,"Remplacement plants morts":0,"Entretien en puits ":0,"Entretien 2 ligne":0,"Entretien 2 interligne ":0}
+let sup_totale = 0;
+let mon_total = 0;
+let jsonCugf =[];
+$(document).ready(function() {  
+    $.ajax({
+        url: `/data`,
+        dataType: "json",
+        success: function(json) {
+            jsonCugf.push(json);
+            console.log(json[2]);
+            setTimeout(function (){
+            
+                
+    $(document).ready(()=>{
+        $.ajax({
+            url :`/json/fichier-${ids}.geojson`,
+            success : (data)=>{
+                for (let i=0;i<data.features.length;i++){
+                    liste_num.push(data.features[i].properties['numero']);
+                }
+            }
+        })
+    })
+    console.log(liste_num);
+
+    setTimeout(()=>{
+        for (let jj=0;jj<liste_num.length;jj++){
+        console.log(jj);
+        for (let z=0; z<jsonCugf[0].length;z++){
+            
+      let elements=json[z];
+      console.log(elements);
+      if (elements['donnees_identification/parcelle']==liste_num[jj]){
+        if (typeof(elements['donnees_tableau/total/surface3'])!="undefined" && typeof(elements['donnees_tableau/total/surface3'])!="" 
+        && typeof(elements['donnees_tableau/total/surface3'])!="NaN"){
+            sup[elements['donnees_tableau/travail']] +=parseFloat(elements['donnees_tableau/total/surface3']) ;
+        }
+        //if (typeof(elements['donnees_tableau/regie/surface2'])!="undefined" && typeof(elements['donnees_tableau/regie/surface2'])!=""){
+           // sup[elements['donnees_tableau/travail']] +=parseFloat(elements['donnees_tableau/regie/surface2'] );
+       // }
+        
+        console.log(elements['donnees_tableau/travail']);
+        console.log(sup);
+        //sup_totale +=elements['donnees_tableau/regie/surface2'] ;
+        /*
+        if (typeof(elements['donnees_tableau/regie/homme_jour/cout1_001'])!="undefined" && typeof(elements['donnees_tableau/regie/homme_jour/cout1_001'])!=""){
+            mont[elements['donnees_tableau/travail']] +=parseFloat( elements['donnees_tableau/regie/homme_jour/cout1_001'] );
+        }
+        if (typeof(elements['donnees_tableau/sous_traitance/cout1'])!="undefined" && typeof(elements['donnees_tableau/sous_traitance/cout1'])!=""){
+        mont[elements['donnees_tableau/travail']] +=parseFloat( elements['donnees_tableau/sous_traitance/cout1']) ;
+        }*/
+       //mon_total+=elements['donnees_tableau/regie/homme_jour/cout1_001'] ;
+       //mon_total+=elements['donnees_tableau/sous_traitance/cout1'] ;
+    }
+    
+  }
+
+    }
+    //console.log(sup);
+            let c_g = document.getElementById("td41");
+			let for_et = document.getElementById("td51");
+
+            let c_g2 = document.getElementById("td42");
+			let for_et2 = document.getElementById("td52");
+
+            let c_g3 = document.getElementById("td43");
+			let for_et3 = document.getElementById("td53");
+
+            let c_g4 = document.getElementById("td44");
+			let for_et4 = document.getElementById("td54");
+
+      let c_g13 = document.getElementById("td413");
+			let for_et13 = document.getElementById("td513");
+
+            let c_g5 = document.getElementById("td45");
+			let for_et5 = document.getElementById("td55");
+
+            let c_g6 = document.getElementById("td46");
+			let for_et6 = document.getElementById("td56");
+
+            let c_g7 = document.getElementById("td47");
+			let for_et7 = document.getElementById("td57");
+
+            let c_g8 = document.getElementById("td48");
+			let for_et8 = document.getElementById("td58");
+
+            let c_g9 = document.getElementById("td49");
+			let for_et9 = document.getElementById("td59");
+
+      let c_g10 = document.getElementById("td410");
+			let for_et10 = document.getElementById("td510");
+
+      let c_g11 = document.getElementById("td411");
+			let for_et11 = document.getElementById("td511");
+
+      let c_g12 = document.getElementById("td412");
+			let for_et12 = document.getElementById("td512");
+
+      let c_g14 = document.getElementById("td414");
+			let for_et14 = document.getElementById("td514");
+
+      
+            (Math.round(sup * 100)/100).toFixed(2)
+
+            c_g.innerHTML = (Math.round(sup['Rabattage'] * 100)/100).toFixed(2);
+
+            const montant = (Math.round(40000*sup['Rabattage'] * 100)/100);
+            const options1 = { style: 'currency', currency: 'XOF' };
+            const numberFormat1 = new Intl.NumberFormat('XOF', options1);
+
+            for_et.innerHTML = numberFormat1.format(montant);
+
+            c_g2.innerHTML = (Math.round(sup['Abattage et tronçonnage'] * 100)/100).toFixed(2);
+
+            const montant2 = (Math.round(45000*sup['Abattage et tronçonnage'] * 100)/100);
+            const options2 = { style: 'currency', currency: 'XOF' };
+            const numberFormat2 = new Intl.NumberFormat('XOF', options2);
+            for_et2.innerHTML = numberFormat1.format(montant2);
+
+            c_g3.innerHTML = (Math.round(sup['Brûlage'] * 100)/100).toFixed(2);
+
+            const montant3 = (Math.round(8000*sup['Brûlage'] * 100)/100);
+            const options3 = { style: 'currency', currency: 'XOF' };
+            const numberFormat3 = new Intl.NumberFormat('XOF', options3);
+            for_et3.innerHTML = numberFormat1.format(montant3);
+
+            c_g4.innerHTML = (Math.round(sup['Piquetage de base des lignes de plantation'] * 100)/100).toFixed(2);
+
+            const montant4 = (Math.round(10000*sup['Piquetage de base des lignes de plantation'] * 100)/100);
+            const options4 = { style: 'currency', currency: 'XOF' };
+            const numberFormat4 = new Intl.NumberFormat('XOF', options4);
+            for_et4.innerHTML = numberFormat1.format(montant4);
+
+            c_g13.innerHTML = (Math.round(sup['Ouverture de lignes de plantation'] * 100)/100).toFixed(2);
+
+            const montant5 = (Math.round(25000*sup['Ouverture de lignes de plantation'] * 100)/100);
+            const options5 = { style: 'currency', currency: 'XOF' };
+            const numberFormat5 = new Intl.NumberFormat('XOF', options5);
+            for_et13.innerHTML = numberFormat1.format(montant5);
+
+            c_g5.innerHTML = (Math.round(sup['Trouaison'] * 100)/100).toFixed(2);
+
+            const montant6 = (Math.round(15000*sup['Trouaison'] * 100)/100);
+            const options6 = { style: 'currency', currency: 'XOF' };
+            const numberFormat6 = new Intl.NumberFormat('XOF', options6);
+            for_et5.innerHTML = numberFormat1.format(montant6);
+
+            c_g6.innerHTML = (Math.round(sup['Planting'] * 100)/100).toFixed(2);
+
+            const montant7 = (Math.round(20000*sup['Planting'] * 100)/100);
+            const options7 = { style: 'currency', currency: 'XOF' };
+            const numberFormat7 = new Intl.NumberFormat('XOF', options7);
+            for_et6.innerHTML = numberFormat1.format(montant7);
+
+            c_g7.innerHTML = (Math.round(sup['Entretien 1 ligne'] * 100)/100).toFixed(2);
+
+            const montant8 = (Math.round(20000*sup['Entretien 1 ligne'] * 100)/100);
+            const options8 = { style: 'currency', currency: 'XOF' };
+            const numberFormat8 = new Intl.NumberFormat('XOF', options8);
+            for_et7.innerHTML = numberFormat1.format(montant8);
+
+            c_g8.innerHTML = (Math.round(sup['Entretien 1 interligne'] * 100)/100).toFixed(2);
+
+            const montant9 = (Math.round(10000*sup['Entretien 1 interligne'] * 100)/100);
+            const options9 = { style: 'currency', currency: 'XOF' };
+            const numberFormat9 = new Intl.NumberFormat('XOF', options9);
+            for_et8.innerHTML = numberFormat1.format(montant9);
+
+            c_g9.innerHTML = (Math.round(sup['Remplacement plants morts'] * 100)/100).toFixed(2);
+
+            const montant10 = (Math.round(10000*sup['Remplacement plants morts'] * 100)/100);
+            const options10 = { style: 'currency', currency: 'XOF' };
+            const numberFormat10 = new Intl.NumberFormat('XOF', options10);
+            for_et9.innerHTML = numberFormat1.format(montant10);
+
+            c_g10.innerHTML = (Math.round(sup['Entretien en puits'] * 100)/100).toFixed(2);
+
+            const montant11 = (Math.round(10000*sup['Entretien en puits'] * 100)/100);
+            const options11 = { style: 'currency', currency: 'XOF' };
+            const numberFormat11 = new Intl.NumberFormat('XOF', options11);
+            for_et10.innerHTML = numberFormat1.format(montant11);
+
+            c_g11.innerHTML = (Math.round(sup['Entretien 2 ligne'] * 100)/100).toFixed(2);
+
+            const montant12 = (Math.round(25000*sup['Entretien 2 ligne'] * 100)/100);
+            const options12 = { style: 'currency', currency: 'XOF' };
+            const numberFormat12 = new Intl.NumberFormat('XOF', options12);
+            for_et11.innerHTML = numberFormat1.format(montant12);
+
+            c_g12.innerHTML = (Math.round(sup['Entretien 2 interligne'] * 100)/100).toFixed(2);
+
+            const montant13 = (Math.round(15000*sup['Entretien 2 interligne'] * 100)/100);
+            const options13 = { style: 'currency', currency: 'XOF' };
+            const numberFormat13 = new Intl.NumberFormat('XOF', options13);
+            for_et12.innerHTML = numberFormat1.format(montant13);
+
+            //c_g9.innerHTML = sup['Entretien 2 ']+sup['Entretien 1 ']+sup['Planting ']+sup['Marquage ']+sup['Piquetage ']+sup['Brûlage ']+sup['Abatage ']+sup['Rabatage '];
+            let total = (40000*sup['Rabattage']+45000*sup['Abattage et tronçonnage']+8000*sup['Brûlage']+10000*sup['Piquetage de base des lignes de plantation']+25000*sup['Ouverture de lignes de plantation']+
+            15000*sup['Trouaison']+20000*sup['Planting']+20000*sup['Entretien 1 ligne']+10000*sup['Entretien 1 interligne']+10000*sup['Remplacement plants morts']+
+            10000*sup['Entretien en puits']+25000*sup['Entretien 2 ligne']+15000*sup['Entretien 2 interligne']);
+
+            const montant14 = (Math.round(total* 100)/100);
+            const options14 = { style: 'currency', currency: 'XOF' };
+            const numberFormat14 = new Intl.NumberFormat('XOF', options14);
+             for_et14.innerHTML = numberFormat1.format(montant14);
+    },1000)
+    
+
+    
+
+      
+            })
+
+      }
+    })
+    
+    });
+    console.log(jsonCugf);
+    const { jsPDF } = window.jspdf;
+    
+    document.getElementById('generatePdfButton').addEventListener('click', function () {
+      // Créer une nouvelle instance jsPDF
+      
+
+      const doc = new jsPDF('l', 'mm', 'a4');  // Format A4
+
+
+
+      // Ajouter un sous-titre ou plus de texte
+      doc.setFontSize(12);
+      doc.text('Tableau : Dévis de création de plantation industrielle', 15, 15); 
+
+    
+
+      
+
+      // Utiliser autoTable pour ajouter le tableau HTML au PDF
+      doc.autoTable({
+      html: '#table2', // Récupère le tableau HTML
+      startY: 30, // Position verticale de départ du tableau
+      theme: 'grid', // Applique le thème 'grid' qui montre les bordures de chaque cellule
+      styles: {
+        lineWidth: 0.5,   // Définir l'épaisseur de la ligne des bordures
+        lineColor: [0, 0, 0], // Couleur des bordures (noir ici)
+        fontSize: 12,     // Taille de la police du tableau
+        cellPadding: 1,   // Espace interne dans les cellules
+      },
+      headStyles: {
+        fillColor: [255, 255, 255], // Fond bleu pour l'en-tête
+        textColor: [0, 0, 0], // Texte blanc dans l'en-tête
+        lineWidth: 0.1,  // Epaisseur des bordures des entêtes
+        lineColor: [0, 0, 0], // Couleur blanche pour les bordures des entêtes
+      },
+      bodyStyles: {
+        lineWidth: 0.1, 
+        textColor: [0, 0, 0],  // Bordures plus fines pour les cellules du corps
+        lineColor: [0, 0, 0], // Couleur des bordures des cellules (gris clair)
+      },
+    });
+
+      // Sauvegarder le PDF généré
+      doc.save('devis.pdf');
+    });
+	</script>
+	
+</html>

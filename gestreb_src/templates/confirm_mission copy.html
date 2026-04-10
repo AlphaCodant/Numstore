@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Mise en place</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/membres.css">
+  <link rel="stylesheet" href="/css/tailStyle.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  
+</head>
+<body class="bg-gray-100 min-h-screen">
+<div class="grid-container">
+    <header class="header">
+      <div id="tableau_bord">
+        <div style="font-size: larger; font-weight: bolder;"><p>Planification de Missions</p></div>
+        <div style="font-size: smaller; font-weight:lighter; font-style: italic;">
+          <p>Reboisement</p>
+        </div>
+      </div>
+      <div class="alignement">
+        <div id="etat">
+          <span class="material-icons-outlined">wifi</span>
+          <p style="padding-left: 5px;">En ligne</p>
+        </div>
+        <div id="notification">
+          <span class="material-icons-outlined">notifications</span>
+          <div style="width : 2px; height: 2px; padding-left: 1px;border: 5px solid red; border-radius: 100%; background-color: red;">  </div>
+        </div>
+        <div id="admin">
+          <span class="material-icons-outlined" style="color: rgb(2, 27, 95);">account_circle</span>
+          <p style="padding-left: 5px;">Admin</p>
+        </div>
+      </div>
+    </header>
+    <aside class="sidebar">
+      <div id="entete" style="height: 11%; border-bottom: 0.1px solid rgb(126, 126, 126);">
+        <div style="display: flex; justify-content: center; align-items: center;
+          width: 20%; height: 65%; background-color: rgb(255, 255, 255); border-radius: 50%;">
+          <img src="/img/Logo_gestreb.jpg" alt="Logo GestReb" style="border-radius: 50%;" />
+        </div>
+        <a href="/">
+          <div id="entete_ecrit">
+            <p style="color:white; font-size: larger; font-weight: bolder;">GestReb</p>
+            <p style="font-size: smaller; font-weight:lighter; font-style: italic; color: rgb(251, 251, 251);">
+              Gestion des reboisements</p>
+          </div>
+        </a>
+      </div>
+      <div id="boutons">
+        
+        
+        <a href="#">
+          <div class="rubrique" id="membre" >
+            <span class="material-icons-outlined">group</span>
+            <p style="padding-left: 5px;">Prod. de plants</p>
+          </div>
+        </a>
+        <a href="/mise_en_place">
+          <div class="rubrique" id="membre" style=" border : 1px solid rgb(26, 83, 206);border-radius: 2.5%;
+          background-color: rgb(26, 83, 206);" >
+            <span class="material-icons-outlined">group</span>
+            <p style="padding-left: 5px;">Parcelles</p>
+          </div>
+        </a>
+        <a href="/entretien_p">
+        <div class="rubrique" id="recolte">
+          <span class="material-icons-outlined">grain</span>
+          <p style="padding-left: 5px;">Entretien</p>
+        </div>
+        </a>
+        <a href="/sylviculture">
+        <div class="rubrique" id="vente">
+          <span class="material-icons-outlined">shopping_cart</span>
+          <p style="padding-left: 5px;">Sylviculture</p>
+        </div>
+        </a>
+        
+        <a href="/page">
+        <div class="rubrique" id="document">
+          <span class="material-icons-outlined">area_chart</span>
+          <p style="padding-left: 5px;">Carte interactive</p>
+        </div>
+        </a>
+        
+      </div>
+      
+    </aside>
+    <main class="main-container">
+      <div id="myMission" class="mymodal">
+        <div class="modal-content">
+            
+            <!-- HEADER : Titre et Boutons d'Action (Structure fournie par l'utilisateur) -->
+            <div class="flex justify-between items-center border-b pb-3 mb-4 no-print">
+                <h2 id="no_parcelle_rapport" class="text-2xl font-bold text-gray-800">
+                  <script>
+                    document.getElementById('no_parcelle_rapport').innerText = JSON.parse(localStorage
+                    .getItem('mission_data')).libele ;
+                  </script>
+                </h2>
+            </div>
+            
+            <!-- CONTENU DU RAPPORT (Contenu de la Fiche Parcellaire stylisée inséré ici) -->
+            <div id="rapport-content" class="text-sm space-y-4">
+                <!-- Résumé des Données (Numéro, Essence, Superficie, Financement) -->
+                <div class="flex flex-col sm:flex-row justify-between border-b border-gray-200 p-2">
+                    <!-- Colonne 1 -->
+                    <div class="flex flex-col w-full sm:w-1/2 sm:pr-4">
+                        <div class="data-summary-row flex justify-between text-sm">
+                            <p class="font-medium text-gray-700">Date depart:</p>
+                            <p id="date_depart" class="font-extrabold text-gray-900">
+                              <script>
+                                document.getElementById('date_depart').innerText = JSON.parse(localStorage
+                                .getItem('mission_data')).date_debut ;
+                              </script>
+                            </p>
+                        </div>
+                        <div class="data-summary-row flex justify-between text-sm">
+                            <p class="font-medium text-gray-700">Date retour:</p>
+                            <p id="date_retour" class="font-extrabold text-gray-900">
+                              <script>
+                                document.getElementById('date_retour').innerText = JSON.parse(localStorage
+                                .getItem('mission_data')).date_fin ;
+                              </script>
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Colonne 2 -->
+                    <div class="flex flex-col w-full sm:w-1/2 sm:pl-4 mt-2 sm:mt-0">
+                        <div class="data-summary-row flex justify-between text-sm">
+                            <p class="font-medium text-gray-700">Nombre agents:</p>
+                            <p id="nb_agents_select" class="font-extrabold text-gray-900">
+                              <script>
+                                document.getElementById('nb_agents_select').innerText = JSON.parse(localStorage
+                                .getItem('agents_selectionnes_ids')).length ;
+                              </script>
+                            </p>
+                        </div>
+                        <div class="data-summary-row flex justify-between text-sm">
+                            <p class="font-medium text-gray-700">Nombre parcelles:</p>
+                            <p id="nb_parcelles_select" class="font-extrabold text-gray-900">
+                              <script>
+                                document.getElementById('nb_parcelles_select').innerText = JSON.parse(localStorage
+                                .getItem('parcelles_selectionnees_ids')).length ;
+                              </script>
+                            </p>
+                        </div>
+                    </div>
+                </div>      
+                <h4 style="display: block;" class="text-md font-semibold text-gray-800 mt-6 mb-2 pt-2 border-t border-gray-100"> <p id="num_ordre">
+                              
+                              <script>
+                                document.getElementById('num_ordre').innerText = 'Ordre de Mission N° : '+ JSON.parse(localStorage
+                                .getItem('mission_data')).document_mission ;
+                              </script>
+                            </p> 
+                          </h4>
+                <!--Travaux de preparation de terain-->
+                <div id="boutons_mission" class="alignement" style="width: 100%;">
+          <button id="anuler_mission" type="button" class="px-10 py-2 bg-gray-600 text-white font-bold rounded-xl 
+                           hover:bg-gray-700 transition duration-300 transform hover:scale-[1.01] flex items-center">
+                Anuler
+          </button>
+          <button id="valider_mission" type="button" class="px-10 py-2 bg-green-700 text-white font-bold rounded-xl 
+                           hover:bg-green-800 transition duration-300 transform hover:scale-[1.01] flex items-center">
+                Valider Mission
+          </button>
+      </div>
+
+            </div>            
+        </div>
+    </div>
+</main>
+    <footer>
+    </footer>
+    <script>
+    </script>
+    <script src="/js/script.js"></script>
+    <script src="/js/membres.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      
+      document.getElementById('anuler_mission').addEventListener('click', function() {
+          // Fermer la fenêtre modale
+          window.location.href = '/plan_mission';
+      });
+
+      document.getElementById('valider_mission').addEventListener('click', async function() {
+          // Récupérer les données de la mission depuis le localStorage
+          const missionData = JSON.parse(localStorage.getItem('mission_data'));
+          const agentsSelectionnesIds = JSON.parse(localStorage.getItem('agents_selectionnes_ids'));
+          const parcellesSelectionneesIds = JSON.parse(localStorage.getItem('parcelles_selectionnees_ids'));
+
+          try {
+              const response = await fetch('/api/valider_mission', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                      missionData: missionData,
+                      agentsSelectionnes: agentsSelectionnesIds,
+                      parcellesSelectionnees: parcellesSelectionneesIds,
+                  }),
+              });
+
+              const result = await response.json();
+
+              if (result.status === 'success') {
+                  alert('Mission planifiée avec succès !');
+                  // Redirection ou autre action après la réussite
+                  //window.location.href = `/page/${result.missionId}`;
+              } else {
+                  alert('Erreur lors de la planification de la mission. Veuillez réessayer.');
+              }
+          } catch (error) {
+              console.error('Erreur : ', error);
+          }
+      });
+    
+    </script>
+
+</html>

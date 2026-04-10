@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="icon" 
+     type="image/png" 
+     href="/img/Logo_gestreb.jpg">
+
+    <!-- Montserrat Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/tailStyle.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Montserrat"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" href="/css/style_dash.css" />
+  </head>
+  <body>
+    <div class="grid-container">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="menu-icon" onclick="openSidebar()">
+          <span class="material-icons-outlined">menu</span>
+        </div>
+        <div class="header-left">
+          <div class="main-title">
+            <h2>TABLEAU DE BORD</h2>
+          </div>
+        </div>
+        <div class="header-right">
+        </div>
+      </header>
+      <!-- End Header -->
+
+      
+
+      <!-- Sidebar -->
+      <aside id="sidebar">
+        <div class="sidebar-title">
+          <div class="sidebar-brand">
+            <a href="#" class="flex ms-2 md:me-24">
+              <img src="/img/Logo_gestreb.jpg" class="ml-4" alt="Logo GestReb" />
+              </a>
+          </div>
+          <span class="material-icons-outlined" onclick="closeSidebar()">close</span>
+        </div>
+        <div class="px-2 pb-4 bg-green  shadow-zinc-600">
+          <div class="space-y-2 font-medium">
+            <li>
+              <a href="#" class="flex items-center py-3 px-1 mt-10 text-black border-y border-black  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined">dashboard</span>
+                <span class="ms-3">Tableau de bord</span>
+              </a>
+            </li>   
+            <li>
+              <a href="#" class="flex items-center mt-10 p-2 text-purple text-black  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined" style="color:brown">nature</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Prod. de plants</span>
+              </a>
+            </li>  
+            <li>
+              <a href="#" class="flex items-center mt-10 p-2 text-purple text-black  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined" style="color:blueviolet">agriculture</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Mise en place</span>
+              </a>
+            </li>  
+            <li>
+              <a href="# "class="flex items-center mt-10 p-2 text-green text-black  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined" style="color:greenyellow">nature_people</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Entretien</span>
+              </a>
+            </li> 
+            <li>
+              <a href="#" class="flex items-center mt-10 p-2 dark:text-black text-black  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined" style="color:palevioletred">carpenter</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Sylviculture</span>
+              </a>
+            </li> 
+            <li>
+              <button onclick="effacer_tout()">
+              <a href="/page/{{ id }}" class="flex items-center mt-10 p-2 dark:text-black  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined" style="color:orange">map</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Carte interactive</span>
+              </a>
+            </button>
+            </li> 
+                       
+          </div>
+        </div>
+      </aside>
+      <!-- End Sidebar -->
+
+      <!-- Main -->
+      <main class="main-container">
+        <!-- Barre de sélection -->
+      <div class="selection-bar" style="height: 10%;position: sticky;overflow: auto;">
+        <form style="display: flex; flex-direction: row; justify-content: space-between; padding: 5px;" action="#" method="GET">
+          <div class="forêts-selection" style="display: flex; flex-direction: row; justify-content: space-between; padding: 5px;">
+            <div><label>Forêts :</label></div>
+            <div><label for="téné">Téné</label></div>
+            <div><input type="checkbox" id="téné" name="foret" value="1"> </div> 
+            <div><label for="sangoue">Sangoué</label>     </div>    
+            <div><input type="checkbox" id="sangoue" name="foret" value="2"></div>
+          </div>
+          <div class="annees-selection">
+            <label>Années :</label>
+            <select id="years" name="years[]" multiple>
+              <!-- Les options d'années seront générées via JavaScript -->
+            </select>
+          </div>
+          <div class="submit-btn">
+            <button type="submit" class="btn-text">Actualiser</button>
+          </div>
+        </form>
+      </div>
+      <!-- End Barre de sélection -->
+      <div id="wrapper" style="height: 30%;position: sticky;overflow: auto;">
+        <div class="content-area">
+          <div class="container-fluid"> 
+            <div class="main">
+              <div class="row sparkboxes mt-4">
+                <div class="col-md-3" style="border-radius: 5%;background-color: #263043;">
+                  <div class="box box1" >
+                    <h4>PROD. DE PLANTS</h4>
+                    <p id="p"></p>
+                    <p id="p"></p>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <a href="#">
+                  <div class="box box2" style="background-image: linear-gradient(to right,rgb(0, 140, 255),rgb(0, 238, 255) );
+                  color: white;">
+                    <h4>MISE EN PLACE</h4>
+                    <p id="p0"></p>
+                    <p id="p1"></p>
+                    <p id="p2"></p>
+                  </div>
+                </a>
+                </div>
+                <div class="col-md-3" >
+                  <div class="box box3">
+                    <h4>ENTRETIEN</h4>
+                    <p id="p"></p>
+                    <p id="p"></p>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="box box4">
+                    <h4>SYLVICULTURE</h4>
+                    <p id="p"></p>
+                    <p id="p"></p>
+                  </div>
+                </div>
+                <!--<div class="col-md-3">
+                  <div class="box box2">
+                    <h4>SYLVICULTURE</h4>
+                    <p id="p5"></p>
+                    <p id="p6"></p>
+                  </div>
+                </div>-->
+                             
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white" style="height: 60%;overflow-y: auto; font-size: 8px;"> <!-- Assurez-vous que le parent permet le défilement -->
+        <div class="items-center md:space-y-0 pb-1 dark:bg-gray-900">
+          <div style="background-image: linear-gradient(to right,rgb(13, 83, 140),rgb(27, 47, 49) );
+             border-radius: 5%; display: flex; flex-direction: row; justify-content: space-around;" >
+             <div><h3 style="color: black;text-align: left;font-weight: bold;left:2%">COUT DE REVIENS </h3></div>
+             <div><h3 style="color: rgb(255, 255, 255); font-weight: bolder; text-align: right;" id="cout_reviens_global"></h3></div>
+            </div>
+          </div>
+            <table class="w-full bottom-0 text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-lg" style="font-size: 6px;">
+                <thead class="sticky top-0 text-white uppercase"
+                    style="background-image: linear-gradient(to right, rgb(165, 60, 246), rgb(0, 140, 255), rgb(0, 238, 255)); 
+                    z-index: 2; position: sticky; top: 0; background-color: #fff;font-size: 6px;">
+                    <tr>
+                        <th  scope="col" class="px-6 py-3 editable-cell">N° Parcelle</th>
+                        <th  scope="col" class="px-6 py-3 editable-cell" id="annee_th">Année</th>
+                        <th  scope="col" class="px-6 py-3 editable-cell" id="essence_th">Foret</th>
+                        <th  scope="col" class="px-6 py-3 editable-cell">Essence</th>
+                        <th  scope="col" class="px-6 py-2 editable-cell" id="date_debut_th">Rabattage</th>
+                        <th  scope="col" class="px-6 py-2 editable-cell">Abattage</th>
+                        <th  scope="col" class="px-6 py-2 editable-cell" id="taux_th">Brulage</th>
+                        <th  scope="col" class="px-6 py-2 editable-cell" id="reliquat_th">Ouv. ligne</th>
+                        <th  scope="col" class="px-6 py-2 editable-cell" id="date_fin_th">Piquetage</th>
+                        <th  scope="col" class="px-6 py-2 editable-cell" id="date_fin_th">Trouaison</th>
+                        <th  scope="col" class="px-6 py-2 editable-cell" id="date_fin_th">Planting</th>
+                        <th  scope="col" class="px-6 py-2 editable-cell" id="fiche_th">Fiche</th>
+                    </tr>
+                    
+                </thead>
+                <tbody class="overflow-auto" style="height: auto; overflow:auto;font-size: 6px;">
+                    
+                    <!-- Vous pouvez ajouter plus de lignes -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="dialog-overlay" id="dialogOverlay">
+        <div class="dialog-box" style="color: black;">
+            <span class="closer-dialog" id="closeDialog">&#10006;</span>
+            <div class="sidebar-brand">
+              <a href="#" class="flex ms-2 md:me-24">
+                <img src="/img/Logo_gestreb.jpg" class="ml-4 h-8" alt="Logo GestReb" />
+                </a>
+                
+            </div>
+            <div style="display: flex; flex-direction: row;justify-content: space-around;">
+            <div class="telecharger" >
+              <span class="material-icons-outlined" style="color: yellowgreen;">print</span>
+              
+                <span class="btn-text" style="color:rgb(224, 56, 0);font-size: 10px;">Télécharger fiche parcellaire</span>
+              
+            </div>
+            <div class="telecharger" >
+              <span class="material-icons-outlined" style="color: yellowgreen;">map</span>
+             
+                <span class="btn-text" style="color:rgb(0, 0, 0);font-size: 10px;">Aller à la carte </span>
+         
+            </div>
+            </div>
+            <br>
+            <div style="background-image: linear-gradient(to right,rgb(165, 60, 246),rgb(0, 140, 255),rgb(0, 238, 255) );
+             border-radius: 3%;"><h2 style="color: black;text-align: center;">FICHE PARCELLAIRE</h2></div>
+            <div style="text-align: left; gap: 0px; margin-top: 0%;">
+              <div style="display: flex; flex-direction: row; justify-content: space-between;"><p id="fp_num">Numero</p><p id="fp_ess">Essence</p></div>
+              <div style="display: flex; flex-direction: row; justify-content: space-between;"><p id="fp_sup">Superficie</p><p id="fp_fin">Financement</p></div>
+            </div>
+            <div>
+              <table class="w-full bottom-0 text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-lg overflow-auto">
+                  <thead class="relative text-xs text-white uppercas" 
+                   style="background-image: linear-gradient(to right,rgb(0, 140, 255),rgb(0, 238, 255) ); 
+                  ">
+                      <tr>
+                        <th scope="col" class="px-6 py-2 editable-cell2">
+                          Date
+                        </th>
+                        <th scope="col" class="px-6 py-2 editable-cell2">
+                            Travail
+                        </th>
+                        
+                          <th scope="col" class="px-6 py-2 editable-cell2" id="taux_td">
+                            Cout (F CFA)
+                        </th>
+                        <th scope="col" class="px-6 py-2 editable-cell2">
+                          Réalisé (ha)
+                        </th>
+                        
+                        <th scope="col" class="px-6 py-2 editable-cell2" >
+                          Montant
+                        </th>
+                        <th scope="col" class="px-6 py-2 editable-cell2" id="taux_td">
+                          Mode
+                        </th>
+                      </tr>
+                  </thead>
+                  <tbody id="tbody2" style="font-size: 7px;"
+                  class="bg-white text-black border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">  
+                  </tbody>
+              </table>
+            </div>
+            <br>
+            <div style="background-image: linear-gradient(to right,rgb(13, 83, 140),rgb(27, 47, 49) );
+             border-radius: 5%; display: flex; flex-direction: row; justify-content: space-around;" >
+             <div><h3 style="color: black;text-align: left;font-weight: bold;left:2%">COUT DE REVIENS </h3></div>
+             <div><h3 style="color: rgb(255, 255, 255); font-weight: bolder; text-align: right;" id="cout_reviens"></h3></div>
+            </div>
+    </div>
+        
+      </main>
+      
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.slim.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.js"></script>
+      
+    <script>
+      // Générer les années de 1966 à 2025 dans le select
+      document.addEventListener('DOMContentLoaded', () => {
+        const select = document.getElementById('years');
+        for (let year = 2020; year <= 2025; year++) {
+          const option = document.createElement('option');
+          option.value = year;
+          option.textContent = year;
+          select.appendChild(option);
+        }
+      });
+  // Variables globales
+
+
+// Quand le formulaire est soumis
+
+document.querySelector('form').addEventListener('submit', async (event) => {
+  event.preventDefault(); // Empêcher le rechargement de la page
+  const foret = [];
+
+  // Récupérer les forêts sélectionnées
+  if (document.getElementById('téné').checked) foret.push(1);
+  if (document.getElementById('sangoue').checked) foret.push(2);
+
+  // Récupérer les années sélectionnées
+  const annees = Array.from(document.getElementById('years').selectedOptions).map(option => option.value);
+
+  // Mettre à jour les variables globales
+  const annee=annees.map(annee => `${annee}`).join(',');
+  const forets=foret.map(foret => `${foret}`).join(',');
+
+  // Afficher dans la console pour vérifier
+
+
+  // Vérifier qu'il y a des forêts et des années sélectionnées
+  if (foret.length === 0 || annees.length === 0) {
+    alert("Veuillez sélectionner au moins une forêt et une année.");
+    return;
+  }
+  const objs = [];
+    let obj=0;
+    let t_obj=0;
+  // 1. Requête POST pour envoyer les données au serveur
+  try {
+    const responsePost = await fetch('/api/donnees', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ foret, annees }),
+    });
+
+    if (!responsePost.ok) {
+      alert('Erreur lors de l\'envoi des données');
+      return;
+    }
+
+    const data = await responsePost.json();
+    
+    for (let i=0; i<data.length; i++){
+      obj+=data[i].superficie;
+      t_obj+=data[i].taux/data.length;
+    }
+    console.log(data)
+    objs.push(obj);
+    objs.push(t_obj)
+    console.log(objs); // Afficher la réponse du serveur dans la console
+
+    // 2. Utiliser la réponse du POST pour la suite du traitement
+    document.getElementById('p0').innerHTML = `Nombre : ${data.length } parcelles`;
+    document.getElementById('p1').innerHTML = `Objectif : ${(Math.round(objs[0] * 100) / 100).toFixed(2)} ha`;
+    document.getElementById('p2').innerHTML = `Taux : ${(Math.round(objs[1] * 100) / 100).toFixed(2)} %`;
+
+    // Récupérer les données des parcelles depuis le serveur
+    const foret_liste = ['foret','Téné','Sangoué'];
+    const responseReq = await fetch(`/api/donnees?foret=${forets}&annees=${annee}`,{
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+      },
+    });
+    let cout_reviens2=0
+    let cout_revient_global = 0;
+    const parcelles = await responseReq.json();
+    const tableBody = document.querySelector('tbody');
+    const cout_ensemble = document.querySelector('#cout_reviens_global');
+    tableBody.innerHTML = '';
+    
+      parcelles.forEach(parcelle => {
+      const row = document.createElement('tr');
+      row.setAttribute('class', 'bg-white text-black border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600');
+      row.innerHTML = `
+        <td class="px-4 py-1 editable-cell" >${parcelle.numero}</td>
+        <td class="px-4 py-1 editable-cell" id="annee_td">${parcelle.annee}</td>
+        <td class="px-4 py-1 editable-cell" id="essence_td">${foret_liste[parcelle.foret]}</td>
+        <td class="px-4 py-1 editable-cell" >${parcelle.essence}</td>
+
+        <td class="px-4 py-1 editable-cell" data-id="" data-field="date_debut" id="date_debut_td">
+          
+          ${parcelle.rabattage}
+        </td>
+
+        <td class="px-4 py-1 editable-cell" data-id="" data-field="realise">
+         
+        ${parcelle.abattage}
+        </td>
+
+        <td class="px-4 py-1 editable-cell" id="taux_td">${parcelle.brulage}</td>
+
+        <td class="px-4 py-1 editable-cell" id="taux_td">${parcelle.ouverture}</td>
+
+        <td class="px-4 py-1 editable-cell" id="taux_td">${parcelle.piquetage}</td>
+
+        <td class="px-4 py-1 editable-cell" id="reliquat_td">${parcelle.trouaison}</td>
+        
+        <td class="px-4 py-1 editable-cell" data-id="" data-field="date_fin" id="date_fin_td">
+          ${parcelle.planting}
+        </td>
+        <td class="px-4 py-1 editable-cell" id="fiche_td" data-id="${parcelle.id}"><a href=#><p style="text-decoration : underline">ici</p></a></td>
+      `;
+      tableBody.appendChild(row);
+      cout_reviens2+=(parcelle.realise*253000);
+      //cout_revient_global+=cout_reviens2;
+        
+    });
+  //-------------------------------------------------------------
+
+  const montant = (Math.round(cout_reviens2 * 100)/100);
+  const options1 = { style: 'currency', currency: 'XOF' };
+  const numberFormat1 = new Intl.NumberFormat('XOF', options1);
+
+  const cout_revient = document.getElementById('cout_reviens_global');
+  cout_revient.innerHTML=numberFormat1.format(montant);
+
+  //-------------------------------------------------------------
+
+
+      } catch (error) {
+          console.error('Erreur lors de la récupération des parcelles:', error);
+        }
+      });
+      //--------------------------------------------------------------------------------
+      const closeDialog = document.querySelector('#closeDialog');
+  closeDialog.addEventListener('click', () => {
+        dialogOverlay.style.display = 'none'; // Masquer la boîte de dialogue
+    }); 
+
+
+  document.addEventListener('click',async(event)=>{
+  let cout_reviens=0;
+  const cell = event.target.closest('td');
+  const liste_activites = ['Rabattage','Abattage et tronçonnage','Brûlage','Piquetage','Ouverture des lignes','Trouaison','Planting',
+  'Entretien 1 ligne','Entretien 1 interligne','Remplacement plants morts','Entretien en puits','Entretien 2 ligne','Entretien 2 interligne'];
+  if (event.target.closest('#fiche_td')) {
+    const parcelleId = cell.getAttribute('data-id');   
+    console.log(parcelleId);
+  try {
+    // Récupérer les données des parcelles depuis le serveur
+    const response = await fetch(`/get/fiches/cu/graph1/${parcelleId}`);
+    
+    const parcelles = await response.json();
+    console.log(parcelles);
+    const tableBody = document.querySelector('#tbody2');
+    tableBody.innerHTML = '';
+    tableBody.style.fontSize='7px';
+    const row = document.createElement('tr');
+      row.setAttribute('class', 'text-xs ');
+      const fp_num = document.getElementById('fp_num');
+      const fp_sup = document.getElementById('fp_sup');
+      const fp_fin = document.getElementById('fp_fin');
+      const fp_ess = document.getElementById('fp_ess');
+    //tableBody.style.fontSize='8px';
+    
+    let i=0;
+    parcelles.forEach(parcelle => {
+      const row = document.createElement('tr');
+      row.setAttribute('class', 'text-xs bg-white text-black border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600');
+        //-------------------------------------------------------------
+
+      const montant2 = (Math.round(parcelle.cout * 100)/100);
+      const options2 = { style: 'currency' };
+      const numberFormat2 = new Intl.NumberFormat( options2);
+
+      //-------------------------------------------------------------
+      if(i==1){
+        row.innerHTML = `
+        <td class="text-sm px-4 py-1 editable-cell" >${parcelle.date_debut}-${parcelle.date_fin}</td>
+        <td class="text-sm px-4 py-1 editable-cell" >${liste_activites[i]}</td>
+        <td class="text-sm px-4 py-1 editable-cell" id="taux_td">${numberFormat2.format(montant2)}</td>
+        <td class="text-sm px-4 py-1 editable-cell" >${parcelle.realise}</td>
+        <td class="text-sm px-4 py-1 editable-cell" data-id="" data-field="date_debut">
+          ${numberFormat2.format(parcelle.realise*parcelle.cout)}
+          
+        </td>
+        <td class="px-4 py-1 editable-cell" id="taux_td">Sous-traitance</td>
+   `;
+      }else{
+        row.innerHTML = `
+        <td class="text-sm px-4 py-1 editable-cell" >${parcelle.date_debut}-${parcelle.date_fin}</td>
+        <td class="text-sm px-4 py-1 editable-cell" >${liste_activites[i]}</td>
+        <td class="text-sm px-4 py-1 editable-cell" id="taux_td">${numberFormat2.format(montant2)}</td>
+        <td class="text-sm px-4 py-1 editable-cell" >${parcelle.realise}</td>
+        <td class="text-sm px-4 py-1 editable-cell" data-id="" data-field="date_debut">
+          ${numberFormat2.format(parcelle.realise*parcelle.cout)}
+          
+        </td>
+        <td class="px-4 py-1 editable-cell" id="taux_td">Régie</td>
+   `;
+      }
+      
+        cout_reviens+=(parcelle.realise*parcelle.cout);
+        i++
+      tableBody.appendChild(row);
+      fp_num.innerHTML=`<strong>Numéro<strong> : ${parcelle.numero}`;
+      fp_ess.innerHTML=`<strong>Essence<strong> : ${parcelle.essence}`;
+      fp_fin.innerHTML=`<strong>Financement<strong> : ${parcelle.financement}`;
+      fp_sup.innerHTML=`<strong>Superficie<strong> : ${parcelle.superficie} ha`;
+    });
+  } catch (error) {
+    console.error('Erreur lors de la récupération des parcelles:', error);
+  }
+  
+  //-------------------------------------------------------------
+
+  const montant3 = (Math.round(cout_reviens * 100)/100);
+  const options3 = { style: 'currency', currency: 'XOF' };
+  const numberFormat3 = new Intl.NumberFormat('XOF', options3);
+
+  const cout_revient = document.getElementById('cout_reviens');
+  cout_revient.innerHTML=numberFormat3.format(montant3);
+
+  //-------------------------------------------------------------
+  console.log(cout_reviens);
+  const dial = document.getElementById('dialogOverlay');
+    dial.style.display='flex';
+
+    // Sélection des éléments
+    const openDialogButton = document.querySelector('.open-dialog-button');
+    const closeDialogButton = document.querySelector('#closeDialogButton');
+    
+    const dialogOverlay = document.querySelector('#dialogOverlay');
+
+    // Fonction pour ouvrir la boîte de dialogue
+    
+    // Fonction pour fermer la boîte de dialogue lorsque l'utilisateur clique sur la croix
+       
+  };
+})
+      
+
+    </script>
+  </body>
+</html>

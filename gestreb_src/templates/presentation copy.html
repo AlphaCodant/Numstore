@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Centre de Gestion de Gagnoa — gestreb</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            forest: {
+              50:  '#f0f7f0',
+              100: '#dceedd',
+              200: '#b6ddb8',
+              300: '#83c387',
+              400: '#4fa356',
+              500: '#2d7d35',
+              600: '#1e6326',
+              700: '#174d1d',
+              800: '#113b15',
+              900: '#0b2a0e',
+            },
+            bark:  { DEFAULT: '#3b2f1e', light: '#6b5440' },
+            sand:  { DEFAULT: '#f7f3ec', warm: '#ede5d8' },
+            slate: { dark: '#1e2422', mid: '#384340', light: '#6b7b76' },
+          },
+          fontFamily: {
+            display: ['Playfair Display', 'serif'],
+            body:    ['DM Sans', 'sans-serif'],
+          },
+        },
+      },
+    }
+  </script>
+
+  <style>
+    /* ── Base ── */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: #f7f3ec; color: #1e2422; }
+
+    /* ── Animations ── */
+    @keyframes fadeUp   { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:none; } }
+    @keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
+    @keyframes pulse-dot{ 0%,100%{ transform:scale(1); opacity:.9; } 50%{ transform:scale(1.6); opacity:.5; } }
+    @keyframes countUp  { from { opacity:0; transform:scale(.85); } to { opacity:1; transform:scale(1); } }
+    @keyframes leafSway { 0%,100%{ transform:rotate(-3deg); } 50%{ transform:rotate(3deg); } }
+
+    .fade-up      { animation: fadeUp  .7s ease both; }
+    .fade-in      { animation: fadeIn  .9s ease both; }
+    .count-anim   { animation: countUp .6s ease both; }
+    .delay-100    { animation-delay: .10s; }
+    .delay-200    { animation-delay: .20s; }
+    .delay-300    { animation-delay: .30s; }
+    .delay-400    { animation-delay: .40s; }
+    .delay-500    { animation-delay: .50s; }
+
+    /* ── Hero gradient ── */
+    .hero-bg {
+      background:
+        linear-gradient(160deg, rgba(11,42,14,.88) 0%, rgba(23,77,29,.72) 55%, rgba(46,125,53,.55) 100%),
+        url("https://images.unsplash.com/photo-1448375240586-882707db888b?w=1600&q=80") center/cover no-repeat;
+    }
+
+    /* ── Topography texture overlay ── */
+    .topo-bg {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%232d7d35' stroke-width='.4' opacity='.18'/%3E%3Ccircle cx='50' cy='50' r='28' fill='none' stroke='%232d7d35' stroke-width='.3' opacity='.13'/%3E%3Ccircle cx='50' cy='50' r='16' fill='none' stroke='%232d7d35' stroke-width='.2' opacity='.1'/%3E%3C/svg%3E");
+    }
+
+    /* ── Nav link hover ── */
+    .nav-link { position:relative; transition:color .2s; }
+    .nav-link::after {
+      content:''; position:absolute; bottom:-2px; left:0; width:0; height:2px;
+      background:#4fa356; transition:width .3s;
+    }
+    .nav-link:hover::after, .nav-link.active::after { width:100%; }
+
+    /* ── Stat card ── */
+    .stat-card {
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+    .stat-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 20px 40px rgba(11,42,14,.14); }
+
+    /* ── Reboisement card ── */
+    .rebois-card {
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+    .rebois-card:hover { transform: scale(1.05); box-shadow: 0 24px 48px rgba(11,42,14,.18); }
+
+    /* ── Progress bar ── */
+    .progress-fill {
+      transition: width 1.2s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ── Map dot ── */
+    .map-dot { animation: pulse-dot 2.2s ease-in-out infinite; }
+    .map-dot:nth-child(2){ animation-delay:.4s; }
+    .map-dot:nth-child(3){ animation-delay:.9s; }
+    .map-dot:nth-child(4){ animation-delay:1.3s; }
+
+    /* ── Leaf deco ── */
+    .leaf-deco { animation: leafSway 4s ease-in-out infinite; display:inline-block; transform-origin:bottom center; }
+
+    /* ── Tool card hover ── */
+    .tool-card {
+      transition: transform .3s ease, box-shadow .3s ease, border-color .3s;
+    }
+    .tool-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 28px 52px rgba(11,42,14,.2);
+      border-color: #4fa356;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track { background:#f0f7f0; }
+    ::-webkit-scrollbar-thumb { background:#4fa356; border-radius:3px; }
+
+    /* ── EJS variable placeholders ── */
+    /* Zones marquées <!-- EJS:variable --> dans le code ci-dessous */
+  </style>
+</head>
+
+<body class="font-body">
+
+  <!-- ═══════════════════════════════════════════════════════
+       NAVBAR
+  ═══════════════════════════════════════════════════════ -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+       style="background:rgba(11,42,14,.92); backdrop-filter:blur(12px);">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+
+      <!-- Logo + Brand -->
+      <div class="flex items-center gap-3">
+        <!-- Placeholder logo SODEFOR -->
+        <div class="w-10 h-10 rounded-full bg-forest-500 border-2 border-forest-300 flex items-center justify-center shrink-0">
+          <svg viewBox="0 0 40 40" class="w-7 h-7" fill="none">
+            <circle cx="20" cy="20" r="18" fill="#174d1d"/>
+            <path d="M20 28 C20 28 10 20 10 14 C10 9.6 14.5 7 20 7 C25.5 7 30 9.6 30 14 C30 20 20 28 20 28Z" fill="#4fa356"/>
+            <line x1="20" y1="28" x2="20" y2="34" stroke="#83c387" stroke-width="2"/>
+            <line x1="15" y1="22" x2="20" y2="28" stroke="#83c387" stroke-width="1.5"/>
+            <line x1="25" y1="22" x2="20" y2="28" stroke="#83c387" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div>
+          <p class="text-white font-display text-sm font-semibold leading-tight">gestreb</p>
+          <p class="text-forest-300 text-xs">Centre de Gestion de Gagnoa</p>
+        </div>
+      </div>
+
+      <!-- Desktop Nav Links -->
+      <div class="hidden md:flex items-center gap-7 text-sm text-forest-200">
+        <a href="#bilan"     class="nav-link hover:text-white">Bilan Reboisement</a>
+        <a href="#outils"    class="nav-link hover:text-white">Outils Innovants</a>
+        <a href="#stats"     class="nav-link hover:text-white">Statistiques</a>
+        <a href="#documents" class="nav-link hover:text-white">Documents</a>
+      </div>
+
+      <!-- CTA -->
+      <a href="#documents"
+         class="hidden md:inline-flex items-center gap-2 bg-forest-500 hover:bg-forest-400 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M16 12l-4 4m0 0l-4-4m4 4V4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Télécharger le rapport
+      </a>
+
+      <!-- Mobile Hamburger -->
+      <button id="mobileMenuBtn" class="md:hidden text-white p-2">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-forest-900 px-4 pb-4 space-y-2 text-sm text-forest-200">
+      <a href="#bilan"     class="block py-2 hover:text-white">Bilan Reboisement</a>
+      <a href="#outils"    class="block py-2 hover:text-white">Outils Innovants</a>
+      <a href="#stats"     class="block py-2 hover:text-white">Statistiques</a>
+      <a href="#documents" class="block py-2 hover:text-white">Documents</a>
+    </div>
+  </nav>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 1 — HERO
+  ═══════════════════════════════════════════════════════ -->
+  <section class="hero-bg min-h-screen flex items-center relative overflow-hidden pt-16">
+
+    <!-- Decorative rings -->
+    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+      <div class="w-[900px] h-[900px] rounded-full border border-white/5"></div>
+      <div class="w-[620px] h-[620px] rounded-full border border-white/6 absolute"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 w-full">
+      <div class="max-w-3xl">
+
+        <!-- Badge -->
+        <div class="fade-up inline-flex items-center gap-2 bg-forest-500/30 border border-forest-400/40
+                    text-forest-200 text-xs font-medium px-3 py-1.5 rounded-full mb-6">
+          <span class="w-1.5 h-1.5 rounded-full bg-forest-300 animate-pulse"></span>
+          Société de Développement des Forêts — SODEFOR
+        </div>
+
+        <!-- Main Title -->
+        
+        <h1 class="fade-up delay-100 font-display text-4xl sm:text-5xl lg:text-6xl text-white leading-tight mb-5">
+          Présentation du<br>
+          <span class="text-forest-300">Centre de Gestion</span><br>
+          de Gagnoa
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="fade-up delay-200 text-forest-200 text-lg sm:text-xl font-light mb-10 max-w-xl leading-relaxed">
+          Bilan 2025 &amp; Perspectives T1 2026 —
+          <span class="text-white font-medium">Innovation au service de la forêt</span>
+        </p>
+
+        <!-- Hero KPIs -->
+        <!-- EJS: Les valeurs ci-dessous peuvent être injectées depuis PostgreSQL -->
+        <div class="fade-up delay-300 grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
+          {# var heroStats = typeof heroStats !== 'undefined' ? heroStats : [
+              { #}
+          {% for s in heroStats %}
+          <div class="bg-white/10 backdrop-blur border border-white/15 rounded-xl p-4 text-white">
+            <p class="font-display text-2xl sm:text-3xl font-bold text-forest-300">{{ s.value | safe }}</p>
+            <p class="text-xs text-forest-200 mb-0.5">{{ s.unit | safe }}</p>
+            <p class="text-xs text-white/70">{{ s.label | safe }}</p>
+          </div>
+          {# }); #}
+        </div>
+
+        <!-- CTA Buttons -->
+        <div class="fade-up delay-400 flex flex-wrap gap-3">
+          <a href="#bilan"
+             class="bg-forest-500 hover:bg-forest-400 text-white font-medium px-6 py-3 rounded-xl transition-all hover:scale-105 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Voir le Bilan
+          </a>
+          <a href="#outils"
+             class="bg-white/10 hover:bg-white/20 border border-white/25 text-white font-medium px-6 py-3 rounded-xl transition-all hover:scale-105 flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Outils gestreb
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/40 text-xs">
+      <span>Défiler</span>
+      <div class="w-px h-8 bg-gradient-to-b from-white/30 to-transparent"></div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 2 — BILAN REBOISEMENT (Cards Grid)
+  ═══════════════════════════════════════════════════════ -->
+  <section id="bilan" class="py-20 topo-bg" style="background-color:#f7f3ec;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Section Header -->
+      <div class="mb-12 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <p class="text-forest-500 font-medium text-sm uppercase tracking-widest mb-2">Activités Techniques</p>
+          <h2 class="font-display text-3xl sm:text-4xl text-slate-dark">Bilan du Reboisement</h2>
+          <p class="text-slate-light mt-2 max-w-lg text-sm">
+            Suivi consolidé des campagnes de reboisement et des taux de réussite par exercice fiscal.
+          </p>
+        </div>
+        <div class="bg-forest-500 text-white text-xs px-3 py-1.5 rounded-full self-start sm:self-auto">
+          <!-- EJS: 
+          Données 2020 – 2025
+        </div>
+      </div>
+
+      <!-- ── Reboisement Cards ── -->
+      {# // EJS — Données reboisement injectées depuis PostgreSQL
+        // Table suggér #}
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {# reboisementData.forEach(function(d, idx) {
+             var pct = Math.round((d. #}
+        <div class="rebois-card bg-white rounded-2xl overflow-hidden shadow-sm border border-sand-warm cursor-pointer {{ delayClasses[idx] | safe }}">
+
+          <!-- Card Top Band -->
+          <div class="bg-forest-{{ idx < 2 ? '800' : idx === 2 ? '700' : '600' | safe }} px-5 pt-5 pb-4 relative overflow-hidden">
+            <div class="absolute -right-4 -top-4 w-20 h-20 rounded-full bg-white/5"></div>
+            <span class="text-forest-300 text-xs font-medium uppercase tracking-wider">Campagne</span>
+            <p class="font-display text-4xl text-white font-bold mt-0.5">{{ d.annee | safe }}</p>
+            <p class="text-forest-200 text-xs mt-1">{{ d.region | safe }}</p>
+          </div>
+
+          <!-- Card Body -->
+          <div class="p-5 space-y-4">
+
+            <!-- Hectares -->
+            <div class="flex items-baseline justify-between">
+              <div>
+                <p class="text-slate-light text-xs uppercase tracking-wide">Réalisé</p>
+                <p class="font-display text-2xl font-bold text-slate-dark">
+                  {{ d.superficie_realisee.toLocaleString('fr-FR') | safe }} <span class="text-base text-slate-light font-normal">ha</span>
+                </p>
+              </div>
+              <div class="text-right">
+                <p class="text-slate-light text-xs">Prévu</p>
+                <p class="text-slate-mid font-medium">{{ d.superficie_prevue.toLocaleString('fr-FR') | safe }} ha</p>
+              </div>
+            </div>
+
+            <!-- Progress -->
+            <div>
+              <div class="flex justify-between text-xs mb-1.5">
+                <span class="text-slate-light">Taux de réalisation</span>
+                <span class="font-semibold text-forest-600">{{ pct | safe }}%</span>
+              </div>
+              <div class="h-1.5 bg-sand-warm rounded-full overflow-hidden">
+                <div class="progress-fill h-full bg-forest-500 rounded-full" style="width:{{ pct | safe }}%"></div>
+              </div>
+            </div>
+
+            <!-- Taux réussite badge -->
+            <div class="flex items-center gap-2">
+              <div class="w-10 h-10 rounded-xl bg-forest-50 flex items-center justify-center shrink-0">
+                <svg class="w-5 h-5 text-forest-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div>
+                <p class="text-xs text-slate-light">Taux de réussite</p>
+                <p class="font-semibold text-forest-600 text-sm">{{ d.taux_reussite | safe }}%</p>
+              </div>
+            </div>
+
+            <!-- Essence -->
+            <div class="bg-sand-warm/60 rounded-lg px-3 py-2 text-xs">
+              <span class="text-slate-light">Essences : </span>
+              <span class="text-slate-dark font-medium">{{ d.essence_principale | safe }}</span>
+            </div>
+
+            <!-- Note -->
+            <p class="text-xs text-slate-light italic border-l-2 border-forest-200 pl-2">{{ d.note | safe }}</p>
+          </div>
+        </div>
+        {# }); #}
+      </div>
+
+      <!-- Summary Banner -->
+      <div class="mt-8 bg-forest-800 rounded-2xl p-6 grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+        {# var totalPrevu = reboisementData.reduce(function(a,b){return a+b.superficie_prev #}
+        <div>
+          <p class="text-forest-300 text-xs uppercase tracking-wide mb-1">Total Prévu</p>
+          <p class="font-display text-3xl text-white">{{ totalPrevu.toLocaleString('fr-FR') | safe }}</p>
+          <p class="text-forest-400 text-xs">hectares</p>
+        </div>
+        <div>
+          <p class="text-forest-300 text-xs uppercase tracking-wide mb-1">Total Réalisé</p>
+          <p class="font-display text-3xl text-white">{{ totalReal.toLocaleString('fr-FR') | safe }}</p>
+          <p class="text-forest-400 text-xs">hectares</p>
+        </div>
+        <div>
+          <p class="text-forest-300 text-xs uppercase tracking-wide mb-1">Taux Moy. Réussite</p>
+          <p class="font-display text-3xl text-forest-300">{{ avgReussite | safe }}%</p>
+          <p class="text-forest-400 text-xs">sur 4 campagnes</p>
+        </div>
+        <div>
+          <p class="text-forest-300 text-xs uppercase tracking-wide mb-1">Forêts Classées : 15</p>
+          
+          <p class="font-display text-3xl text-white">15</p>
+          <p class="text-forest-400 text-xs">sous gestion active</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 3 — OUTILS INNOVANTS
+  ═══════════════════════════════════════════════════════ -->
+  <section id="outils" class="py-20 bg-slate-dark relative overflow-hidden">
+
+    <!-- Background texture -->
+    <div class="absolute inset-0 opacity-5 pointer-events-none"
+         style="background-image:radial-gradient(circle, #4fa356 1px, transparent 1px); background-size:28px 28px;"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Section Header -->
+      <div class="text-center mb-14">
+        <p class="text-forest-400 font-medium text-sm uppercase tracking-widest mb-2">Plateforme gestreb</p>
+        <h2 class="font-display text-3xl sm:text-4xl text-white mb-3">Outils Innovants</h2>
+        <p class="text-slate-light max-w-xl mx-auto text-sm">
+          Trois modules intégrés pour moderniser la gestion durable des forêts classées du Centre de Gagnoa.
+        </p>
+      </div>
+
+      <!-- 3 Tool Cards -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-7">
+
+        <!-- ── MODULE 1 : Surveillance des Forêts Classées ── -->
+        <div class="tool-card bg-slate-mid/50 border border-white/10 rounded-2xl overflow-hidden">
+
+          <!-- Card Header -->
+          <div class="bg-gradient-to-br from-forest-700 to-forest-900 p-6">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-12 h-12 bg-forest-500/30 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-forest-300" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                  <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <span class="bg-green-500/20 text-green-300 text-xs px-2 py-0.5 rounded-full border border-green-500/30">EN LIGNE</span>
+            </div>
+            <h3 class="font-display text-xl text-white mb-1">Surveillance des Forêts Classées</h3>
+            <p class="text-forest-300 text-xs leading-relaxed">
+              Cartographie interactive des alertes de déforestation, incendies et activités illégales.
+            </p>
+          </div>
+
+          <!-- Simulated Map -->
+          <div class="p-5">
+            <div class="relative bg-forest-900/80 rounded-xl overflow-hidden" style="height:200px;">
+
+              <!-- SVG Map Placeholder (schéma simplifié région Gagnoa) -->
+              <svg viewBox="0 0 300 200" class="w-full h-full opacity-60" fill="none">
+                <!-- Region outlines (stylized) -->
+                <path d="M30 80 Q80 40 150 60 Q200 70 260 50 L270 140 Q200 160 150 150 Q80 170 30 140Z"
+                      fill="#1e6326" stroke="#2d7d35" stroke-width="1"/>
+                <path d="M80 70 Q120 55 160 75 Q180 85 200 80 L210 130 Q170 145 140 140 Q100 150 80 130Z"
+                      fill="#174d1d" stroke="#4fa356" stroke-width="0.8"/>
+                <!-- Grid lines -->
+                <line x1="0" y1="66" x2="300" y2="66" stroke="#4fa356" stroke-width="0.3" opacity="0.4"/>
+                <line x1="0" y1="100" x2="300" y2="100" stroke="#4fa356" stroke-width="0.3" opacity="0.4"/>
+                <line x1="0" y1="133" x2="300" y2="133" stroke="#4fa356" stroke-width="0.3" opacity="0.4"/>
+                <line x1="75"  y1="0" x2="75"  y2="200" stroke="#4fa356" stroke-width="0.3" opacity="0.4"/>
+                <line x1="150" y1="0" x2="150" y2="200" stroke="#4fa356" stroke-width="0.3" opacity="0.4"/>
+                <line x1="225" y1="0" x2="225" y2="200" stroke="#4fa356" stroke-width="0.3" opacity="0.4"/>
+              </svg>
+
+              <!-- Alert dots -->
+              {# var alertes = typeof alertes !== 'undefined' ? alertes : [
+                  { x #}
+              <div class="absolute inset-0 pointer-events-none">
+                {% for a in alertes %}
+                <div class="map-dot absolute w-3 h-3 rounded-full border-2 border-white/60"
+                     style="left:{{ a.x | safe }}%; top:{{ a.y | safe }}%; background:{{ a.color | safe }};"
+                     title="{{ a.label | safe }}"></div>
+                {# }); #}
+              </div>
+
+              <!-- Legend -->
+              <div class="absolute bottom-2 left-2 flex flex-col gap-1">
+                <div class="flex items-center gap-1 text-white/70 text-[10px]">
+                  <span class="w-2 h-2 rounded-full bg-red-500"></span> Incendie
+                </div>
+                <div class="flex items-center gap-1 text-white/70 text-[10px]">
+                  <span class="w-2 h-2 rounded-full bg-yellow-500"></span> Défrichement
+                </div>
+                <div class="flex items-center gap-1 text-white/70 text-[10px]">
+                  <span class="w-2 h-2 rounded-full bg-purple-500"></span> Orpaillage
+                </div>
+                <div class="flex items-center gap-1 text-white/70 text-[10px]">
+                  <span class="w-2 h-2 rounded-full bg-green-500"></span> Normal
+                </div>
+              </div>
+
+              <!-- Counter -->
+              <div class="absolute top-2 right-2 bg-red-600/90 text-white text-xs px-2 py-0.5 rounded-full font-medium">
+                
+                3 alertes actives
+              </div>
+            </div>
+
+            <!-- Stats row -->
+            <div class="mt-4 grid grid-cols-3 gap-2 text-center">
+              <div class="bg-white/5 rounded-lg p-2">
+                <p class="text-red-400 font-bold text-lg">1</p>
+                <p class="text-white/40 text-xs">Incendies</p>
+              </div>
+              <div class="bg-white/5 rounded-lg p-2">
+                <p class="text-yellow-400 font-bold text-lg">1</p>
+                <p class="text-white/40 text-xs">Défrichements</p>
+              </div>
+              <div class="bg-white/5 rounded-lg p-2">
+                <p class="text-green-400 font-bold text-lg">8</p>
+                <p class="text-white/40 text-xs">Patrouilles</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- ── MODULE 2 : Assiette de Coupe ── -->
+        <div class="tool-card bg-slate-mid/50 border border-white/10 rounded-2xl overflow-hidden">
+
+          <div class="bg-gradient-to-br from-bark-light/60 to-bark/80 p-6">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-amber-300" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                  <path d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <span class="bg-amber-500/20 text-amber-300 text-xs px-2 py-0.5 rounded-full border border-amber-500/30">ANALYSE</span>
+            </div>
+            <h3 class="font-display text-xl text-white mb-1">Optimisation de l'Assiette de Coupe</h3>
+            <p class="text-amber-200/70 text-xs leading-relaxed">
+              Graphiques de rendement et suivi des volumes exploités par opérateur et par forêt classée.
+            </p>
+          </div>
+
+          <div class="p-5">
+            <!-- Chart.js Canvas -->
+            <div class="bg-slate-dark rounded-xl p-3 mb-4">
+              <canvas id="coupeChart" height="160"></canvas>
+            </div>
+
+            <!-- Operator table mini -->
+            <div class="space-y-2">
+              {# var operateurs = typeof operateurs !== 'undefined' ? operateurs : [
+             #}
+              {% for op in operateurs %}
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-white/70">{{ op.nom | safe }}</span>
+                  <span class="text-amber-300 font-medium">{{ op.volume.toLocaleString('fr-FR') | safe }} m³ / {{ op.quota.toLocaleString('fr-FR') | safe }}</span>
+                </div>
+                <div class="h-1.5 bg-white/10 rounded-full">
+                  <div class="h-full bg-amber-500 rounded-full" style="width:{{ op.pct | safe }}%"></div>
+                </div>
+              </div>
+              {# }); #}
+            </div>
+          </div>
+        </div>
+
+
+        <!-- ── MODULE 3 : Séquestration Carbone ── -->
+        <div class="tool-card bg-slate-mid/50 border border-white/10 rounded-2xl overflow-hidden">
+
+          <div class="bg-gradient-to-br from-teal-800 to-teal-900 p-6">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-12 h-12 bg-teal-500/30 rounded-xl flex items-center justify-center">
+                <svg class="w-6 h-6 text-teal-300" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                  <path d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <span class="bg-teal-500/20 text-teal-300 text-xs px-2 py-0.5 rounded-full border border-teal-500/30 flex items-center gap-1">
+                <span class="w-1.5 h-1.5 bg-teal-400 rounded-full animate-pulse"></span>
+                TEMPS RÉEL
+              </span>
+            </div>
+            <h3 class="font-display text-xl text-white mb-1">Séquestration Carbone</h3>
+            <p class="text-teal-200/70 text-xs leading-relaxed">
+              Estimation du potentiel de capture CO₂ en fonction de la superficie reboisée et de la biomasse mesurée.
+            </p>
+          </div>
+
+          <div class="p-5 space-y-4">
+
+            <!-- Main CO2 widget -->
+            <div class="bg-teal-900/40 border border-teal-500/20 rounded-xl p-4 text-center">
+              <p class="text-teal-300 text-xs uppercase tracking-wider mb-1">Potentiel capture CO₂</p>
+              
+              <p class="font-display text-5xl text-white font-bold" id="co2Counter">
+                {{ typeof co2Tonnes !== 'undefined' ? co2Tonnes : '18 432' | safe }}
+              </p>
+              <p class="text-teal-400 text-sm mt-1">tonnes CO₂ / an</p>
+            </div>
+
+           
+            {# var carbonBreakdown = typeof carbonBreakdown !== 'undefined' ? carbonBreakdown : #}
+            <div class="space-y-2">
+              {% for c in carbonBreakdown %}
+              <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-{{ c.color | safe }}-400 shrink-0"></div>
+                <span class="text-white/60 text-xs flex-1">{{ c.label | safe }}</span>
+                <span class="text-white text-xs font-medium">{{ c.tonnes.toLocaleString('fr-FR') | safe }} t</span>
+                <div class="w-16 h-1.5 bg-white/10 rounded-full">
+                  <div class="h-full bg-{{ c.color | safe }}-400 rounded-full" style="width:{{ c.pct | safe }}%"></div>
+                </div>
+              </div>
+              {# }); #}
+            </div>
+
+            
+            <div class="bg-teal-500/10 border border-teal-500/20 rounded-lg p-3 text-xs text-teal-300/70">
+              <span class="font-medium text-teal-300">Méthodologie :</span>
+              Calcul basé sur la biomasse aérienne (IPCC T2) × superficie reboisée × facteur essence.
+             
+              <span class="block mt-1 text-teal-400/60">Mise à jour : Mars 2026</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 4 — STATISTIQUES CLÉS
+  ═══════════════════════════════════════════════════════ -->
+  <section id="stats" class="py-20 bg-sand-warm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <div class="text-center mb-12">
+        <p class="text-forest-500 font-medium text-sm uppercase tracking-widest mb-2">Tableau de Bord</p>
+        <h2 class="font-display text-3xl sm:text-4xl text-slate-dark">Statistiques Clés 2025</h2>
+      </div>
+
+      
+      {# var statsData = typeof statsData !== 'undefined' ? statsData : [
+          { ico #}
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {# statsData.forEach(function(s, i) {
+             var colors = {
+               fo #}
+        <div class="stat-card {{ c.bg | safe }} border {{ c.border | safe }} rounded-2xl p-6 flex gap-4 items-start">
+          <div class="{{ c.badge | safe }} rounded-xl w-12 h-12 flex items-center justify-center shrink-0">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              {% if s.icon==='users' %}
+                <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"/>
+              {% elif s.icon==='map' %}
+                <path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" stroke-linecap="round" stroke-linejoin="round"/>
+              {% elif s.icon==='finance' %}
+                <path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"/>
+              {% elif s.icon==='car' %}
+                <path d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round"/>
+              {% elif s.icon==='meet' %}
+                <path d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" stroke-linecap="round" stroke-linejoin="round"/>
+              {% else %}
+                <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" stroke-linecap="round" stroke-linejoin="round"/>
+              {% endif %}
+            </svg>
+          </div>
+          <div class="min-w-0">
+            <p class="font-display text-3xl {{ c.text | safe }} font-bold leading-none mb-1">{{ s.value | safe }}</p>
+            <p class="text-slate-dark text-sm font-medium leading-tight">{{ s.label | safe }}</p>
+            <p class="text-slate-light text-xs mt-1">{{ s.sub | safe }}</p>
+          </div>
+        </div>
+        {# }); #}
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 5 — DOCUMENTS & RAPPORTS
+  ═══════════════════════════════════════════════════════ -->
+  <section id="documents" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <div class="text-center mb-12">
+        <p class="text-forest-500 font-medium text-sm uppercase tracking-widest mb-2">Ressources</p>
+        <h2 class="font-display text-3xl sm:text-4xl text-slate-dark">Documents &amp; Rapports</h2>
+        <p class="text-slate-light mt-2 text-sm">Accédez aux documents officiels du Centre de Gagnoa et à la documentation technique de gestreb.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+     
+        {# var rapportT1Url = typeof rapportT1Url !== 'undefined' ? rapportT1Url : '#';
+    #}
+        <div class="group bg-sand rounded-2xl border border-sand-warm p-6 hover:border-forest-300 transition-all hover:shadow-lg">
+          <div class="flex items-start gap-4 mb-5">
+            <div class="w-12 h-12 bg-forest-100 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-forest-500 transition-colors">
+              <svg class="w-6 h-6 text-forest-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <span class="text-xs text-forest-500 font-medium uppercase tracking-wide">Rapport officiel</span>
+              <h4 class="font-display text-lg text-slate-dark leading-tight mt-0.5">Bilan Trimestre 1 — 2026</h4>
+            </div>
+          </div>
+          <p class="text-slate-light text-sm mb-5 leading-relaxed">
+            Synthèse des activités administratives, techniques et commerciales du Centre de Gestion de Gagnoa pour le premier trimestre 2026.
+          </p>
+          <div class="flex items-center justify-between">
+            <div class="text-xs text-slate-light">
+              <span class="font-medium text-slate-mid">PDF</span> · {{ rapportT1Size | safe }}
+            </div>
+            <a href="{{ rapportT1Url | safe }}"
+               download
+               class="inline-flex items-center gap-2 bg-forest-500 hover:bg-forest-600 text-white text-sm font-medium px-4 py-2 rounded-xl transition-all hover:scale-105">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M16 12l-4 4m0 0l-4-4m4 4V4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Télécharger
+            </a>
+          </div>
+        </div>
+
+       
+        {# var cdcUrl = typeof cdcUrl !== 'undefined' ? cdcUrl : '#'; #}
+        <div class="group bg-sand rounded-2xl border border-sand-warm p-6 hover:border-teal-300 transition-all hover:shadow-lg">
+          <div class="flex items-start gap-4 mb-5">
+            <div class="w-12 h-12 bg-teal-50 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-teal-500 transition-colors">
+              <svg class="w-6 h-6 text-teal-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <span class="text-xs text-teal-600 font-medium uppercase tracking-wide">Documentation technique</span>
+              <h4 class="font-display text-lg text-slate-dark leading-tight mt-0.5">Cahier des charges — gestreb</h4>
+            </div>
+          </div>
+          <p class="text-slate-light text-sm mb-5 leading-relaxed">
+            Spécifications fonctionnelles et techniques de la plateforme gestreb : architecture, modules, intégrations PostgreSQL, API REST.
+          </p>
+          <div class="flex items-center justify-between">
+            <div class="text-xs text-slate-light">
+              <span class="font-medium text-slate-mid">Document technique</span>
+            </div>
+            <a href="{{ cdcUrl | safe }}"
+               class="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white text-sm font-medium px-4 py-2 rounded-xl transition-all hover:scale-105">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Consulter
+            </a>
+          </div>
+        </div>
+
+       
+        {# var paaUrl  = typeof paaUrl !== 'undefined' ? paaUrl : '#';
+          var paaSiz #}
+        <div class="group bg-sand rounded-2xl border border-sand-warm p-6 hover:border-amber-300 transition-all hover:shadow-lg">
+          <div class="flex items-start gap-4 mb-5">
+            <div class="w-12 h-12 bg-amber-50 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-amber-500 transition-colors">
+              <svg class="w-6 h-6 text-amber-600 group-hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div>
+              <span class="text-xs text-amber-600 font-medium uppercase tracking-wide">Planification</span>
+              <h4 class="font-display text-lg text-slate-dark leading-tight mt-0.5">Programme Annuel d'Activités 2026</h4>
+            </div>
+          </div>
+          <p class="text-slate-light text-sm mb-5 leading-relaxed">
+            Objectifs, budgets prévisionnels et plan d'action pour l'exercice 2026. Validé par la Direction Générale SODEFOR.
+          </p>
+          <div class="flex items-center justify-between">
+            <div class="text-xs text-slate-light">
+              <span class="font-medium text-slate-mid">PDF</span> · {{ paaSize | safe }}
+            </div>
+            <a href="{{ paaUrl | safe }}"
+               download
+               class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium px-4 py-2 rounded-xl transition-all hover:scale-105">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M16 12l-4 4m0 0l-4-4m4 4V4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Télécharger
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Additional resources list -->
+      <div class="mt-8 bg-sand rounded-2xl border border-sand-warm p-6">
+        <h4 class="font-medium text-slate-dark mb-4 flex items-center gap-2">
+          <svg class="w-4 h-4 text-forest-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Archives & Documents complémentaires
+        </h4>
+        {# var archives = typeof archives !== 'undefined' ? archives : [
+            { titr #}
+        <div class="divide-y divide-sand-warm">
+          {% for a in archives %}
+          <div class="flex items-center justify-between py-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="text-xs font-bold px-1.5 py-0.5 rounded bg-slate-dark/10 text-slate-mid shrink-0">{{ a.type | safe }}</span>
+              <span class="text-sm text-slate-dark truncate">{{ a.titre | safe }}</span>
+            </div>
+            <div class="flex items-center gap-3 shrink-0 ml-4">
+              <span class="text-xs text-slate-light hidden sm:block">{{ a.date | safe }}</span>
+              <a href="{{ a.url | safe }}" class="text-forest-500 hover:text-forest-700 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M16 12l-4 4m0 0l-4-4m4 4V4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+          {# }); #}
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════════ -->
+  <footer class="bg-forest-900 text-forest-300 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <div>
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-8 h-8 rounded-full bg-forest-500 flex items-center justify-center">
+              <svg viewBox="0 0 40 40" class="w-5 h-5" fill="none">
+                <path d="M20 28 C20 28 10 20 10 14 C10 9.6 14.5 7 20 7 C25.5 7 30 9.6 30 14 C30 20 20 28 20 28Z" fill="#4fa356"/>
+              </svg>
+            </div>
+            <span class="text-white font-display font-semibold">gestreb</span>
+          </div>
+          <p class="text-sm leading-relaxed opacity-70">
+            Plateforme de gestion durable des ressources forestières — Centre de Gagnoa, SODEFOR.
+          </p>
+        </div>
+        <div>
+          <p class="text-white font-medium text-sm mb-3">Contact</p>
+          <ul class="space-y-1 text-sm opacity-70">
+            
+            <li>Centre de Gestion de Gagnoa</li>
+            <li>Ministère des Eaux et Forêts</li>
+            <li>SODEFOR — Côte d'Ivoire</li>
+          </ul>
+        </div>
+        <div>
+          <p class="text-white font-medium text-sm mb-3">Navigation</p>
+          <ul class="space-y-1 text-sm">
+            <li><a href="#bilan"     class="opacity-70 hover:opacity-100 hover:text-white transition-opacity">Bilan Reboisement</a></li>
+            <li><a href="#outils"    class="opacity-70 hover:opacity-100 hover:text-white transition-opacity">Outils Innovants</a></li>
+            <li><a href="#stats"     class="opacity-70 hover:opacity-100 hover:text-white transition-opacity">Statistiques</a></li>
+            <li><a href="#documents" class="opacity-70 hover:opacity-100 hover:text-white transition-opacity">Documents</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-forest-700 pt-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs opacity-50">
+        <p>© {{ new Date().getFullYear() }} SODEFOR — Centre de Gestion de Gagnoa. Tous droits réservés.</p>
+        <p>gestreb v1.0 · Bilan 2025 · T1 2026</p>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       SCRIPTS
+  ═══════════════════════════════════════════════════════ -->
+  <script>
+    // ── Mobile Menu ──
+    document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+      var menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('hidden');
+    });
+
+    // ── Navbar scroll effect ──
+    window.addEventListener('scroll', function() {
+      var nav = document.getElementById('navbar');
+      if (window.scrollY > 60) {
+        nav.style.background = 'rgba(11,42,14,.97)';
+        nav.style.boxShadow  = '0 2px 24px rgba(0,0,0,.3)';
+      } else {
+        nav.style.background = 'rgba(11,42,14,.92)';
+        nav.style.boxShadow  = 'none';
+      }
+    });
+
+    // ── Smooth nav links close mobile menu ──
+    document.querySelectorAll('#mobileMenu a').forEach(function(a) {
+      a.addEventListener('click', function() {
+        document.getElementById('mobileMenu').classList.add('hidden');
+      });
+    });
+
+    // ── Chart.js : Assiette de Coupe ──
+    (function() {
+      var ctx = document.getElementById('coupeChart');
+      if (!ctx) return;
+
+      // EJS: données injectables depuis PostgreSQL
+      // table suggérée : coupe_stats(mois, volume_prevu, volume_realise)
+      var labels  = ['Jan','Fév','Mar','Avr','Mai','Jun','Jul','Aoû','Sep','Oct','Nov','Déc'];
+      var prevus  = [380,350,420,410,450,440,380,360,400,390,410,430];
+      var realise = [320,340,390,380,430,410,360,320,380,370,400,415];
+
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Prévu (m³)',
+              data: prevus,
+              backgroundColor: 'rgba(107,84,64,.35)',
+              borderColor: '#6b5440',
+              borderWidth: 1,
+              borderRadius: 3,
+            },
+            {
+              label: 'Réalisé (m³)',
+              data: realise,
+              backgroundColor: 'rgba(245,158,11,.7)',
+              borderColor: '#f59e0b',
+              borderWidth: 1,
+              borderRadius: 3,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: 'rgba(255,255,255,.6)', font: { size: 10 }, boxWidth: 10 }
+            },
+            tooltip: {
+              backgroundColor: '#1e2422',
+              titleColor: '#fff',
+              bodyColor: 'rgba(255,255,255,.7)',
+            }
+          },
+          scales: {
+            x: {
+              ticks: { color: 'rgba(255,255,255,.4)', font: { size: 9 } },
+              grid:  { color: 'rgba(255,255,255,.05)' }
+            },
+            y: {
+              ticks: { color: 'rgba(255,255,255,.4)', font: { size: 9 } },
+              grid:  { color: 'rgba(255,255,255,.05)' }
+            }
+          }
+        }
+      });
+    })();
+
+    // ── Intersection Observer for progress bars ──
+    var progressBars = document.querySelectorAll('.progress-fill');
+    progressBars.forEach(function(bar) {
+      var target = bar.style.width;
+      bar.style.width = '0%';
+      var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+          if (e.isIntersecting) {
+            e.target.style.width = target;
+            obs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.3 });
+      obs.observe(bar);
+    });
+
+    // ── CO2 Counter animation ──
+    (function() {
+      var el = document.getElementById('co2Counter');
+      if (!el) return;
+      var raw   = el.textContent.replace(/\s/g, '');
+      var target = parseInt(raw, 10);
+      if (isNaN(target)) return;
+      var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+          if (!e.isIntersecting) return;
+          var start = 0;
+          var step  = Math.ceil(target / 60);
+          var iv = setInterval(function() {
+            start = Math.min(start + step, target);
+            el.textContent = start.toLocaleString('fr-FR');
+            if (start >= target) clearInterval(iv);
+          }, 25);
+          obs.unobserve(e.target);
+        });
+      }, { threshold: 0.5 });
+      obs.observe(el);
+    })();
+  </script>
+
+</body>
+</html>

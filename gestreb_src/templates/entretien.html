@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>ENTRETIEN</title>
+    <link rel="icon" 
+     type="image/png" 
+     href="/img/Logo_gestreb.jpg">
+    <!-- Montserrat Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/tailStyle.css">
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body>
+    <div class="grid-container">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="menu-icon" onclick="openSidebar()">
+          <span class="material-icons-outlined">menu</span>
+        </div>
+        <div class="header-left">
+          <div class="main-title">
+            <h2></h2>
+          </div>
+        </div>
+        <div class="header-right">
+          <!-- Boutons pour les entretiens -->
+          <button class="entretien-btn" id="annee0-btn" style="padding:5px; border-right: solid 1px white; margin-right: 10px;color: yellow;text-decoration: underline;">
+            <a href="/api/cugf/entretien/0/{{ foret }}">Entretien année 0</a>
+          </button>
+          <button class="entretien-btn" id="annee1-btn" style="padding:5px; border-right: solid 1px white;margin-right: 10px;">
+            <a href="/api/cugf/entretien_1/1/{{ foret }}">Entretien année 1</a>
+          </button>
+          <button class="entretien-btn" id="annee2-btn" style="padding:5px; border-right: solid 1px white;margin-right: 10px;">
+            <a href="/api/cugf/entretien_2/2/{{ foret }}">Entretien année 2</a>
+          </button>
+          <button class="entretien-btn" id="annee3-btn">
+            <a href="/api/cugf/entretien_3/3/{{ foret }}">Entretien année 3</a>
+          </button> 
+        </div>
+      </header>
+      <!-- End Header -->
+
+      <!-- Sidebar -->
+      <aside id="sidebar">
+        <div class="sidebar-title">
+          <div class="sidebar-brand">
+            <a href="#" class="flex ms-2 md:me-24">
+              <img src="/img/Logo_gestreb.jpg" class="ml-4" alt="Logo GestReb" />
+              </a>
+          </div>
+          <span class="material-icons-outlined" onclick="closeSidebar()">close</span>
+        </div>
+        <div class="px-2 pb-4 bg-green  shadow-zinc-600">
+          <ul class="space-y-2 font-medium">
+            <li>
+              <a href="/api/cugf/{{ foret }}" class="flex items-center py-3 px-1 mt-16 text-black   hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined">dashboard</span>
+                <span class="ms-3">Tableau de bord</span>
+              </a>
+            </li>   
+            <li>
+              <a href="/api/cugf/mise_en_place/{{ foret }}" class="flex items-center mt-16 p-2 dark:text-black  hover:border-y hover:border-gray-500 group">
+                <span style="color: black;" class="material-icons-outlined">description</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Mise en place</span>
+              </a>
+            </li>  
+            <li>
+              <a href="/api/cugf/entretien/0/{{ foret }}" class="flex items-center mt-16 p-2 dark:text-black border-y border-black hover:border-y hover:border-gray-500 group">
+                <span style="color: black;" class="material-icons-outlined">description</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Entretien</span>
+              </a>
+            </li> 
+            <li>
+              <a href="#" class="flex items-center mt-16 p-2 dark:text-black  hover:border-y hover:border-gray-500 group">
+                <span style="color: black;" class="material-icons-outlined">description</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Sylviculture</span>
+              </a>
+            </li> 
+                       
+          </ul>
+        </div>
+      </aside>
+      <!-- End Sidebar -->
+
+     <!-- Main -->
+     <main class="main-container">
+
+        <div class="sticky-buttons" style="border-bottom:solid 1px white; justify-items :flex-start; font-size: larger;">
+          <h2 >PASSAGE 1</h2>
+          <h2 id="op1">OBJECTIF : ha</h2>
+          <h2 id="tp1">TAUX DE REALISATION : %</h2>
+        </div>
+  
+        <div class="main-lignes" style="overflow-y: auto;height: 40%;">
+          
+          <div style="border-radius: 0dvh; background-color: #171c2b;;color: white;"  class="card">
+            <div class="card-inner" style="width: 25%; margin-right: 5%;">
+              <div>
+                <span class="material-icons-outlined">groups</span>
+              </div>
+            <div>
+              <h3 style="color: green;">Entretien 1 ligne</h3>            
+            </div>
+  
+          </div>
+          <div class="card-inner" style="width: 70%;">
+            <div>
+              <p id="p8-1"></p>           
+            </div>
+            <div>
+              <p id="p8-2"></p>
+            </div>
+            <div>
+              <p id="p8-3"></p>
+            </div>
+            <div>
+              <p id="p8-4"></p>
+            </div>
+            <div>
+              <a href="/api/cugf/entretien/0/{{ foret }}/8"><p style="text-decoration: underline; color:yellow;">Editer</p></a>
+            </div>
+          </div>
+          </div>
+  
+          <div style="border-radius: 0dvh; background-color: #171c2b;;color: white;"  class="card">
+            <div class="card-inner" style="width: 25%; margin-right: 5%;">
+              <div>
+                <span class="material-icons-outlined">groups</span>
+              </div>
+            <div>
+              <h3 style="color: green;">Entretien 1 interligne</h3>            
+            </div>
+  
+          </div>
+          <div class="card-inner" style="width: 70%;">
+            <div>
+              <p id="p9-1"></p>           
+            </div>
+            <div>
+              <p id="p9-2"></p>
+            </div>
+            <div>
+              <p id="p9-3"></p>
+            </div>
+            <div>
+              <p id="p9-4"></p>
+            </div>
+            <div>
+              <a href="/api/cugf/entretien/0/{{ foret }}/9"><p style="text-decoration: underline; color:yellow;">Editer</p></a>
+            </div>
+          </div>
+          </div>
+          <div style="border-radius: 0dvh; background-color: #171c2b;;color: white;"  class="card">
+            <div class="card-inner" style="width: 25%; margin-right: 5%;">
+              <div>
+                <span class="material-icons-outlined">groups</span>
+              </div>
+            <div>
+              <h3 style="color: green;">	Remplacement plants morts</h3>            
+            </div>
+  
+          </div>
+          <div class="card-inner" style="width: 70%;">
+            <div>
+              <p id="p10-1"></p>           
+            </div>
+            <div>
+              <p id="p10-2"></p>
+            </div>
+            <div>
+              <p id="p10-3"></p>
+            </div>
+            <div>
+              <p id="p10-4"></p>
+            </div>
+            <div>
+              <a href="/api/cugf/entretien/0/{{ foret }}/10"><p style="text-decoration: underline; color:yellow;">Editer</p></a>
+            </div>
+          </div>
+          </div>
+          <div style="border-radius: 0dvh; background-color: #171c2b;;color: white;"  class="card">
+            <div class="card-inner" style="width: 25%; margin-right: 5%;">
+              <div>
+                <span class="material-icons-outlined">groups</span>
+              </div>
+            <div>
+              <h3 style="color: green;">Entretien en puits</h3>            
+            </div>
+  
+          </div>
+          <div class="card-inner" style="width: 70%;">
+            <div>
+              <p id="p11-1"></p>           
+            </div>
+            <div>
+              <p id="p11-2"></p>
+            </div>
+            <div>
+              <p id="p11-3"></p>
+            </div>
+            <div>
+              <p id="p11-4"></p>
+            </div>
+            <div>
+              <a href="/api/cugf/entretien/0/{{ foret }}/11"><p style="text-decoration: underline; color:yellow;">Editer</p></a>
+            </div>
+          </div>
+          </div>
+          </div>
+          <div class="sticky-buttons" style="border-bottom:solid 1px white; justify-items :flex-start; font-size: larger;">
+            <h2 >PASSAGE 2</h2>
+            <h2 id="op2">OBJECTIF : ha</h2>
+            <h2 id="tp2">TAUX DE REALISATION : %</h2>
+          </div>
+    
+          <div class="main-lignes" style="overflow-y: auto;height: 30%;">
+            
+            <div style="border-radius: 0dvh; background-color: #171c2b;;color: white;"  class="card">
+              <div class="card-inner" style="width: 25%; margin-right: 5%;">
+                <div>
+                  <span class="material-icons-outlined">groups</span>
+                </div>
+              <div>
+                <h3 style="color: green;">Entretien 2 ligne</h3>            
+              </div>
+    
+            </div>
+            <div class="card-inner" style="width: 70%;">
+              <div>
+                <p id="p12-1"></p>           
+              </div>
+              <div>
+                <p id="p12-2"></p>
+              </div>
+              <div>
+                <p id="p12-3"></p>
+              </div>
+              <div>
+                <p id="p12-4"></p>
+              </div>
+              <div>
+                <a href="/api/cugf/entretien/0/{{ foret }}/12"><p style="text-decoration: underline; color:yellow;">Editer</p></a>
+              </div>
+            </div>
+            </div>
+    
+            <div style="border-radius: 0dvh; background-color: #171c2b;;color: white;"  class="card">
+              <div class="card-inner" style="width: 25%; margin-right: 5%;">
+                <div>
+                  <span class="material-icons-outlined">groups</span>
+                </div>
+              <div>
+                <h3 style="color: green;">Entretien 2 interligne</h3>            
+              </div>
+    
+            </div>
+            <div class="card-inner" style="width: 70%;">
+              <div>
+                <p id="p13-1"></p>           
+              </div>
+              <div>
+                <p id="p13-2"></p>
+              </div>
+              <div>
+                <p id="p13-3"></p>
+              </div>
+              <div>
+                <p id="p13-4"></p>
+              </div>
+              <div>
+                <a href="/api/cugf/entretien/0/{{ foret }}/13"><p style="text-decoration: underline; color:yellow;">Editer</p></a>
+              </div>
+            </div>
+            </div>
+            </div>
+      
+      <div class="sticky-buttons" style=" border-top:solid 1px white;display: flex; justify-content:end; font-size:medium;">
+        <div style="margin-top:15px; background-color: green; padding: 5px; border-radius: 7%;">
+          <button id="enreg"><a href="/api/cugf/entretien_recap/{{ foret }}">VALIDER</a></button>
+        </div>
+        
+      </div>
+     
+    </main>
+    <!-- End Main -->
+      </div>
+    
+
+    <!-- Scripts -->
+    <!-- ApexCharts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/scripts.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', async () => {
+        try {
+          const response = await fetch('/get/parcelles/entretien/{{ annee }}/{{ foret }}');
+          const travail = await response.json();
+          const liste_travaux = [];
+          let t1=0;
+          let t2=0;
+          const liste_passage=[];
+          travail.forEach(trv => {
+           const t = {travail:trv.fk_cout_fixe, objectif:trv.superficie, realise:trv.superficie_traitee, taux:trv.superficie_traitee/trv.superficie*100, reliquat:trv.superficie-trv.superficie_traitee};
+            liste_travaux.push(t);
+            console.log(liste_travaux);
+            if(trv.fk_cout_fixe==8 || trv.fk_cout_fixe==9 || trv.fk_cout_fixe==10||
+             trv.fk_cout_fixe==11){
+              if(trv.fk_cout_fixe==10){
+              t1=t1+(t.realise/(t.objectif/5)*100);
+              document.getElementById(`p${trv.fk_cout_fixe}-1`).textContent = `Objectif : ${(Math.round(t.objectif/5 * 100)/100).toFixed(2)} ha`;
+              document.getElementById(`p${trv.fk_cout_fixe}-2`).textContent = `Réalisé : ${(Math.round(t.realise * 100)/100).toFixed(2)} ha`;
+              document.getElementById(`p${trv.fk_cout_fixe}-3`).textContent = `Taux : ${(Math.round(t.realise/(t.objectif/5)*100 * 100)/100).toFixed(2)} %`;
+              document.getElementById(`p${trv.fk_cout_fixe}-4`).textContent = `Réliquat : ${(Math.round((t.objectif/5-t.realise) * 100)/100).toFixed(2)} ha`; 
+              }else{
+              t1=t1+t.taux;
+              document.getElementById(`p${trv.fk_cout_fixe}-1`).textContent = `Objectif : ${(Math.round(t.objectif * 100)/100).toFixed(2)} ha`;
+              document.getElementById(`p${trv.fk_cout_fixe}-2`).textContent = `Réalisé : ${(Math.round(t.realise * 100)/100).toFixed(2)} ha`;
+              document.getElementById(`p${trv.fk_cout_fixe}-3`).textContent = `Taux : ${(Math.round(t.taux * 100)/100).toFixed(2)} %`;
+              document.getElementById(`p${trv.fk_cout_fixe}-4`).textContent = `Réliquat : ${(Math.round(t.reliquat * 100)/100).toFixed(2)} ha`;
+            }
+            }
+            if(trv.fk_cout_fixe==12 || trv.fk_cout_fixe==13){
+              t2=t2+t.taux;
+              document.getElementById(`p${trv.fk_cout_fixe}-1`).textContent = `Objectif : ${(Math.round(t.objectif * 100)/100).toFixed(2)} ha`;
+              document.getElementById(`p${trv.fk_cout_fixe}-2`).textContent = `Réalisé : ${(Math.round(t.realise * 100)/100).toFixed(2)} ha`;
+              document.getElementById(`p${trv.fk_cout_fixe}-3`).textContent = `Taux : ${(Math.round(t.taux * 100)/100).toFixed(2)} %`;
+              document.getElementById(`p${trv.fk_cout_fixe}-4`).textContent = `Réliquat : ${(Math.round(t.reliquat * 100)/100).toFixed(2)} ha`;
+            }
+            });
+            liste_passage.push(t1);
+            liste_passage.push(t2);
+            console.log(liste_passage);
+            
+            document.getElementById(`op1`).textContent = `OBJECTIF : ${(Math.round(liste_travaux[7].objectif * 100)/100).toFixed(2)} ha`;
+            document.getElementById(`tp1`).textContent = `TAUX DE REALISATION: ${(Math.round(liste_passage[0]/4 * 100)/100).toFixed(2)} %`;
+            document.getElementById(`op2`).textContent = `OBJECTIF : ${(Math.round(liste_travaux[11].objectif * 100)/100).toFixed(2)} ha`;
+            document.getElementById(`tp2`).textContent = `TAUX DE REALISATION: ${(Math.round(liste_passage[1]/2 * 100)/100).toFixed(2)} %`;
+        } catch (error) {
+          console.error('Erreur lors de la récupération des parcelles:', error);
+        }
+      });
+      document.addEventListener('DOMContentLoaded', () => {
+    const validerButton = document.getElementById('enreg');
+    validerButton.addEventListener('click', async () => {
+      try {
+        const response = await fetch('/get/parcelles/entretien0/{{ foret }}', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        if (!response.ok) {
+          throw new Error('Erreur lors de la mise à jour');
+        }
+        console.log('Mise à jour réussie');
+      } catch (error) {
+        console.error('Erreur:', error);
+      }
+    });
+  });
+    </script>
+  </body>
+</html>

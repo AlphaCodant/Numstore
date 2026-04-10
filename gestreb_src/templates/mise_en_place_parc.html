@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>MISE EN PLACE</title>
+    <link rel="icon" 
+     type="image/png" 
+     href="/img/Logo_gestreb.jpg">
+    <!-- Montserrat Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+  
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/tailStyle.css">
+    <link rel="stylesheet" href="/css/style_mise_en_place.css">
+  </head>
+  <body>
+    <div class="grid-container">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="menu-icon" onclick="openSidebar()">
+          <span class="material-icons-outlined">menu</span>
+        </div>
+        <div class="header-left">
+          <div class="main-title">
+          <h2>MISE EN PLACE</h2>
+        </div>
+        </div>
+        <div class="header-right">
+        </div>
+      </header>
+      <!-- End Header -->
+
+      <!-- Sidebar -->
+      <aside id="sidebar">
+        <div class="sidebar-title">
+          <div class="sidebar-brand">
+            <a href="#" class="flex ms-2 md:me-24">
+              <img src="/img/Logo_gestreb.jpg" class="ml-4" alt="Logo GestReb" />
+              </a>
+          </div>
+          <span class="material-icons-outlined" onclick="closeSidebar()">close</span>
+        </div>
+        <div class="px-2 pb-4 bg-green  shadow-zinc-600">
+          <ul class="space-y-2 font-medium">
+            <li>
+              <a href="/api/cugf/{{ foret }}" class="flex items-center py-3 px-1 mt-16 text-black  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined">dashboard</span>
+                <span class="ms-3">Tableau de bord</span>
+              </a>
+            </li>   
+            <li>
+              <a href="#" class="flex items-center mt-16 p-2 text-purple  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined" style="color:brown">nature</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Prod. de plants</span>
+              </a>
+            </li>  
+            <li>
+              <a href="/api/cugf/mise_en_place/{{ foret }}" class="flex items-center mt-16 p-2 text-purple border-y border-black hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined" style="color:blueviolet">agriculture</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Mise en place</span>
+              </a>
+            </li>  
+            <li>
+              <a href="# "class="flex items-center mt-16 p-2 text-green  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined" style="color:greenyellow">nature_people</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Entretien</span>
+              </a>
+            </li> 
+            <li>
+              <a href="#" class="flex items-center mt-16 p-2 dark:text-black  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined" style="color:palevioletred">carpenter</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Sylviculture</span>
+              </a>
+            </li>       
+          </ul>
+        </div>
+      </aside>
+      <!-- End Sidebar -->
+
+     <!-- Main -->
+     <main class="main-container">
+
+      <div class="sticky-buttons" style="border-bottom:solid 1px white; justify-items :flex-start; font-size: larger;
+      background-color: #d5cdcd;">
+      
+        <h2 class="main-title" style="color:rgb(134, 3, 199);font-weight: bolder;">{{ nom }}</h2>
+      </div>
+
+      <div class="main-lignes" style="overflow-y: auto; height: 70%;">
+        
+        <div class=" m-4">
+          <div class="items-center space-y-2 md:space-y-0 pb-1 dark:bg-gray-900">
+            <table class="w-full bottom-0 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-lg overflow-auto">
+                <thead class="relative text-xs text-white uppercas" 
+                style="background-image: linear-gradient(to right,rgb(165, 60, 246),rgb(0, 140, 255),rgb(0, 238, 255) );">
+                    <tr>
+                      
+                      <th scope="col" class="px-6 py-3 editable-cell">
+                          N° Parcelle
+                      </th>
+                      
+                      <th scope="col" class="px-6 py-3 editable-cell" id="annee_th">
+                          Année
+                      </th>
+                      <th scope="col" class="px-6 py-3 editable-cell" id="essence_th">
+                          Essence
+                      </th>
+                      <th scope="col" class="px-6 py-3 editable-cell">
+                        Objectif (ha)
+                      </th>
+                      <th scope="col" class="px-6 py-2 editable-cell" id="date_debut_th">
+                        Date debut
+                      </th>
+                      <th scope="col" class="px-6 py-2 editable-cell">
+                          Réalisé (ha)
+                      </th>
+                      
+                        <th scope="col" class="px-6 py-2 editable-cell" id="taux_th">
+                          Taux(%)
+                      </th>
+                      <th scope="col" class="px-6 py-2 editable-cell" id="reliquat_th">
+                        Réliquat
+                      </th>
+                      
+                      <th scope="col" class="px-6 py-2 editable-cell" id="date_fin_th">
+                        Date fin
+                      </th>
+                      <th scope="col" class="px-6 py-2 editable-cell" id="fiche_th">
+                        Fiche 
+                      </th>
+                     
+                    </tr>
+                </thead>
+                <tbody class="overflow-auto">            
+                </tbody>
+            </table>
+          </div>
+        </div>
+        
+      </div>
+      <!-- Dialog Box -->
+      <div class="dialog-overlay" id="dialogOverlay">
+        <div class="dialog-box" style="color: black;">
+            <span class="closer-dialog" id="closeDialog">&#10006;</span>
+            <div class="sidebar-brand">
+              <a href="#" class="flex ms-2 md:me-24">
+                <img src="/img/Logo_gestreb.jpg" class="ml-4 h-8" alt="Logo GestReb" />
+                </a>
+                
+            </div>
+            <div class="telecharger" >
+              <span class="material-icons-outlined" style="color: yellowgreen;">print</span>
+              <a
+                href="#"
+                target="_blank"
+                class="btn btn-outline-warning mr-2"
+              >
+                <span class="btn-text" style="color:rgb(224, 56, 0);font-size: 10px;">Télécharger fiche</span>
+              </a>
+            </div>
+            <br>
+            <div style="background-image: linear-gradient(to right,rgb(165, 60, 246),rgb(0, 140, 255),rgb(0, 238, 255) );
+             border-radius: 5%;"><h1 style="color: black;text-align: center;">FICHE PARCELLAIRE</h1></div>
+            <div style="text-align: left; gap: 0px; margin-top: 0%;">
+              <div style="display: flex; flex-direction: row; justify-content: space-between;"><p id="fp_num">Numero</p><p id="fp_ess">Essence</p></div>
+              <div style="display: flex; flex-direction: row; justify-content: space-between;"><p id="fp_sup">Superficie</p><p id="fp_fin">Financement</p></div>
+            </div>
+            <div>
+              <table class="w-full bottom-0 text-xs text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-lg overflow-auto">
+                <thead class="relative text-xs text-white uppercas" 
+                 style="background-image: linear-gradient(to right,rgb(0, 140, 255),rgb(0, 238, 255) ); 
+                ">
+                      <tr>
+                        <th scope="col" class="px-6 py-2 editable-cell2">
+                          Date
+                        </th>
+                        <th scope="col" class="px-6 py-2 editable-cell2">
+                            Travail
+                        </th>
+                        
+                          <th scope="col" class="px-6 py-2 editable-cell2" id="taux_td">
+                            Cout (F CFA)
+                        </th>
+                        <th scope="col" class="px-6 py-2 editable-cell2">
+                          Réalisé (ha)
+                        </th>
+                        
+                        <th scope="col" class="px-6 py-2 editable-cell2" >
+                          Montant
+                        </th>
+                        <th scope="col" class="px-6 py-2 editable-cell2" id="taux_td">
+                          Mode
+                        </th>
+                      </tr>
+                  </thead>
+                  <tbody id="tbody2" style="font-size: 7px;"
+                  class="bg-white text-black border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">   
+                  </tbody>
+              </table>
+            </div>
+            <br>
+            <div style="background-image: linear-gradient(to right,rgb(0, 140, 255),rgb(0, 238, 255) );
+             border-radius: 5%;"><h3 style="color: black;text-align: left;font-weight: bold;left:2%">COUT DE REVIENS  
+             <span style="color: brown; font-weight: bolder; text-align: right;" id="cout_reviens">     XXXX</span> </h3></div>
+          </div>
+    </div>
+      <!--
+      <div class="sticky-buttons" style=" margin-top: 10px;margin-bottom: 20px;display: flex; justify-content:space-between; font-size:medium;">
+        <div style="margin-top:15px; color : black; background-color: rgba(253, 73, 37, 0.785); padding: 0px; border-radius: 7%;">
+          <button id="annuler">ANNULER</button>
+        </div>  
+        <div style="margin-top:15px; color : black; background-color: rgb(157, 174, 7); padding: 0px; border-radius: 7%;">
+          <button id="enreg"><a href="/api/cugf/mise_en_place/{{ foret }}/{{ travail }}/{{ nom }}">ENREGISTRER</a></button>
+        </div>    
+      </div>-->
+      <div class="sticky-buttons" style=" border-top:solid 1px white;display: flex; justify-content:end; font-size:medium;">
+        
+        <div style="margin-top:15px; background-color: green; padding: 0px; border-radius: 7%;font-weight: bold;
+        background-image: linear-gradient(to right,rgb(136, 189, 232),rgb(140, 233, 240) ); color: black; ">
+          <button id="valider"><a href="/api/cugf/mise_en_place/{{ foret }}">VALIDER</a></button>
+        </div>
+        
+      </div>
+      
+     
+    </main>
+    <!-- End Main -->
+      </div>
+    
+
+    <!-- Scripts -->
+    <!-- ApexCharts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.js"></script>
+    <script>
+     document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    // Récupérer les données des parcelles depuis le serveur
+    const response = await fetch('/get/parcelles/mise_en_place/{{ foret }}/{{ travail }}');
+    const parcelles = await response.json();
+    const tableBody = document.querySelector('tbody');
+
+    parcelles.forEach(parcelle => {
+      const row = document.createElement('tr');
+      row.setAttribute('class', 'bg-white text-black border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600');
+      row.innerHTML = `
+        <td class="px-4 py-1 editable-cell" >${parcelle.numero}</td>
+        <td class="px-4 py-1 editable-cell" id="annee_td">${parcelle.annee}</td>
+        <td class="px-4 py-1 editable-cell" id="essence_td">${parcelle.essence}</td>
+        <td class="px-4 py-1 editable-cell" >${(Math.round(parcelle.superficie * 100) / 100).toFixed(2)}</td>
+        <td class="px-4 py-1 editable-cell" data-id="${parcelle.id}" data-field="date_debut" id="date_debut_td">
+          <button class="open-dialog">
+            <span class="material-icons-outlined icon" style="color: brown; font-size: 16px; margin-right: 8px;">
+              border_color
+            </span>
+          </button>
+          ${parcelle.date_init}
+        </td>
+        <td class="px-4 py-1 editable-cell" data-id="${parcelle.id}" data-field="realise">
+          <button class="real-dialog">
+            <span class="material-icons-outlined icon" style="color: brown; font-size: 16px; margin-right: 8px;">
+              border_color
+            </span>
+          </button>
+          ${(Math.round(parcelle.superficie_traitee * 100) / 100).toFixed(2)}
+        </td>
+        <td class="px-4 py-1 editable-cell" id="taux_td">${(Math.round((parcelle.superficie_traitee / parcelle.superficie * 100) * 100) / 100).toFixed(2)}</td>
+        <td class="px-4 py-1 editable-cell" id="reliquat_td">${(Math.round((parcelle.superficie - parcelle.superficie_traitee) * 100) / 100).toFixed(2)}</td>
+        <td class="px-4 py-1 editable-cell" data-id="${parcelle.id}" data-field="date_fin" id="date_fin_td">
+          <button class="close-dialog">
+            <span class="material-icons-outlined icon" style="color: brown; font-size: 16px; margin-right: 8px;">
+              border_color
+            </span>
+          </button>
+          ${parcelle.date_fin}
+        </td>
+        <td class="px-4 py-1 editable-cell" id="fiche_td" data-id="${parcelle.id}"><a href=#><p style="text-decoration : underline">ici</p></a></td>
+      `;
+      tableBody.appendChild(row);
+    });
+  } catch (error) {
+    console.error('Erreur lors de la récupération des parcelles:', error);
+  }
+});
+
+// Fonction pour formater une date de 'jj/mm/aaaa' en 'yyyy-mm-dd'
+function formatToDateInput(value) {
+  const [day, month, year] = value.split('/');
+  return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+}
+
+// Fonction pour formater une date de 'yyyy-mm-dd' en 'jj/mm/aaaa'
+function formatToDisplay(value) {
+  const [year, month, day] = value.split('-');
+  return `${day}/${month}/${year}`;
+}
+// Ajouter un gestionnaire d'événements sur les boutons ayant la classe 'open-dialog' et 'real-dialog' pour modifier la valeur dans les cellules
+document.addEventListener('click', (event) => {
+  const cell = event.target.closest('td'); // Trouver la cellule parent contenant la valeur
+  if (!cell) return;
+
+  // Si c'est un bouton 'open-dialog', afficher un champ de type date
+  if (event.target.closest('.open-dialog')) {
+    const parcelleId = cell.getAttribute('data-id');
+    const currentDate = '01/01/2025';
+
+    // Formater la date pour être compatible avec input type="date"
+    const formattedDate = formatToDateInput(currentDate);
+
+    // Créer un champ de saisie de type 'date'
+    const inputDate = document.createElement('input');
+    inputDate.type = 'date';
+    inputDate.value = formattedDate;  // Prendre la valeur formatée comme valeur par défaut
+    inputDate.style.fontSize = '14px'; // Optionnel : ajuster la taille du champ
+
+    // Remplacer la cellule par l'input
+    cell.innerHTML = ''; // Vider la cellule
+    cell.appendChild(inputDate);
+    inputDate.focus();
+
+    inputDate.addEventListener('blur', () => {
+      const newDate = inputDate.value;
+
+      // Vérifier si la nouvelle date est vide ou différente de l'ancienne
+      if (newDate !== formattedDate) {
+        // Convertir la date de 'yyyy-mm-dd' en 'jj/mm/aaaa'
+        const displayDate = formatToDisplay(newDate);
+        cell.textContent = displayDate;
+        saveDate(parcelleId, newDate);  // Enregistrer la date au format 'yyyy-mm-dd'
+      } else {
+        // Si l'input est vide, conserver la valeur initiale
+        cell.textContent = currentDate;
+      }
+    });
+
+  }
+  if (event.target.closest('.close-dialog')) {
+    const parcelleId = cell.getAttribute('data-id');
+    const currentDate = '01/01/2025';
+
+    // Formater la date pour être compatible avec input type="date"
+    const formattedDate = formatToDateInput(currentDate);
+
+    // Créer un champ de saisie de type 'date'
+    const inputDate = document.createElement('input');
+    inputDate.type = 'date';
+    inputDate.value = formattedDate;  // Prendre la valeur formatée comme valeur par défaut
+    inputDate.style.fontSize = '14px'; // Optionnel : ajuster la taille du champ
+
+    // Remplacer la cellule par l'input
+    cell.innerHTML = ''; // Vider la cellule
+    cell.appendChild(inputDate);
+    inputDate.focus();
+
+    inputDate.addEventListener('blur', () => {
+      const newDate = inputDate.value;
+
+      // Vérifier si la nouvelle date est vide ou différente de l'ancienne
+      if (newDate !== formattedDate) {
+        // Convertir la date de 'yyyy-mm-dd' en 'jj/mm/aaaa'
+        const displayDate = formatToDisplay(newDate);
+        cell.textContent = displayDate;
+        saveDate2(parcelleId, newDate);  // Enregistrer la date au format 'yyyy-mm-dd'
+      } else {
+        // Si l'input est vide, conserver la valeur initiale
+        cell.textContent = currentDate;
+      }
+    });
+
+  }
+  // Si c'est un bouton 'real-dialog', afficher un champ de type text
+  if (event.target.closest('.real-dialog')) {
+    const parcelleId = cell.getAttribute('data-id');
+    const currentText = cell.textContent.trim();
+
+    // Créer un champ de saisie de type 'text'
+    const inputText = document.createElement('input');
+    inputText.type = 'text';
+    inputText.value = '';  // Prendre la valeur actuelle comme valeur par défaut
+    inputText.style.fontSize = '14px'; // Optionnel : ajuster la taille du champ
+
+    // Remplacer la cellule par l'input
+    cell.innerHTML = ''; // Vider la cellule
+    cell.appendChild(inputText);
+    inputText.focus();
+
+    inputText.addEventListener('blur', () => {
+      const newText = inputText.value;
+
+      // Vérifier si la nouvelle valeur est vide ou différente de l'ancienne
+      if (newText !== currentText) {
+        cell.textContent = newText;
+        saveText(parcelleId, newText);
+      } else {
+        // Si l'input est vide, conserver la valeur initiale
+        cell.textContent = currentText;
+      }
+    });
+  }
+  
+  const closeDialog = document.querySelector('#closeDialog');
+  closeDialog.addEventListener('click', () => {
+        dialogOverlay.style.display = 'none'; // Masquer la boîte de dialogue
+    }); 
+});
+
+document.addEventListener('click',async(event)=>{
+  let cout_reviens=0;
+  const cell = event.target.closest('td');
+  const liste_activites = ['Rabattage','Abattage et tronçonnage','Brûlage','Piquetage','Ouverture des lignes','Trouaison','Planting',
+  'Entretien 1 ligne','Entretien 1 interligne','Remplacement plants morts','Entretien en puits','Entretien 2 ligne','Entretien 2 interligne']
+  if (event.target.closest('#fiche_td')) {
+    const parcelleId = cell.getAttribute('data-id');   
+    console.log(parcelleId);
+  try {
+    // Récupérer les données des parcelles depuis le serveur
+    const response = await fetch(`/get/fiches/cu/graph1/${parcelleId}`);
+    
+    const parcelles = await response.json();
+    console.log(parcelles);
+    const tableBody = document.querySelector('#tbody2');
+    tableBody.innerHTML = '';
+    tableBody.style.fontSize='7px';
+    const row = document.createElement('tr');
+    const fp_num = document.getElementById('fp_num');
+      const fp_sup = document.getElementById('fp_sup');
+      const fp_fin = document.getElementById('fp_fin');
+      const fp_ess = document.getElementById('fp_ess');
+      row.setAttribute('class', 'text-xs ');
+    //tableBody.style.fontSize='8px';
+    let i=0;
+    parcelles.forEach(parcelle => {
+      const row = document.createElement('tr');
+      row.setAttribute('class', 'bg-white text-black border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600');
+      
+      if (i==1){
+        row.innerHTML = `
+        <td class="text-sm px-4 py-1 editable-cell" >${parcelle.date_debut}-${parcelle.date_fin}</td>
+        <td class="text-sm px-4 py-1 editable-cell" >${liste_activites[i]}</td>
+        <td class="text-sm px-4 py-1 editable-cell" id="taux_td">${parcelle.cout}</td>
+        <td class="text-sm px-4 py-1 editable-cell" >${parcelle.realise}</td>
+        <td class="text-sm px-4 py-1 editable-cell" data-id="" data-field="date_debut">
+          ${parcelle.realise*parcelle.cout}
+        </td>
+        <td class="px-4 py-1 editable-cell" id="taux_td">Sous-traitance</td>
+   `;
+      }else{
+        row.innerHTML = `
+        <td class="text-sm px-4 py-1 editable-cell" >${parcelle.date_debut}-${parcelle.date_fin}</td>
+        <td class="text-sm px-4 py-1 editable-cell" >${liste_activites[i]}</td>
+        <td class="text-sm px-4 py-1 editable-cell" id="taux_td">${parcelle.cout}</td>
+        <td class="text-sm px-4 py-1 editable-cell" >${parcelle.realise}</td>
+        <td class="text-sm px-4 py-1 editable-cell" data-id="" data-field="date_debut">
+          ${parcelle.realise*parcelle.cout}
+        </td>
+        <td class="px-4 py-1 editable-cell" id="taux_td">Régie</td>
+   `;
+      }
+        cout_reviens+=(parcelle.realise*parcelle.cout);
+        i++
+      tableBody.appendChild(row);
+      fp_num.innerHTML=`<strong>Numéro<strong> : ${parcelle.numero}`;
+      fp_ess.innerHTML=`<strong>Essence<strong> : ${parcelle.essence}`;
+      fp_fin.innerHTML=`<strong>Financement<strong> : ${parcelle.financement}`;
+      fp_sup.innerHTML=`<strong>Superficie<strong> : ${parcelle.superficie} ha`;
+    });
+    //-------------------------------------------------------------
+
+  const montant = (Math.round(cout_reviens * 100)/100);
+  const options1 = { style: 'currency', currency: 'XOF' };
+  const numberFormat1 = new Intl.NumberFormat('XOF', options1);
+
+  const cout_revient = document.getElementById('cout_reviens_global');
+  cout_revient.innerHTML=numberFormat1.format(montant);
+
+  //-------------------------------------------------------------
+  } catch (error) {
+    console.error('Erreur lors de la récupération des parcelles:', error);
+  }
+  const cout_revient = document.getElementById('cout_reviens');
+  cout_revient.innerHTML=cout_reviens;
+  console.log(cout_reviens);
+  const dial = document.getElementById('dialogOverlay');
+    dial.style.display='flex';
+
+    // Sélection des éléments
+    const openDialogButton = document.querySelector('.open-dialog-button');
+    const closeDialogButton = document.querySelector('#closeDialogButton');
+    
+    const dialogOverlay = document.querySelector('#dialogOverlay');
+
+    // Fonction pour ouvrir la boîte de dialogue
+    
+    // Fonction pour fermer la boîte de dialogue lorsque l'utilisateur clique sur la croix
+       
+  };
+})
+
+// Fonction pour enregistrer la nouvelle date dans la base de données
+async function saveDate(parcelleId, newDate) {
+  const id=parcelleId;
+  const value = newDate;
+  const date_debut=[];
+  date_debut.push({id,value});
+  try {
+    const response = await fetch('/get/parcelles/mise_en_place/{{ foret }}/{{ travail }}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ date_debut }),
+    });
+
+    if (response.ok) {
+      console.log('Date mise à jour avec succès');
+    } else {
+      console.error('Erreur lors de la mise à jour de la date');
+    }
+  } catch (error) {
+    console.error('Erreur de communication avec le serveur:', error);
+  }
+}
+
+// Fonction pour enregistrer la nouvelle valeur textuelle
+async function saveText(parcelleId, newText) {
+  const id=parcelleId;
+  const value = newText;
+  const realise=[];
+  realise.push({id,value});
+  try {
+    const response = await fetch('/get/parcelles/mise_en_place/{{ foret }}/{{ travail }}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ realise }),
+    });
+
+    if (response.ok) {
+      console.log('Valeur textuelle mise à jour avec succès');
+    } else {
+      console.error('Erreur lors de la mise à jour de la valeur textuelle');
+    }
+  } catch (error) {
+    console.error('Erreur de communication avec le serveur:', error);
+  }
+}
+
+async function saveDate2(parcelleId, newDate) {
+  const id=parcelleId;
+  const value = newDate;
+  const date_fin=[];
+  date_fin.push({id,value});
+  try {
+    const response = await fetch('/get/parcelles/mise_en_place/{{ foret }}/{{ travail }}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ date_fin }),
+    });
+
+    if (response.ok) {
+      console.log('Date mise à jour avec succès');
+    } else {
+      console.error('Erreur lors de la mise à jour de la date');
+    }
+  } catch (error) {
+    console.error('Erreur de communication avec le serveur:', error);
+  }
+}
+
+/* Fonction pour enregistrer la nouvelle date dans la base de données
+const validate = document.getElementById('enreg');
+validate.addEventListener('click', async() => {
+  const date_init_input = document.querySelectorAll('input[data-field="date_debut"]');
+  const realise_input = document.querySelectorAll('td[data-field="realise"]');
+  const date_fin_input = document.querySelectorAll('input[data-field="date_fin"]');
+      const dates_debut = [];
+      const realise = [];
+      const dates_fin = [];
+      date_init_input.forEach(input => {
+        const id = input.getAttribute('data-id');
+        const value = input.value;
+        dates_debut.push({ id, value });
+        
+      });
+      realise_input.forEach(input => {
+        const id = input.getAttribute('data-id');
+        const value = input.textContent;
+        realise.push({ id, value });
+        
+      });
+      date_fin_input.forEach(input => {
+        const id = input.getAttribute('data-id');
+        const value = input.value;
+        dates_fin.push({ id, value });
+        
+      });
+      console.log(dates_debut);
+      try {
+        const response = await fetch('/get/parcelles/mise_en_place/{{ foret }}/{{ travail }}', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({realise}),
+        });
+        if (!response.ok) {
+          throw new Error('Erreur lors de la mise à jour');
+        }
+        console.log('Mise à jour réussie');
+      } catch (error) {
+        console.error('Erreur:', error);
+      }
+});*/
+
+    </script>
+    
+  </body>
+</html>

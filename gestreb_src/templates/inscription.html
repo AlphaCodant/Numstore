@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscription - GESTREB NEXT</title>
+  <link rel="icon" type="image/jpg" href="/img/Logo_gestreb.jpg">
+  <link href="css/tailStyle.css" rel="stylesheet" />
+  <link href="/css/ultimate-design-system.css" rel="stylesheet">
+  <style>
+    body { margin: 0; padding: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%); padding: 2rem 1rem; }
+    .auth-card { width: 100%; max-width: 600px; padding: 2rem; }
+  </style>
+</head>
+<body>
+  <div class="auth-card card-glass-ultimate animate-fade-in">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <img src="/img/Logo_gestreb.jpg" alt="GESTREB" style="width: 80px; height: 50px; border-radius: 1rem; margin: 0 auto 1rem;" />
+      <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; background: linear-gradient(135deg, #0f4c3a 0%, #16a34a 50%, #0ea5e9 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Inscription</h1>
+      <p style="color: #64748b; font-size: 0.9375rem;">Créez votre compte GESTREB</p>
+    </div>
+    
+    {% if error and error %}
+      <div style="margin-bottom: 1.5rem; padding: 1rem; background: #fef2f2; border: 2px solid #fca5a5; border-radius: 1rem; color: #b91c1c; font-weight: 500;">
+        {{ error }}
+      </div>
+    {% endif %}
+    
+    <form action="/inscription" method="POST">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+        <div>
+          <label class="label-modern">Prénom(s)</label>
+          <input name="prenom" type="text" class="input-ultimate" placeholder="Votre prénom" required />
+        </div>
+        <div>
+          <label class="label-modern">Nom</label>
+          <input name="nom" type="text" class="input-ultimate" placeholder="Votre nom" required />
+        </div>
+      </div>
+      
+      <div style="margin-bottom: 1.5rem;">
+        <label class="label-modern">Email</label>
+        <input name="email" type="email" class="input-ultimate" placeholder="votre.email@exemple.com" required />
+      </div>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+        <div>
+          <label class="label-modern">Contact</label>
+          <input name="contact" type="tel" class="input-ultimate" placeholder="Votre numéro" />
+        </div>
+        <div>
+          <label class="label-modern">Matricule</label>
+          <input name="matricule" type="text" class="input-ultimate" placeholder="Votre matricule" />
+        </div>
+      </div>
+      
+      <div style="margin-bottom: 1.5rem;">
+        <label class="label-modern">Lieu de travail (UGF)</label>
+        <select name="ugf" class="input-ultimate" required>
+          <option value="">Sélectionner...</option>
+          <option value="cg">Direction CG</option>
+          <option value="tene">UGF Téné</option>
+          <option value="sangoue">UGF Sangoué</option>
+        </select>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+        <div>
+          <label class="label-modern">Mot de passe</label>
+          <input name="mp" type="password" class="input-ultimate" placeholder="••••••••" required />
+        </div>
+        <div>
+          <label class="label-modern">Confirmer</label>
+          <input name="rp_mp" type="password" class="input-ultimate" placeholder="••••••••" required />
+        </div>
+      </div>
+      
+      <button type="submit" class="btn-ultimate btn-primary-ultimate" style="width: 100%; margin-bottom: 1rem;">
+        <svg style="width: 20px; height: 20px;" fill="currentColor" viewBox="0 0 20 20">
+          <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"/>
+        </svg>
+        S'inscrire
+      </button>
+    </form>
+    
+    <div style="text-align: center; color: #64748b; font-size: 0.875rem;">
+      Vous avez déjà un compte? <a href="/connexion" style="color: #16a34a; font-weight: 700; text-decoration: none;">Se connecter</a>
+    </div>
+    <div style="text-align: center; color: #64748b; font-size: 0.875rem;">
+      Page d'accueil <a href="/accueil" style="color: #16a34a; font-weight: 700; text-decoration: none;">Accueil</a>
+    </div>
+  </div>
+</body>
+</html>

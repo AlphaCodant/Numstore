@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <!-- Montserrat Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/tailStyle.css">
+    <link rel="stylesheet" href="/css/styles.css">
+  </head>
+  <body>
+    <div class="grid-container">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="menu-icon" onclick="openSidebar()">
+          <span class="material-icons-outlined">menu</span>
+        </div>
+        <div class="header-left">
+          <div class="main-title">
+          <h2>TABLEAU DE BORD</h2>
+        </div>
+        </div>
+        <div class="header-right">
+          <span class="material-icons-outlined">notifications</span>
+          <span class="material-icons-outlined">email</span>
+          <span class="material-icons-outlined">account_circle</span>
+        </div>
+      </header>
+      <!-- End Header -->
+
+      <!-- Sidebar -->
+      <aside id="sidebar" class="bg-gray-700">
+        <div class="sidebar-title">
+          <div class="sidebar-brand">
+            <a href="#" class="flex ms-2 md:me-24">
+              <img src="/img/logo2.jpg" class="h-8 me-2" alt="Logo Sodefor" />
+              <span class="self-center text-blue text-md font-semibold md:text-xl whitespace-nowrap text-blue-500">CG Gagnoa</span>
+              </a>
+          </div>
+          <span class="material-icons-outlined" onclick="closeSidebar()">close</span>
+        </div>
+        <div class="px-2 pb-4 bg-green  shadow-zinc-600">
+          <ul class="space-y-2 font-medium">
+            <li>
+              <a href="/admin" class="flex items-center py-3 px-1 mt-16 text-black  hover:border-y hover:border-gray-500 group">
+                <span class="material-icons-outlined">dashboard</span>
+                <span class="ms-3">Tableau de bord</span>
+              </a>
+            </li>   
+            <li>
+              <a href="/admin/inscrit" class="flex items-center mt-16 p-2 dark:text-black  border-y border-blue-700 group">
+                <span style="color: blue;" class="material-icons-outlined">description</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Inscrits</span>
+              </a>
+            </li>  
+            <li>
+              <a href="/admin/membre" class="flex items-center mt-16 p-2 text-black  hover:border-y hover:border-orange-500 group">
+                <span style="color: orange;" class="material-icons-outlined">group</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Membres</span>
+              </a>
+            </li>  
+            <li>
+              <a href="/admin/connecte" class="flex items-center mt-16 p-2 text-black  hover:border-y hover:border-green-700 group">
+                <span style="color: green;" class="material-icons-outlined">wifi</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">Connectés</span>
+              </a>
+            </li>  
+            <li>
+              <a href="/admin/demande" class="flex items-center mt-16 p-2 text-black  hover:border-y hover:border-red-700 group">
+                <span style="color: red;" class="material-icons-outlined">notification_important</span>
+                <span class="flex-1 ms-3 whitespace-nowrap">En attente</span>
+              </a>
+            </li>            
+          </ul>
+        </div>
+      </aside>
+      <!-- End Sidebar -->
+
+      <!-- Main -->
+      <main class="main-container overflow-auto">
+          <div class=" m-4 flex items-center justify-between">
+            <span style="color: red;" class="material-icons-outlined">first_page</span>
+            <h2 class="text-2xl font-semibold text-white dark:text-gray-100">Parcelle {{ numero }} </h2>
+            <a href="#"><h2  style="color: brown;" class="text-sm font-semibold text-white dark:text-gray-100">Fiche parcellaire </h2></a>
+            <a href="#"><h2 style="color: green;" class="text-sm font-semibold text-white dark:text-gray-100">Fiche sylvicole </h2></a>
+            <!--<a href="#"><h2 style="color: blueviolet;" class="text-sm font-semibold text-white dark:text-gray-100">Mission </h2></a>-->
+            <a href="#"><h2 style="color: blueviolet;" class="text-sm font-semibold text-white dark:text-gray-100">Carte </h2></a>
+            <h2 class="text-2xl font-semibold text-white dark:text-gray-100">Coût de reviens  <span style="color :orange; text-decoration:underline;">{{ numero }} </span></h2>
+          </div>
+          
+          <div class="mr-8 flex flex-row justify-between dark:bg-gray-900">
+            <div class="flex flex-col m-4" >
+              <h2 class="text-sm font-semibold text-white dark:text-gray-100">Centre de Gestion : </h2>
+              <h2 class="text-sm font-semibold text-white dark:text-gray-100">UGF : </h2>
+              <h2 class="text-sm font-semibold text-white dark:text-gray-100">Forêt : </h2>
+              <h2 class="text-sm font-semibold text-white dark:text-gray-100">Bloc :</h2>
+             
+            </div>
+            <div class="flex flex-col m-4">
+              <h2 class="text-sm font-semibold text-white dark:text-gray-100">Superficie :</h2>
+              <h2 class="text-sm font-semibold text-white dark:text-gray-100">Essence : {{ ess }}</h2>
+              <h2 class="text-sm font-semibold text-white dark:text-gray-100">Financement :</h2>
+              <h2 class="text-sm font-semibold text-white dark:text-gray-100">Type de reboisement :</h2>
+            </div>
+            <div class="flex flex-col m-4">
+              <h2 class="text-sm font-semibold text-white dark:text-gray-100">Type de plantation : </h2>
+              <h2 class="text-sm font-semibold text-white dark:text-gray-100">Type de plants : </h2>
+              <h2 class="text-sm font-semibold text-white dark:text-gray-100">Mise en oeuvre : </h2>
+              <h2 class="text-sm font-semibold text-white dark:text-gray-100">Ecartement : </h2>
+             
+            </div>
+            <div class="flex flex-col m-4">
+              <h2 class="text-sm font-semibold text-white dark:text-gray-100">Densité : </h2>
+              <h2 class="text-sm font-semibold text-white dark:text-gray-100">Prov.semence : </h2>
+              <h2 class="text-sm font-semibold text-white dark:text-gray-100">Culture associéé : </h2>
+              <h2 class="text-sm font-semibold text-white dark:text-gray-100">Date plantation :</h2>
+            </div>
+          </div>
+          <div style="overflow-x: scroll;" class="mr-8 flex flex-row justify-between">
+            <h2 class="text-sm font-semibold text-white dark:text-gray-100">Couts directs : XXX FCFA </h2>
+            <h2 class="text-sm font-semibold text-white dark:text-gray-100">Couts indirects : XXX FCFA </h2>
+          </div>
+          <div class=" mt-1 flex flex-row h-screen">
+            
+            <div style="height:65%; overflow: scroll;">
+              
+              <div class="flex m-2">
+              <div class="items-center space-y-2 md:space-y-0 pb-1 dark:bg-gray-900">
+                <table class="w-full bottom-0 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-lg">
+                    <thead class="relative text-xs text-white uppercase  bg-gray-900">
+                        <tr>
+                          <th scope="col" class="px-6 py-3">
+                            Id
+                        </th>
+                            <th scope="col" class="px-6 py-3">
+                                Libélé
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Debut
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                                Fin
+                            </th>
+                            <th scope="col" class="px-6 py-3">
+                              Coût/ha
+                          </th>
+                          <th scope="col" class="px-6 py-3">
+                            Qte (ha)
+                        </th>
+                            <th scope="col" class="px-6 py-2">
+                                Montant
+                            </th>
+                            <th scope="col" class="px-6 py-2">
+                              Auteur
+                          </th>
+                        </tr>
+                    </thead>
+                    <tbody class="">                   
+                    </tbody>
+                </table>
+              </div>
+            </div>
+            </div>
+            <div  style="height:65%; overflow:scroll;">           
+              <div class="flex m-2">    
+                <div class="items-center space-y-2 md:space-y-0 pb-1 dark:bg-gray-900">
+                  <table class="w-full bottom-0 text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 rounded-lg">
+                      <thead class="relative text-xs text-white uppercase  bg-gray-900">
+                          <tr>
+                            <th scope="col" class="px-6 py-3">
+                              Id
+                          </th>
+                              <th scope="col" class="px-6 py-3">
+                                  Libélé
+                              </th>
+                              <th scope="col" class="px-6 py-3">
+                                  Debut
+                              </th>
+                              <th scope="col" class="px-6 py-3">
+                                  Fin
+                              </th>
+                              <th scope="col" class="px-6 py-3">
+                                Coût
+                            </th>
+                              <th scope="col" class="px-6 py-2">
+                                Auteur
+                            </th>
+                          </tr>
+                      </thead>
+                      <tbody id="tb2" class="">                   
+                      </tbody>
+                  </table>
+               </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <!-- End Main -->
+      </div>
+    
+
+    <!-- Scripts -->
+    <!-- ApexCharts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/scripts.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', async () => {
+        try {
+          const response = await fetch('/api/parcelles');
+          const parcelles = await response.json();
+          const tableBody = document.querySelector('tbody');
+          //const tableBody2 = document.querySelector('tb2');
+          parcelles.forEach(parcelle => {
+            const row = document.createElement('tr');
+           // const row2 = document.createElement('tr');
+            row.setAttribute('class', 'bg-gray-400 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600');
+            row.innerHTML = `
+              <td class="px-4 py-1">${parcelle.id}</td>
+              <td class="px-4 py-1">${parcelle.numero}</td>
+              <td class="px-4 py-1">${parcelle.foret}</td>
+              <td class="px-4 py-1">${parcelle.annee}</td>
+              <td class="px-4 py-1">${parcelle.essence}</td>
+              <td class="px-4 py-1">${parcelle.densite}</td>
+              <td class="px-4 py-1">${parcelle.superficie}</td>
+              <td class="px-4 py-1">
+                <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Voir carte</a>
+              </td>
+            `;
+            row.addEventListener('click', () => {
+              window.location.href = `/parcelle/${parcelle.id}`;
+            });
+            tableBody.appendChild(row);
+            
+          });
+          
+        } catch (error) {
+          console.error('Erreur lors de la récupération des parcelles:', error);
+        }
+      });
+    </script>
+  </body>
+</html>

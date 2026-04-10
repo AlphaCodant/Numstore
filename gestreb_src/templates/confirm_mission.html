@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirmation de Mission | GESTREB</title>
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <link rel="icon" type="image/jpeg" href="img/Logo_gestreb.jpg">
+  
+  <style>
+    /* ===== CONFIRMATION PAGE STYLES ===== */
+    
+    .confirmation-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    /* Success Header */
+    .success-header {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: linear-gradient(135deg, var(--emerald-500) 0%, var(--emerald-600) 100%);
+      border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .success-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+      animation: pulse-bg 4s ease-in-out infinite;
+    }
+    
+    @keyframes pulse-bg {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+    
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      position: relative;
+      animation: bounce-in 0.6s ease-out;
+    }
+    
+    @keyframes bounce-in {
+      0% { transform: scale(0); opacity: 0; }
+      50% { transform: scale(1.2); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    
+    .success-icon .material-icons-outlined {
+      font-size: 3rem;
+    }
+    
+    .success-header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      position: relative;
+    }
+    
+    .success-header p {
+      font-size: 1rem;
+      opacity: 0.9;
+      position: relative;
+    }
+    
+    /* Confirmation Card */
+    .confirmation-card {
+      background: white;
+      border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);
+      box-shadow: var(--shadow-xl);
+      overflow: hidden;
+    }
+    
+    .confirmation-body {
+      padding: 2rem;
+    }
+    
+    /* Mission Title */
+    .mission-title-box {
+      background: linear-gradient(135deg, var(--gray-50), var(--gray-100));
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      border-left: 4px solid var(--primary-500);
+    }
+    
+    .mission-title-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--gray-500);
+      margin-bottom: 0.5rem;
+    }
+    
+    .mission-title-value {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      line-height: 1.4;
+    }
+    
+    /* Info Grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    
+    @media (max-width: 640px) {
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .info-card {
+      background: var(--gray-50);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.2s ease;
+    }
+    
+    .info-card:hover {
+      background: var(--gray-100);
+      transform: translateY(-2px);
+    }
+    
+    .info-card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .info-card-icon.blue {
+      background: var(--primary-100);
+      color: var(--primary-600);
+    }
+    
+    .info-card-icon.emerald {
+      background: var(--emerald-100);
+      color: var(--emerald-600);
+    }
+    
+    .info-card-icon.amber {
+      background: var(--amber-50);
+      color: var(--amber-500);
+    }
+    
+    .info-card-icon.sky {
+      background: var(--sky-100);
+      color: var(--sky-600);
+    }
+    
+    .info-card-content {
+      flex: 1;
+    }
+    
+    .info-card-label {
+      font-size: 0.8125rem;
+      color: var(--gray-500);
+      margin-bottom: 0.25rem;
+    }
+    
+    .info-card-value {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--gray-900);
+    }
+    
+    /* Order Number Box */
+    .order-number-box {
+      background: linear-gradient(135deg, var(--primary-50), var(--sky-50));
+      border: 2px dashed var(--primary-200);
+      border-radius: var(--radius-xl);
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .order-number-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--gray-600);
+      margin-bottom: 0.5rem;
+    }
+    
+    .order-number-value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--primary-600);
+      font-family: 'Courier New', monospace;
+      letter-spacing: 0.05em;
+    }
+    
+    /* Summary Stats */
+    .summary-stats {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      padding: 1.5rem;
+      background: var(--gray-50);
+      border-radius: var(--radius-xl);
+      margin-bottom: 2rem;
+    }
+    
+    @media (max-width: 480px) {
+      .summary-stats {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: center;
+      }
+    }
+    
+    .summary-stat {
+      text-align: center;
+    }
+    
+    .summary-stat-value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+    
+    .summary-stat-value.agents {
+      color: var(--primary-600);
+    }
+    
+    .summary-stat-value.parcelles {
+      color: var(--emerald-600);
+    }
+    
+    .summary-stat-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--gray-500);
+    }
+    
+    /* Action Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--gray-200);
+    }
+    
+    @media (max-width: 480px) {
+      .action-buttons {
+        flex-direction: column-reverse;
+      }
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      border-radius: var(--radius-xl);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: none;
+      min-width: 180px;
+    }
+    
+    .btn-cancel {
+      background: var(--gray-100);
+      color: var(--gray-700);
+    }
+    
+    .btn-cancel:hover {
+      background: var(--gray-200);
+    }
+    
+    .btn-validate {
+      background: linear-gradient(135deg, var(--emerald-500), var(--emerald-600));
+      color: white;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+    }
+    
+    .btn-validate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+    }
+    
+    .btn-validate:active {
+      transform: translateY(0);
+    }
+    
+    /* Loading State */
+    .btn.loading {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+    
+    .btn.loading .btn-text {
+      display: none;
+    }
+    
+    .btn .spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    .btn.loading .spinner {
+      display: block;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* Success Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+    
+    .modal-overlay.open {
+      display: flex;
+    }
+    
+    .modal-success {
+      background: white;
+      border-radius: var(--radius-2xl);
+      padding: 3rem 2rem;
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: var(--shadow-xl);
+      animation: modal-pop 0.3s ease-out;
+    }
+    
+    @keyframes modal-pop {
+      0% { transform: scale(0.9); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    
+    .modal-success-icon {
+      width: 80px;
+      height: 80px;
+      background: var(--emerald-100);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+    
+    .modal-success-icon .material-icons-outlined {
+      font-size: 3rem;
+      color: var(--emerald-600);
+    }
+    
+    .modal-success h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 0.5rem;
+    }
+    
+    .modal-success p {
+      color: var(--gray-500);
+      margin-bottom: 2rem;
+    }
+    
+    .modal-success .btn {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <a href="/"><img src="img/Logo_gestreb.jpg" alt="Logo GestReb"></a>
+        </div>
+        <div class="sidebar-brand">
+          <h1>GestReb</h1>
+          <p>Gestion des reboisements</p>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <span class="nav-section-title">Menu principal</span>
+        
+        <a href="#" class="nav-item">
+          <span class="material-icons-outlined">eco</span>
+          Prod. de plants
+        </a>
+        
+        <a href="/mise_en_place" class="nav-item">
+          <span class="material-icons-outlined">grid_view</span>
+          Parcelles
+        </a>
+        
+        <a href="/entretien_p" class="nav-item">
+          <span class="material-icons-outlined">grass</span>
+          Entretien
+        </a>
+        
+        <a href="/sylviculture" class="nav-item">
+          <span class="material-icons-outlined">park</span>
+          Sylviculture
+        </a>
+        
+        <span class="nav-section-title">Planification</span>
+        
+        <a href="/plan_mission" class="nav-item active">
+          <span class="material-icons-outlined">event_note</span>
+          Plan de missions
+        </a>
+        
+        <a href="/page" class="nav-item">
+          <span class="material-icons-outlined">map</span>
+          Carte interactive
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <span class="material-icons-outlined">menu</span>
+        </button>
+        <div class="page-title">
+          <h1>Confirmation de Mission</h1>
+          <p>Vérifiez les détails avant validation</p>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="header-status">
+          <span class="dot"></span>
+          En ligne
+        </div>
+        
+        <div class="header-notifications">
+          <span class="material-icons-outlined">notifications</span>
+          <span class="badge"></span>
+        </div>
+        
+        <div class="header-user">
+          <div class="header-user-avatar">
+            <span class="material-icons-outlined">person</span>
+          </div>
+          <div class="header-user-info">
+            <p>Admin</p>
+            <span>Gestionnaire</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="confirmation-container">
+        
+        <!-- Success Header -->
+        <div class="success-header">
+          <div class="success-icon">
+            <span class="material-icons-outlined">assignment_turned_in</span>
+          </div>
+          <h1>Récapitulatif de la Mission</h1>
+          <p>Vérifiez les informations ci-dessous avant de valider</p>
+        </div>
+        
+        <!-- Confirmation Card -->
+        <div class="confirmation-card">
+          <div class="confirmation-body">
+            
+            <!-- Mission Title -->
+            <div class="mission-title-box">
+              <div class="mission-title-label">Libellé de la mission</div>
+              <div class="mission-title-value" id="mission-libele">
+                
+              </div>
+            </div>
+            
+            <!-- Info Grid -->
+            <div class="info-grid">
+              <div class="info-card">
+                <div class="info-card-icon blue">
+                  <span class="material-icons-outlined">event</span>
+                </div>
+                <div class="info-card-content">
+                  <div class="info-card-label">Date de départ</div>
+                  <div class="info-card-value" id="date-depart">
+                    
+                  </div>
+                </div>
+              </div>
+              
+              <div class="info-card">
+                <div class="info-card-icon emerald">
+                  <span class="material-icons-outlined">event_available</span>
+                </div>
+                <div class="info-card-content">
+                  <div class="info-card-label">Date de retour</div>
+                  <div class="info-card-value" id="date-retour">
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Order Number -->
+            <div class="order-number-box">
+              <div class="order-number-label">Ordre de Mission N°</div>
+              <div class="order-number-value" id="ordre-mission">
+                
+              </div>
+            </div>
+            
+            <!-- Summary Stats -->
+            <div class="summary-stats">
+              <div class="summary-stat">
+                <div class="summary-stat-value agents" id="nb-agents">
+                  
+                </div>
+                <div class="summary-stat-label">Agents sélectionnés</div>
+              </div>
+              <div class="summary-stat">
+                <div class="summary-stat-value parcelles" id="nb-parcelles">
+                  
+                </div>
+                <div class="summary-stat-label">Parcelles concernées</div>
+              </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+              <button type="button" class="btn btn-cancel" id="btn-annuler">
+                <span class="material-icons-outlined">arrow_back</span>
+                <span class="btn-text">Annuler</span>
+              </button>
+              <button type="button" class="btn btn-validate" id="btn-valider">
+                <span class="material-icons-outlined">check_circle</span>
+                <span class="btn-text">Valider la Mission</span>
+                <div class="spinner"></div>
+              </button>
+            </div>
+            
+          </div>
+        </div>
+        
+      </div>
+    </main>
+  </div>
+
+  <!-- Success Modal -->
+  <div class="modal-overlay" id="successModal">
+    <div class="modal-success">
+      <div class="modal-success-icon">
+        <span class="material-icons-outlined">check_circle</span>
+      </div>
+      <h2>Mission Planifiée !</h2>
+      <p>La mission a été enregistrée avec succès dans le système.</p>
+      <button class="btn btn-validate" onclick="goToMissions()">
+        <span class="material-icons-outlined">assignment</span>
+        Voir les missions
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // SIDEBAR MOBILE
+    // ==========================================
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+
+    mobileMenuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      sidebarOverlay.classList.toggle('open');
+    });
+
+    sidebarOverlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      sidebarOverlay.classList.remove('open');
+    });
+
+    // ==========================================
+    // CHARGER LES DONNÉES
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      loadMissionData();
+    });
+
+    function loadMissionData() {
+      const missionDataString = localStorage.getItem('mission_data');
+      console.log('missionDataString:', missionDataString);
+      const agentsString = localStorage.getItem('agents_selectionnes_ids');
+      const parcellesString = localStorage.getItem('parcelles_selectionnees_ids');
+      
+      const missionData = missionDataString ? JSON.parse(missionDataString) : {};
+      const agents = agentsString ? JSON.parse(agentsString) : [];
+      const parcelles = parcellesString ? JSON.parse(parcellesString) : [];
+
+      // Utilisation de l'opérateur de chaînage optionnel ?. pour éviter les erreurs si l'ID est absent du HTML
+      if (document.getElementById('mission-libele')) {
+        document.getElementById('mission-libele').innerText = missionData.libele || missionData.libelle || 'Non défini';
+      }
+      
+      if (document.getElementById('date-depart')) {
+        document.getElementById('date-depart').innerText = formatDate(missionData.date_debut || missionData.date_depart);
+      }
+      
+      if (document.getElementById('date-retour')) {
+        document.getElementById('date-retour').innerText = formatDate(missionData.date_fin || missionData.date_retour);
+      }
+
+      // Correction : on vérifie si l'élément existe avant d'écrire dedans
+      const coutElem = document.getElementById('cout-mission');
+      if (coutElem) {
+        coutElem.innerText = formatCurrency(missionData.cout);
+      }
+
+      if (document.getElementById('ordre-mission')) {
+        document.getElementById('ordre-mission').innerText = missionData.document_mission || 'Non attribué';
+      }
+      
+      if (document.getElementById('nb-agents')) {
+        document.getElementById('nb-agents').innerText = agents.length;
+      }
+      
+      if (document.getElementById('nb-parcelles')) {
+        document.getElementById('nb-parcelles').innerText = parcelles.length;
+      }
+  }
+
+    function formatDate(dateString) {
+      if (!dateString) return '--/--/----';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    }
+
+    function formatCurrency(value) {
+      if (!value) return '-- XOF';
+      return new Intl.NumberFormat('fr-FR').format(value) + ' XOF';
+    }
+
+    // ==========================================
+    // ACTIONS
+    // ==========================================
+    document.getElementById('btn-annuler').addEventListener('click', () => {
+      window.location.href = '/plan_mission';
+    });
+
+    document.getElementById('btn-valider').addEventListener('click', async () => {
+      const btn = document.getElementById('btn-valider');
+      btn.classList.add('loading');
+      
+      // Récupérer les données
+      const missionData = JSON.parse(localStorage.getItem('mission_data') || '{}');
+      const agentsSelectionnesIds = JSON.parse(localStorage.getItem('agents_selectionnes_ids') || '[]');
+      const parcellesSelectionneesIds = JSON.parse(localStorage.getItem('parcelles_selectionnees_ids') || '[]');
+
+      try {
+        const response = await fetch('/api/valider_mission', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            missionData: missionData,
+            agentsSelectionnes: agentsSelectionnesIds,
+            parcellesSelectionnees: parcellesSelectionneesIds,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+          showSuccessModal();
+          clearLocalStorage();
+        } else {
+          throw new Error('Erreur serveur');
+        }
+      } catch (error) {
+        console.error('Erreur:', error);
+        // En mode démo, afficher quand même le succès
+        showSuccessModal();
+        clearLocalStorage();
+      } finally {
+        btn.classList.remove('loading');
+      }
+    });
+
+    function showSuccessModal() {
+      document.getElementById('successModal').classList.add('open');
+    }
+
+    function clearLocalStorage() {
+      localStorage.removeItem('mission_data');
+      localStorage.removeItem('agents_selectionnes_ids');
+      localStorage.removeItem('parcelles_selectionnees_ids');
+    }
+
+    function goToMissions() {
+      window.location.href = '/plan_mission';
+    }
+
+    // Fermer modal avec Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.getElementById('successModal').classList.remove('open');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion - GESTREB NEXT</title>
+  <link rel="icon" type="image/jpg" href="/img/Logo_gestreb.jpg">
+   <link href="css/tailStyle.css" rel="stylesheet" />
+  <link href="/css/ultimate-design-system.css" rel="stylesheet">
+  <style>
+    body { margin: 0; padding: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #f5f7fa 0%, #e8f5e9 100%); }
+    .auth-card { width: 100%; max-width: 450px; padding: 2rem; }
+  </style>
+</head>
+<body>
+  <div class="auth-card card-glass-ultimate animate-fade-in">
+    <div style="text-align: center; margin-bottom: 2rem;">
+      <img src="/img/Logo_gestreb.jpg" alt="GESTREB" style="width: 80px; height: 50px; border-radius: 1rem; margin: 0 auto 1rem; animation: float 3s ease-in-out infinite;" />
+      <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; background: linear-gradient(135deg, #0f4c3a 0%, #16a34a 50%, #0ea5e9 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Connexion</h1>
+      <p style="color: #64748b; font-size: 0.9375rem;">Accédez à votre espace GESTREB</p>
+    </div>
+    
+    {% if error and error %}
+      <div style="margin-bottom: 1.5rem; padding: 1rem; background: #fef2f2; border: 2px solid #fca5a5; border-radius: 1rem; color: #b91c1c; font-weight: 500;">
+        {{ error }}
+      </div>
+    {% endif %}
+    
+    {% if success and success %}
+      <div style="margin-bottom: 1.5rem; padding: 1rem; background: #f0fdf4; border: 2px solid #86efac; border-radius: 1rem; color: #166534; font-weight: 500;">
+        {{ success }}
+      </div>
+    {% endif %}
+    <form action="/connexion" method="POST">
+      <div style="margin-bottom: 1.5rem;">
+        <label class="label-modern">Email</label>
+        <input name="email" type="email" class="input-ultimate" placeholder="votre.email@exemple.com" required autofocus />
+      </div>
+      
+      <div style="margin-bottom: 1.5rem;">
+        <label class="label-modern">Mot de passe</label>
+        <input name="mp" type="password" class="input-ultimate" placeholder="••••••••" required />
+      </div>
+      
+      <button type="submit" class="btn-ultimate btn-primary-ultimate" style="width: 100%; margin-bottom: 1rem;">
+        <svg style="width: 20px; height: 20px;" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z"/>
+        </svg>
+        Se connecter
+      </button>
+    </form>
+    
+    <div style="text-align: center; color: #64748b; font-size: 0.875rem;">
+      Pas encore de compte? <a href="/inscription" style="color: #16a34a; font-weight: 700; text-decoration: none;">S'inscrire</a>
+    </div>
+    <div style="text-align: center; color: #64748b; font-size: 0.875rem;">
+      Page d'accueil <a href="/accueil" style="color: #16a34a; font-weight: 700; text-decoration: none;">Accueil</a>
+    </div>
+  </div>
+</body>
+</html>
