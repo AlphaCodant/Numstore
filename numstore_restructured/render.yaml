@@ -1,0 +1,46 @@
+# render.yaml - Configuration de déploiement Render
+# https://render.com/docs/blueprint-spec
+
+databases:
+  - name: numstore-db
+    databaseName: numstore
+    user: numstore_user
+    plan: free
+
+services:
+  - type: web
+    name: numstore
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn server:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: numstore-db
+          property: host
+      - key: DB_NAME
+        fromDatabase:
+          name: numstore-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: numstore-db
+          property: user
+      - key: DB_PWD
+        fromDatabase:
+          name: numstore-db
+          property: password
+      - key: DB_PORT
+        value: "5432"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: STRIPE_API_KEY
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: SENDER_EMAIL
+        value: onboarding@resend.dev
+    healthCheckPath: /health
