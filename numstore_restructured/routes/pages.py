@@ -22,6 +22,16 @@ def format_price(price: float, currency: str = "XOF") -> str:
     return f"${price:.2f}"
 
 
+def record_to_dict(row) -> dict:
+    """Convertit un asyncpg.Record en dictionnaire."""
+    return {key: row[key] for key in row.keys()}
+
+
+def records_to_list(rows) -> list:
+    """Convertit une liste de asyncpg.Record en liste de dictionnaires."""
+    return [record_to_dict(row) for row in rows]
+
+
 # Ajoute le helper aux templates
 templates.env.globals["format_price"] = format_price
 
@@ -29,9 +39,15 @@ templates.env.globals["format_price"] = format_price
 @router.get("/", response_class=HTMLResponse)
 async def home(request: Request, db: asyncpg.Connection = Depends(get_db)):
     """Page d'accueil avec produits."""
-    products = await db.fetch("SELECT * FROM products WHERE is_active = true ORDER BY created_at DESC")
-    portfolio_products = [dict(p) for p in products if p["is_service"]]
-    digital_products = [dict(p) for p in products if not p["is_service"]]
+    rows = await db.fetch("SELECT * FROM products WHERE is_active = true ORDER BY created_at DESC")
+    
+    # Convertir les Record asyncpg en dictionnaires propres
+    products = []
+    for row in rows:
+        products.append({key: row[key] for key in row.keys()})
+    
+    portfolio_products = [p for p in products if p.get("is_service")]
+    digital_products = [p for p in products if not p.get("is_service")]
     
     return templates.TemplateResponse("home.html", {
         "request": request,
@@ -49,7 +65,7 @@ async def product_page(request: Request, product_id: str, db: asyncpg.Connection
     
     return templates.TemplateResponse("product.html", {
         "request": request,
-        "product": dict(product)
+        "product": record_to_dict(product)
     })
 
 
@@ -74,9 +90,9 @@ async def portfolio_form_page(request: Request, db: asyncpg.Connection = Depends
     
     product = None
     if product_id:
-        product = await db.fetchrow("SELECT * FROM products WHERE id = $1 AND is_service = true", product_id)
-        if product:
-            product = dict(product)
+        row = await db.fetchrow("SELECT * FROM products WHERE id = $1 AND is_service = true", product_id)
+        if row:
+            product = record_to_dict(row)
     
     return templates.TemplateResponse("portfolio_form.html", {
         "request": request,
@@ -92,9 +108,9 @@ async def portfolio_success_page(request: Request, db: asyncpg.Connection = Depe
     
     submission = None
     if submission_id:
-        submission = await db.fetchrow("SELECT * FROM portfolio_submissions WHERE id = $1", submission_id)
-        if submission:
-            submission = dict(submission)
+        row = await db.fetchrow("SELECT * FROM portfolio_submissions WHERE id = $1", submission_id)
+        if row:
+            submission = record_to_dict(row)
     
     return templates.TemplateResponse("portfolio_success.html", {
         "request": request,
@@ -145,7 +161,7 @@ async def admin_dashboard_page(request: Request, db: asyncpg.Connection = Depend
         "total_sales": total_sales or 0,
         "products_count": products_count or 0,
         "portfolio_pending": portfolio_pending or 0,
-        "recent_transactions": [dict(t) for t in recent_transactions]
+        "recent_transactions": records_to_list(recent_transactions)
     })
 
 
@@ -161,7 +177,7 @@ async def admin_products_page(request: Request, db: asyncpg.Connection = Depends
     
     return templates.TemplateResponse("admin_products.html", {
         "request": request,
-        "products": [dict(p) for p in products]
+        "products": records_to_list(products)
     })
 
 
@@ -181,5 +197,5 @@ async def admin_portfolios_page(request: Request, db: asyncpg.Connection = Depen
     
     return templates.TemplateResponse("admin_portfolios.html", {
         "request": request,
-        "submissions": [dict(s) for s in submissions]
+        "submissions": records_to_list(submissions)
     })
