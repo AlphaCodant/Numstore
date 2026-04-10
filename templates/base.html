@@ -7,28 +7,23 @@
     <link href="/css/styles.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     {% block head %}{% endblock %}
 </head>
-<body class="bg-noir min-h-screen text-white">
+<body class="bg-noir min-h-screen">
     <!-- Navigation -->
-    <nav class="glass-nav sticky top-0 z-50">
+    <nav class="glass-nav">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
             <div class="flex items-center justify-between h-16">
-                <a href="/" class="flex items-center gap-3 group">
-                    <div class="w-8 h-8 bg-champagne flex items-center justify-center">
-                        <i data-lucide="sparkles" class="w-4 h-4 text-noir"></i>
-                    </div>
-                    <span class="font-heading text-xl font-semibold tracking-tight text-white group-hover:text-champagne transition-colors">
-                        NumStore
-                    </span>
+                <a href="/" class="flex items-center gap-3">
+                    <span class="font-heading text-xl tracking-tight">NumStore</span>
                 </a>
                 <div class="flex items-center gap-6">
-                    <a href="/access" class="text-sm font-medium text-zinc-400 hover:text-champagne transition-colors tracking-wide">
+                    <a href="/access" class="text-sm text-muted transition-colors">
                         J'ai un code
                     </a>
-                    <a href="/admin" class="text-sm font-medium text-zinc-500 hover:text-zinc-300 transition-colors">
+                    <a href="/admin" class="text-sm text-muted transition-colors">
                         Admin
                     </a>
                 </div>
@@ -41,17 +36,12 @@
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-white/5 py-12">
+    <footer class="border-t py-12 mt-16">
         <div class="max-w-7xl mx-auto px-6 lg:px-12">
             <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-6 h-6 bg-champagne flex items-center justify-center">
-                        <i data-lucide="sparkles" class="w-3 h-3 text-noir"></i>
-                    </div>
-                    <span class="font-heading text-lg text-white">NumStore</span>
-                </div>
-                <p class="text-xs text-zinc-600">
-                    NumStore — Produits Numériques & Digitalisation Professionnelle
+                <span class="font-heading text-lg">NumStore</span>
+                <p class="text-xs text-muted">
+                    Produits Numériques & Services Professionnels
                 </p>
             </div>
         </div>

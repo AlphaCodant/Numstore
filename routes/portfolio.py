@@ -33,12 +33,12 @@ async def submit_portfolio(data: PortfolioSubmissionCreate, db: asyncpg.Connecti
     )
     if not product:
         raise HTTPException(status_code=404, detail="Service non trouvé")
-
+    
     submission_id = str(uuid.uuid4())
     now = datetime.now(timezone.utc)
-
+    
     await db.execute(
-        """INSERT INTO portfolio_submissions
+        """INSERT INTO portfolio_submissions 
            (id, email, full_name, job_title, bio, phone, location, photo_url,
             skills, experiences, education, projects,
             linkedin_url, twitter_url, github_url, website_url,
@@ -51,7 +51,7 @@ async def submit_portfolio(data: PortfolioSubmissionCreate, db: asyncpg.Connecti
         data.linkedin_url, data.twitter_url, data.github_url, data.website_url,
         data.product_id, "pending", "pending", now, now
     )
-
+    
     return {
         "success": True,
         "submission_id": submission_id,
@@ -62,39 +62,39 @@ async def submit_portfolio(data: PortfolioSubmissionCreate, db: asyncpg.Connecti
 @router.post("/pay/{submission_id}")
 async def pay_for_portfolio(submission_id: str, request: Request, db: asyncpg.Connection = Depends(get_db)):
     """Crée une session de paiement Paystack pour le portfolio."""
-
+    
     submission = await db.fetchrow(
         "SELECT * FROM portfolio_submissions WHERE id = $1",
         submission_id
     )
     if not submission:
         raise HTTPException(status_code=404, detail="Soumission non trouvée")
-
+    
     if submission["payment_status"] == "paid":
         raise HTTPException(status_code=400, detail="Déjà payé")
-
+    
     product = await db.fetchrow(
         "SELECT * FROM products WHERE id = $1",
         submission["product_id"]
     )
     if not product:
         raise HTTPException(status_code=404, detail="Service non trouvé")
-
+    
     secret_key = os.environ.get('PAYSTACK_SECRET_KEY')
     if not secret_key:
         raise HTTPException(status_code=500, detail="Paystack non configuré")
-
+    
     # Montant en plus petite unité (XOF * 100)
     amount_smallest_unit = int(float(product["price"]) * 100)
-
+    
     host_url = str(request.base_url).rstrip('/')
     origin_url = request.headers.get("origin", host_url)
-
+    
     # Génère une référence unique
     reference = generate_reference()
-
+    
     success_url = f"{origin_url}/portfolio/success?submission_id={submission_id}&reference={reference}"
-
+    
     # Appel API Paystack
     async with httpx.AsyncClient() as client:
         response = await client.post(
@@ -121,15 +121,15 @@ async def pay_for_portfolio(submission_id: str, request: Request, db: asyncpg.Co
             }
         )
         result = response.json()
-
+    
     if not result.get("status"):
         raise HTTPException(status_code=400, detail=result.get("message", "Erreur Paystack"))
-
+    
     await db.execute(
         "UPDATE portfolio_submissions SET session_id = $1 WHERE id = $2",
         reference, submission_id
     )
-
+    
     return {
         "checkout_url": result["data"]["authorization_url"],
         "reference": reference,
@@ -140,26 +140,26 @@ async def pay_for_portfolio(submission_id: str, request: Request, db: asyncpg.Co
 @router.get("/payment-status/{submission_id}")
 async def check_portfolio_payment(submission_id: str, request: Request, db: asyncpg.Connection = Depends(get_db)):
     """Vérifie le statut du paiement d'un portfolio via Paystack."""
-
+    
     submission = await db.fetchrow(
         "SELECT * FROM portfolio_submissions WHERE id = $1",
         submission_id
     )
     if not submission:
         raise HTTPException(status_code=404, detail="Soumission non trouvée")
-
+    
     if submission["payment_status"] == "paid":
         return {"status": "paid", "message": "Paiement confirmé"}
-
+    
     if not submission["session_id"]:
         return {"status": "pending", "message": "En attente de paiement"}
-
+    
     secret_key = os.environ.get('PAYSTACK_SECRET_KEY')
     if not secret_key:
         return {"status": "pending"}
-
+    
     reference = submission["session_id"]
-
+    
     # Vérifie via l'API Paystack
     async with httpx.AsyncClient() as client:
         response = await client.get(
@@ -167,14 +167,14 @@ async def check_portfolio_payment(submission_id: str, request: Request, db: asyn
             headers={"Authorization": f"Bearer {secret_key}"}
         )
         result = response.json()
-
+    
     if result.get("status") and result["data"]["status"] == "success":
         await db.execute(
             "UPDATE portfolio_submissions SET payment_status = 'paid' WHERE id = $1",
             submission_id
         )
         return {"status": "paid", "message": "Paiement confirmé"}
-
+    
     return {"status": "pending", "message": "En attente de confirmation"}
 
 
@@ -187,11 +187,11 @@ async def get_portfolio_submission(submission_id: str, db: asyncpg.Connection = 
     )
     if not submission:
         return None
-
+    
     result = {key: submission[key] for key in submission.keys()}
     # Parse JSON fields
     for field in ['skills', 'experiences', 'education', 'projects']:
         if result.get(field) and isinstance(result[field], str):
             result[field] = json.loads(result[field])
-
+    
     return result
