@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block title %}NumStore - Digitalisation Professionnelle{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative min-h-[90vh] flex items-center overflow-hidden">
+    <div class="absolute inset-0">
+        <img src="https://static.prod-images.emergentagent.com/jobs/d92c6202-14d7-42b4-8759-6d0ad38d3b87/images/a494079b51d8f07b1ff49bb1f4fbfadc136a99c8cefb265c3b9ad973d7e47f1b.png" alt="" class="w-full h-full object-cover object-top">
+        <div class="absolute inset-0 bg-gradient-to-r from-noir via-noir/80 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-noir via-transparent to-noir/40"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-12 py-32">
+        <div class="max-w-2xl">
+            <div class="flex items-center gap-2 mb-8 animate-fade-up">
+                <div class="h-px w-8 bg-champagne"></div>
+                <span class="text-sm font-body font-medium tracking-widest uppercase text-champagne">
+                    Nouveau en Afrique Francophone
+                </span>
+            </div>
+
+            <h1 class="text-5xl sm:text-6xl tracking-tight leading-none font-heading font-semibold text-white mb-6 animate-fade-up">
+                Sublimez votre<br>
+                <span class="text-champagne italic">Présence Digitale</span>
+            </h1>
+
+            <p class="text-lg text-zinc-400 leading-relaxed mb-10 max-w-lg animate-fade-up">
+                Portfolios sur-mesure, CV digitaux et identité visuelle en ligne.
+                Faites de votre profil professionnel une œuvre d'art.
+            </p>
+
+            <div class="flex flex-wrap gap-4 animate-fade-up">
+                <a href="#services" class="btn-gold inline-flex items-center gap-2 px-8 py-4 text-sm font-semibold tracking-wide">
+                    Découvrir nos offres
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+                <a href="/access" class="btn-outline-luxury inline-flex items-center gap-2 px-8 py-4 text-sm tracking-wide">
+                    J'ai déjà un code
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section id="services" class="relative py-24 lg:py-32">
+    <div class="absolute inset-0 opacity-30">
+        <img src="https://static.prod-images.emergentagent.com/jobs/d92c6202-14d7-42b4-8759-6d0ad38d3b87/images/c7da8c345d2d6d233bfbc81d049272ea9736c6b374b2a44d877e340811f03d02.png" alt="" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-noir/70"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="mb-16">
+            <p class="text-sm font-body font-medium tracking-widest uppercase text-champagne mb-4">
+                Services Premium
+            </p>
+            <h2 class="text-3xl sm:text-4xl tracking-tight font-heading text-white">
+                Digitalisation Professionnelle
+            </h2>
+            <p class="text-zinc-400 mt-4 max-w-xl text-base leading-relaxed">
+                Des solutions sur-mesure pour transformer votre image professionnelle en ligne.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+            {% for product in portfolio_products %}
+            {% set is_vip = 'vip' in product.name|lower %}
+            {% set col_span = 'md:col-span-7' if loop.index == 1 else ('md:col-span-5' if loop.index == 2 else ('md:col-span-12' if is_vip else 'md:col-span-6')) %}
+            
+            <a href="/product/{{ product.id }}" class="group relative overflow-hidden {{ col_span }} {% if is_vip %}gold-border gold-glow bg-surface{% else %}luxury-card{% endif %} transition-all duration-500 hover:-translate-y-1">
+                {% if is_vip %}
+                <div class="absolute top-4 right-4 z-10 flex items-center gap-1.5 px-3 py-1 bg-champagne text-noir text-xs font-bold tracking-wider uppercase">
+                    <i data-lucide="star" class="w-3 h-3 fill-current"></i>
+                    VIP
+                </div>
+                {% endif %}
+
+                <div class="flex flex-col md:flex-row">
+                    <div class="relative overflow-hidden {% if is_vip %}md:w-1/2{% else %}w-full{% endif %}">
+                        <img src="{{ product.image_url or 'https://images.unsplash.com/photo-1697292859784-c319e612ea15?w=400' }}" alt="{{ product.name }}" class="w-full h-56 md:h-full object-cover group-hover:scale-[1.02] transition-transform duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-surface/60 to-transparent"></div>
+                    </div>
+
+                    <div class="p-8 flex flex-col justify-between {% if is_vip %}md:w-1/2{% endif %}">
+                        <div>
+                            <h3 class="text-2xl font-heading font-semibold text-white mb-3 group-hover:text-champagne transition-colors">
+                                {{ product.name }}
+                            </h3>
+                            <p class="text-sm text-zinc-400 leading-relaxed mb-6">
+                                {{ product.description }}
+                            </p>
+                        </div>
+                        <div class="flex items-center justify-between mt-4">
+                            <span class="text-2xl font-heading font-bold text-champagne">
+                                {{ format_price(product.price, product.currency) }}
+                            </span>
+                            <span class="text-sm text-zinc-400 group-hover:text-champagne transition-colors flex items-center gap-1">
+                                Commander <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-24 border-y border-white/5">
+    <div class="max-w-5xl mx-auto px-6 lg:px-12">
+        <div class="text-center mb-16">
+            <p class="text-sm font-body tracking-widest uppercase text-champagne mb-4">Processus</p>
+            <h2 class="text-3xl sm:text-4xl tracking-tight font-heading text-white">
+                Comment ça marche ?
+            </h2>
+        </div>
+
+        <div class="grid md:grid-cols-4 gap-8">
+            <div class="text-center group">
+                <div class="relative mx-auto mb-6">
+                    <div class="w-16 h-16 border border-white/10 flex items-center justify-center mx-auto group-hover:border-champagne/30 transition-colors">
+                        <i data-lucide="globe" class="w-6 h-6 text-champagne"></i>
+                    </div>
+                    <div class="absolute -top-2 -right-2 w-6 h-6 bg-champagne text-noir text-xs font-bold flex items-center justify-center">1</div>
+                </div>
+                <h3 class="font-heading text-lg font-semibold text-white mb-2">Choisissez</h3>
+                <p class="text-sm text-zinc-500 leading-relaxed">Sélectionnez la formule adaptée à vos besoins</p>
+            </div>
+            <div class="text-center group">
+                <div class="relative mx-auto mb-6">
+                    <div class="w-16 h-16 border border-white/10 flex items-center justify-center mx-auto group-hover:border-champagne/30 transition-colors">
+                        <i data-lucide="mail" class="w-6 h-6 text-champagne"></i>
+                    </div>
+                    <div class="absolute -top-2 -right-2 w-6 h-6 bg-champagne text-noir text-xs font-bold flex items-center justify-center">2</div>
+                </div>
+                <h3 class="font-heading text-lg font-semibold text-white mb-2">Remplissez</h3>
+                <p class="text-sm text-zinc-500 leading-relaxed">Complétez le formulaire avec vos informations</p>
+            </div>
+            <div class="text-center group">
+                <div class="relative mx-auto mb-6">
+                    <div class="w-16 h-16 border border-white/10 flex items-center justify-center mx-auto group-hover:border-champagne/30 transition-colors">
+                        <i data-lucide="sparkles" class="w-6 h-6 text-champagne"></i>
+                    </div>
+                    <div class="absolute -top-2 -right-2 w-6 h-6 bg-champagne text-noir text-xs font-bold flex items-center justify-center">3</div>
+                </div>
+                <h3 class="font-heading text-lg font-semibold text-white mb-2">On crée</h3>
+                <p class="text-sm text-zinc-500 leading-relaxed">Notre équipe design votre présence digitale</p>
+            </div>
+            <div class="text-center group">
+                <div class="relative mx-auto mb-6">
+                    <div class="w-16 h-16 border border-white/10 flex items-center justify-center mx-auto group-hover:border-champagne/30 transition-colors">
+                        <i data-lucide="clock" class="w-6 h-6 text-champagne"></i>
+                    </div>
+                    <div class="absolute -top-2 -right-2 w-6 h-6 bg-champagne text-noir text-xs font-bold flex items-center justify-center">4</div>
+                </div>
+                <h3 class="font-heading text-lg font-semibold text-white mb-2">Recevez</h3>
+                <p class="text-sm text-zinc-500 leading-relaxed">Votre site est livré sous 48-72h par email</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Digital Products -->
+{% if digital_products %}
+<section id="products" class="py-24 border-t border-white/5">
+    <div class="max-w-7xl mx-auto px-6 lg:px-12">
+        <div class="mb-16">
+            <p class="text-sm font-body tracking-widest uppercase text-champagne mb-4">Ressources</p>
+            <h2 class="text-3xl sm:text-4xl tracking-tight font-heading text-white">
+                Produits Numériques
+            </h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for product in digital_products %}
+            <a href="/product/{{ product.id }}" class="group luxury-card overflow-hidden">
+                <div class="relative overflow-hidden">
+                    <img src="{{ product.image_url or 'https://images.unsplash.com/photo-1697292859784-c319e612ea15?w=400' }}" alt="{{ product.name }}" class="w-full h-48 object-cover group-hover:scale-[1.02] transition-transform duration-700">
+                    <div class="absolute inset-0 bg-gradient-to-t from-surface to-transparent"></div>
+                    <div class="absolute bottom-3 left-3">
+                        <span class="text-xs font-body font-medium tracking-wider uppercase text-champagne bg-noir/70 px-2 py-1">
+                            {{ 'E-book' if product.category == 'ebook' else ('Template' if product.category == 'template' else product.category) }}
+                        </span>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-heading text-xl font-semibold text-white mb-2 group-hover:text-champagne transition-colors">
+                        {{ product.name }}
+                    </h3>
+                    <p class="text-sm text-zinc-500 mb-4 line-clamp-2 leading-relaxed">
+                        {{ product.description }}
+                    </p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xl font-heading font-bold text-champagne">
+                            {{ format_price(product.price, product.currency) }}
+                        </span>
+                        <span class="text-xs text-zinc-500 group-hover:text-champagne transition-colors flex items-center gap-1">
+                            Acheter <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                        </span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

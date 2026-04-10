@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Admin - NumStore{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-6 lg:px-12 py-8">
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 class="text-3xl font-heading font-semibold text-white">Tableau de bord</h1>
+            <p class="text-zinc-500 text-sm">Vue d'ensemble des ventes</p>
+        </div>
+        <a href="/api/admin/logout" class="flex items-center gap-2 px-4 py-2 text-zinc-500 hover:text-red-400 transition-colors text-sm">
+            <i data-lucide="log-out" class="w-4 h-4"></i> Déconnexion
+        </a>
+    </div>
+
+    <!-- Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div class="bg-surface border border-white/5 p-6">
+            <i data-lucide="dollar-sign" class="w-8 h-8 text-champagne mb-4"></i>
+            <p class="text-xs text-zinc-500 mb-1 uppercase tracking-wider">Revenus (FCFA)</p>
+            <p class="text-2xl font-heading font-bold text-champagne">{{ "{:,.0f}".format(total_revenue).replace(",", " ") }} FCFA</p>
+        </div>
+        <div class="bg-surface border border-white/5 p-6">
+            <i data-lucide="shopping-bag" class="w-8 h-8 text-emerald-400 mb-4"></i>
+            <p class="text-xs text-zinc-500 mb-1 uppercase tracking-wider">Ventes</p>
+            <p class="text-2xl font-heading font-bold text-emerald-400">{{ total_sales }}</p>
+        </div>
+        <div class="bg-surface border border-white/5 p-6">
+            <i data-lucide="package" class="w-8 h-8 text-zinc-300 mb-4"></i>
+            <p class="text-xs text-zinc-500 mb-1 uppercase tracking-wider">Produits</p>
+            <p class="text-2xl font-heading font-bold text-zinc-300">{{ products_count }}</p>
+        </div>
+        <div class="bg-surface border border-white/5 p-6">
+            <i data-lucide="clock" class="w-8 h-8 text-amber-400 mb-4"></i>
+            <p class="text-xs text-zinc-500 mb-1 uppercase tracking-wider">Portfolios en attente</p>
+            <p class="text-2xl font-heading font-bold text-amber-400">{{ portfolio_pending }}</p>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="grid md:grid-cols-3 gap-4 mb-8">
+        <a href="/admin/products" class="flex items-center gap-4 bg-surface border border-white/5 p-6 hover:border-champagne/20 transition-all">
+            <i data-lucide="package" class="w-8 h-8 text-champagne"></i>
+            <div class="flex-1">
+                <p class="font-semibold text-white text-sm">Produits & Services</p>
+                <p class="text-xs text-zinc-500">Gérer le catalogue</p>
+            </div>
+            <i data-lucide="arrow-right" class="w-4 h-4 text-zinc-600"></i>
+        </a>
+        <a href="/admin/portfolios" class="flex items-center gap-4 bg-surface border border-white/5 p-6 hover:border-champagne/20 transition-all">
+            <i data-lucide="user" class="w-8 h-8 text-amber-400"></i>
+            <div class="flex-1">
+                <p class="font-semibold text-white text-sm">Demandes Portfolio</p>
+                <p class="text-xs text-zinc-500">Gérer les soumissions</p>
+            </div>
+            <i data-lucide="arrow-right" class="w-4 h-4 text-zinc-600"></i>
+        </a>
+        <a href="/" target="_blank" class="flex items-center gap-4 bg-surface border border-white/5 p-6 hover:border-champagne/20 transition-all">
+            <i data-lucide="shopping-bag" class="w-8 h-8 text-emerald-400"></i>
+            <div class="flex-1">
+                <p class="font-semibold text-white text-sm">Voir la boutique</p>
+                <p class="text-xs text-zinc-500">Ouvrir le site</p>
+            </div>
+            <i data-lucide="arrow-right" class="w-4 h-4 text-zinc-600"></i>
+        </a>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="bg-surface border border-white/5">
+        <div class="p-4 border-b border-white/5">
+            <h2 class="font-heading text-lg font-semibold text-white">Transactions récentes</h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full">
+                <thead>
+                    <tr class="border-b border-white/5">
+                        <th class="text-left px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Email</th>
+                        <th class="text-left px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Type</th>
+                        <th class="text-left px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Montant</th>
+                        <th class="text-left px-4 py-3 text-xs font-medium text-zinc-500 uppercase tracking-wider">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if not recent_transactions %}
+                    <tr>
+                        <td colspan="4" class="text-center text-zinc-600 py-8">Aucune transaction</td>
+                    </tr>
+                    {% else %}
+                    {% for t in recent_transactions %}
+                    <tr class="border-b border-white/5 hover:bg-white/[0.02]">
+                        <td class="px-4 py-3 text-sm text-zinc-300">{{ t.email }}</td>
+                        <td class="px-4 py-3 text-sm">
+                            <span class="px-2 py-0.5 text-xs font-medium {% if t.is_service %}bg-amber-500/10 text-amber-400{% else %}bg-champagne/10 text-champagne{% endif %}">
+                                {{ 'Portfolio' if t.is_service else 'Produit' }}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-sm font-medium text-champagne">{{ format_price(t.amount, t.currency) }}</td>
+                        <td class="px-4 py-3 text-sm text-zinc-500">{{ t.created_at.strftime('%d/%m/%Y') }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

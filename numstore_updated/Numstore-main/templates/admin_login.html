@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Administration - NumStore{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center px-4">
+    <div class="max-w-md w-full bg-surface border border-white/5 p-8">
+        <div class="text-center mb-8">
+            <i data-lucide="lock" class="w-12 h-12 text-champagne mx-auto mb-4"></i>
+            <h1 class="text-2xl font-heading font-semibold text-white">Administration</h1>
+            <p class="text-zinc-500 text-sm mt-2">Entrez le mot de passe administrateur</p>
+        </div>
+        <form id="login-form" class="space-y-4">
+            <input type="password" id="password" placeholder="Mot de passe" required class="w-full h-12 px-4 bg-noir border border-white/10 text-white placeholder:text-zinc-600 focus:ring-1 focus:ring-champagne focus:outline-none">
+            <button type="submit" id="login-btn" class="w-full h-12 btn-gold flex items-center justify-center gap-2">
+                Connexion <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const password = document.getElementById('password').value;
+    const btn = document.getElementById('login-btn');
+    
+    btn.disabled = true;
+    btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>';
+    lucide.createIcons();
+    
+    try {
+        const res = await fetch('/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password })
+        });
+        
+        if (res.ok) {
+            window.location.href = '/admin/dashboard';
+        } else {
+            alert('Mot de passe incorrect');
+        }
+    } catch (err) {
+        alert('Erreur de connexion');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Connexion <i data-lucide="arrow-right" class="w-4 h-4"></i>';
+        lucide.createIcons();
+    }
+});
+</script>
+{% endblock %}
