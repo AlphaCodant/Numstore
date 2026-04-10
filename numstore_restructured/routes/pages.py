@@ -26,7 +26,18 @@ def record_to_dict(row) -> dict:
     """Convertit un asyncpg.Record en dictionnaire propre."""
     if row is None:
         return None
-    return {key: row[key] for key in row.keys()}
+    result = {}
+    for key in row.keys():
+        value = row[key]
+        # Convertir Decimal en float pour éviter les problèmes de sérialisation
+        if hasattr(value, '__float__'):
+            try:
+                result[key] = float(value)
+            except:
+                result[key] = value
+        else:
+            result[key] = value
+    return result
 
 
 def records_to_list(rows) -> list:
@@ -44,14 +55,18 @@ async def home(request: Request, db: asyncpg.Connection = Depends(get_db)):
     rows = await db.fetch("SELECT * FROM products WHERE is_active = true ORDER BY created_at DESC")
     products = records_to_list(rows)
     
-    portfolio_products = [p for p in products if p.get("is_service")]
-    digital_products = [p for p in products if not p.get("is_service")]
+    portfolio_products = [p for p in products if p.get("is_service") is True]
+    digital_products = [p for p in products if p.get("is_service") is not True]
     
-    return templates.TemplateResponse("home.html", {
-        "request": request,
-        "portfolio_products": portfolio_products,
-        "digital_products": digital_products
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="home.html", 
+        context={
+            "request": request,
+            "portfolio_products": portfolio_products,
+            "digital_products": digital_products
+        }
+    )
 
 
 @router.get("/product/{product_id}", response_class=HTMLResponse)

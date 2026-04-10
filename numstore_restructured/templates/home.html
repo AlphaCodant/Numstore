@@ -65,7 +65,8 @@
 
         <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
             {% for product in portfolio_products %}
-            {% set is_vip = 'vip' in product.name|lower %}
+            {% set product_name_lower = product.name|default('')|string|lower %}
+            {% set is_vip = 'vip' in product_name_lower %}
             {% set col_span = 'md:col-span-7' if loop.index == 1 else ('md:col-span-5' if loop.index == 2 else ('md:col-span-12' if is_vip else 'md:col-span-6')) %}
             
             <a href="/product/{{ product.id }}" class="group relative overflow-hidden {{ col_span }} {% if is_vip %}gold-border gold-glow bg-surface{% else %}luxury-card{% endif %} transition-all duration-500 hover:-translate-y-1">
