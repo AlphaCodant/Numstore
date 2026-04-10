@@ -4,7 +4,7 @@ Routes des pages (templates Jinja2).
 
 import os
 from fastapi import APIRouter, Request, Depends
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 import asyncpg
 
@@ -23,7 +23,9 @@ def format_price(price: float, currency: str = "XOF") -> str:
 
 
 def record_to_dict(row) -> dict:
-    """Convertit un asyncpg.Record en dictionnaire."""
+    """Convertit un asyncpg.Record en dictionnaire propre."""
+    if row is None:
+        return None
     return {key: row[key] for key in row.keys()}
 
 
@@ -40,11 +42,7 @@ templates.env.globals["format_price"] = format_price
 async def home(request: Request, db: asyncpg.Connection = Depends(get_db)):
     """Page d'accueil avec produits."""
     rows = await db.fetch("SELECT * FROM products WHERE is_active = true ORDER BY created_at DESC")
-    
-    # Convertir les Record asyncpg en dictionnaires propres
-    products = []
-    for row in rows:
-        products.append({key: row[key] for key in row.keys()})
+    products = records_to_list(rows)
     
     portfolio_products = [p for p in products if p.get("is_service")]
     digital_products = [p for p in products if not p.get("is_service")]
@@ -59,13 +57,13 @@ async def home(request: Request, db: asyncpg.Connection = Depends(get_db)):
 @router.get("/product/{product_id}", response_class=HTMLResponse)
 async def product_page(request: Request, product_id: str, db: asyncpg.Connection = Depends(get_db)):
     """Page détail produit."""
-    product = await db.fetchrow("SELECT * FROM products WHERE id = $1 AND is_active = true", product_id)
-    if not product:
+    row = await db.fetchrow("SELECT * FROM products WHERE id = $1 AND is_active = true", product_id)
+    if not row:
         return templates.TemplateResponse("404.html", {"request": request}, status_code=404)
     
     return templates.TemplateResponse("product.html", {
         "request": request,
-        "product": record_to_dict(product)
+        "product": record_to_dict(row)
     })
 
 
@@ -91,8 +89,7 @@ async def portfolio_form_page(request: Request, db: asyncpg.Connection = Depends
     product = None
     if product_id:
         row = await db.fetchrow("SELECT * FROM products WHERE id = $1 AND is_service = true", product_id)
-        if row:
-            product = record_to_dict(row)
+        product = record_to_dict(row)
     
     return templates.TemplateResponse("portfolio_form.html", {
         "request": request,
@@ -109,8 +106,7 @@ async def portfolio_success_page(request: Request, db: asyncpg.Connection = Depe
     submission = None
     if submission_id:
         row = await db.fetchrow("SELECT * FROM portfolio_submissions WHERE id = $1", submission_id)
-        if row:
-            submission = record_to_dict(row)
+        submission = record_to_dict(row)
     
     return templates.TemplateResponse("portfolio_success.html", {
         "request": request,
@@ -123,7 +119,6 @@ async def admin_login_page(request: Request):
     """Page login admin."""
     admin = get_admin_user(request)
     if admin:
-        from fastapi.responses import RedirectResponse
         return RedirectResponse("/admin/dashboard", status_code=302)
     
     return templates.TemplateResponse("admin_login.html", {"request": request})
@@ -134,7 +129,6 @@ async def admin_dashboard_page(request: Request, db: asyncpg.Connection = Depend
     """Dashboard admin."""
     admin = get_admin_user(request)
     if not admin:
-        from fastapi.responses import RedirectResponse
         return RedirectResponse("/admin", status_code=302)
     
     # Stats
@@ -149,7 +143,7 @@ async def admin_dashboard_page(request: Request, db: asyncpg.Connection = Depend
         "SELECT COUNT(*) FROM portfolio_submissions WHERE status = 'pending' AND payment_status = 'paid'"
     )
     
-    recent_transactions = await db.fetch(
+    rows = await db.fetch(
         """SELECT * FROM payment_transactions 
            WHERE payment_status = 'paid' 
            ORDER BY created_at DESC LIMIT 10"""
@@ -161,7 +155,7 @@ async def admin_dashboard_page(request: Request, db: asyncpg.Connection = Depend
         "total_sales": total_sales or 0,
         "products_count": products_count or 0,
         "portfolio_pending": portfolio_pending or 0,
-        "recent_transactions": records_to_list(recent_transactions)
+        "recent_transactions": records_to_list(rows)
     })
 
 
@@ -170,14 +164,13 @@ async def admin_products_page(request: Request, db: asyncpg.Connection = Depends
     """Gestion produits admin."""
     admin = get_admin_user(request)
     if not admin:
-        from fastapi.responses import RedirectResponse
         return RedirectResponse("/admin", status_code=302)
     
-    products = await db.fetch("SELECT * FROM products ORDER BY created_at DESC")
+    rows = await db.fetch("SELECT * FROM products ORDER BY created_at DESC")
     
     return templates.TemplateResponse("admin_products.html", {
         "request": request,
-        "products": records_to_list(products)
+        "products": records_to_list(rows)
     })
 
 
@@ -186,10 +179,9 @@ async def admin_portfolios_page(request: Request, db: asyncpg.Connection = Depen
     """Gestion portfolios admin."""
     admin = get_admin_user(request)
     if not admin:
-        from fastapi.responses import RedirectResponse
         return RedirectResponse("/admin", status_code=302)
     
-    submissions = await db.fetch(
+    rows = await db.fetch(
         """SELECT * FROM portfolio_submissions 
            WHERE payment_status = 'paid' 
            ORDER BY created_at DESC"""
@@ -197,5 +189,5 @@ async def admin_portfolios_page(request: Request, db: asyncpg.Connection = Depen
     
     return templates.TemplateResponse("admin_portfolios.html", {
         "request": request,
-        "submissions": records_to_list(submissions)
+        "submissions": records_to_list(rows)
     })
