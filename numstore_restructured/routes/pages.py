@@ -62,7 +62,6 @@ async def home(request: Request, db: asyncpg.Connection = Depends(get_db)):
         request=request,
         name="home.html", 
         context={
-            "request": request,
             "portfolio_products": portfolio_products,
             "digital_products": digital_products
         }
@@ -74,12 +73,18 @@ async def product_page(request: Request, product_id: str, db: asyncpg.Connection
     """Page détail produit."""
     row = await db.fetchrow("SELECT * FROM products WHERE id = $1 AND is_active = true", product_id)
     if not row:
-        return templates.TemplateResponse("404.html", {"request": request}, status_code=404)
-    
-    return templates.TemplateResponse("product.html", {
-        "request": request,
-        "product": record_to_dict(row)
-    })
+        return templates.TemplateResponse(
+            request=request,
+            name="404.html",
+            context={},
+            status_code=404
+        )
+
+    return templates.TemplateResponse(
+        request=request,
+        name="product.html",
+        context={"product": record_to_dict(row)}
+    )
 
 
 @router.get("/access", response_class=HTMLResponse)
@@ -88,11 +93,14 @@ async def access_page(request: Request):
     session_id = request.query_params.get("session_id")
     product_id = request.query_params.get("product_id")
     
-    return templates.TemplateResponse("access.html", {
-        "request": request,
-        "session_id": session_id,
-        "product_id": product_id
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="access.html",
+        context={
+            "session_id": session_id,
+            "product_id": product_id
+        }
+    )
 
 
 @router.get("/portfolio/form", response_class=HTMLResponse)
@@ -106,11 +114,14 @@ async def portfolio_form_page(request: Request, db: asyncpg.Connection = Depends
         row = await db.fetchrow("SELECT * FROM products WHERE id = $1 AND is_service = true", product_id)
         product = record_to_dict(row)
     
-    return templates.TemplateResponse("portfolio_form.html", {
-        "request": request,
-        "product": product,
-        "email": email
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="portfolio_form.html",
+        context={
+            "product": product,
+            "email": email
+        }
+    )
 
 
 @router.get("/portfolio/success", response_class=HTMLResponse)
@@ -123,10 +134,11 @@ async def portfolio_success_page(request: Request, db: asyncpg.Connection = Depe
         row = await db.fetchrow("SELECT * FROM portfolio_submissions WHERE id = $1", submission_id)
         submission = record_to_dict(row)
     
-    return templates.TemplateResponse("portfolio_success.html", {
-        "request": request,
-        "submission": submission
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="portfolio_success.html",
+        context={"submission": submission}
+    )
 
 
 @router.get("/admin", response_class=HTMLResponse)
@@ -136,7 +148,11 @@ async def admin_login_page(request: Request):
     if admin:
         return RedirectResponse("/admin/dashboard", status_code=302)
     
-    return templates.TemplateResponse("admin_login.html", {"request": request})
+    return templates.TemplateResponse(
+        request=request,
+        name="admin_login.html",
+        context={}
+    )
 
 
 @router.get("/admin/dashboard", response_class=HTMLResponse)
@@ -164,14 +180,17 @@ async def admin_dashboard_page(request: Request, db: asyncpg.Connection = Depend
            ORDER BY created_at DESC LIMIT 10"""
     )
     
-    return templates.TemplateResponse("admin_dashboard.html", {
-        "request": request,
-        "total_revenue": total_revenue or 0,
-        "total_sales": total_sales or 0,
-        "products_count": products_count or 0,
-        "portfolio_pending": portfolio_pending or 0,
-        "recent_transactions": records_to_list(rows)
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="admin_dashboard.html",
+        context={
+            "total_revenue": float(total_revenue) if total_revenue else 0,
+            "total_sales": total_sales or 0,
+            "products_count": products_count or 0,
+            "portfolio_pending": portfolio_pending or 0,
+            "recent_transactions": records_to_list(rows)
+        }
+    )
 
 
 @router.get("/admin/products", response_class=HTMLResponse)
@@ -183,10 +202,11 @@ async def admin_products_page(request: Request, db: asyncpg.Connection = Depends
     
     rows = await db.fetch("SELECT * FROM products ORDER BY created_at DESC")
     
-    return templates.TemplateResponse("admin_products.html", {
-        "request": request,
-        "products": records_to_list(rows)
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="admin_products.html",
+        context={"products": records_to_list(rows)}
+    )
 
 
 @router.get("/admin/portfolios", response_class=HTMLResponse)
@@ -202,7 +222,8 @@ async def admin_portfolios_page(request: Request, db: asyncpg.Connection = Depen
            ORDER BY created_at DESC"""
     )
     
-    return templates.TemplateResponse("admin_portfolios.html", {
-        "request": request,
-        "submissions": records_to_list(rows)
-    })
+    return templates.TemplateResponse(
+        request=request,
+        name="admin_portfolios.html",
+        context={"submissions": records_to_list(rows)}
+    )
