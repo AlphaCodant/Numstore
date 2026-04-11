@@ -22,10 +22,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/payment", tags=["payments"])
 
 ACCESS_CODE_VALIDITY_HOURS = 6
-
-# Paystack API
 PAYSTACK_API_URL = "https://api.paystack.co"
-PAYSTACK_SECRET_KEY = os.environ.get('PAYSTACK_SECRET_KEY', '')
 
 
 def generate_access_code() -> str:
@@ -57,19 +54,18 @@ async def create_payment_session(
     if not secret_key:
         raise HTTPException(status_code=500, detail="Paystack non configuré")
     
-    # Montant en kobo/centimes (Paystack demande le montant en plus petite unité)
-    # Pour XOF, on multiplie par 100
-    amount_smallest_unit = int(float(product["price"]) * 100)
+    # Montant en kobo (Paystack veut le montant * 100)
+    amount_kobo = int(float(product["price"]) * 100)
     is_service = product["is_service"]
-    
-    # Génère une référence unique
     reference = generate_reference()
     
-    # URLs de callback
+    # URL de retour après paiement
     if is_service:
         callback_url = f"{data.origin_url}/portfolio/form?reference={reference}&product_id={data.product_id}&email={data.email}"
     else:
         callback_url = f"{data.origin_url}/access?reference={reference}&product_id={data.product_id}"
+    
+    logger.info(f"Création session Paystack: {reference}, montant: {amount_kobo}, email: {data.email}")
     
     # Appel API Paystack
     async with httpx.AsyncClient() as client:
@@ -81,24 +77,22 @@ async def create_payment_session(
             },
             json={
                 "email": data.email,
-                "amount": amount_smallest_unit,
+                "amount": amount_kobo,
                 "currency": "XOF",
                 "reference": reference,
                 "callback_url": callback_url,
                 "metadata": {
                     "product_id": data.product_id,
                     "product_name": product["name"],
-                    "is_service": str(is_service),
-                    "custom_fields": [
-                        {"display_name": "Produit", "variable_name": "product", "value": product["name"]}
-                    ]
+                    "is_service": str(is_service)
                 }
             }
         )
         result = response.json()
     
+    logger.info(f"Réponse Paystack initialize: {result}")
+    
     if not result.get("status"):
-        logger.error(f"Paystack error: {result}")
         raise HTTPException(status_code=400, detail=result.get("message", "Erreur Paystack"))
     
     # Enregistre la transaction
@@ -108,14 +102,16 @@ async def create_payment_session(
            (id, session_id, product_id, amount, currency, email, payment_status, access_code_sent, is_service, created_at)
            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)""",
         transaction_id, reference, data.product_id,
-        float(product["price"]), product["currency"], data.email,
+        float(product["price"]), str(product["currency"]), data.email,
         "pending", False, is_service, datetime.now(timezone.utc)
     )
+    
+    logger.info(f"Transaction créée: {transaction_id}, reference: {reference}")
     
     return {
         "checkout_url": result["data"]["authorization_url"],
         "reference": reference,
-        "session_id": reference  # Pour compatibilité avec le frontend
+        "session_id": reference
     }
 
 
@@ -125,83 +121,118 @@ async def get_payment_status(
     request: Request,
     db: asyncpg.Connection = Depends(get_db)
 ):
-    """Vérifie le statut du paiement Paystack et génère le code d'accès si payé."""
+    """Vérifie le statut du paiement Paystack."""
     
     secret_key = os.environ.get('PAYSTACK_SECRET_KEY')
     if not secret_key:
         raise HTTPException(status_code=500, detail="Paystack non configuré")
     
-    logger.info(f"Vérification du paiement pour reference: {reference}")
+    logger.info(f"=== Vérification paiement: {reference} ===")
     
-    # Vérifie le paiement via l'API Paystack
-    async with httpx.AsyncClient() as client:
-        response = await client.get(
-            f"{PAYSTACK_API_URL}/transaction/verify/{reference}",
-            headers={"Authorization": f"Bearer {secret_key}"}
-        )
-        result = response.json()
+    # 1. Vérifier avec l'API Paystack
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(
+                f"{PAYSTACK_API_URL}/transaction/verify/{reference}",
+                headers={"Authorization": f"Bearer {secret_key}"}
+            )
+            result = response.json()
+        
+        logger.info(f"Paystack verify response: status={result.get('status')}, data.status={result.get('data', {}).get('status')}")
+        
+    except Exception as e:
+        logger.error(f"Erreur appel Paystack: {e}")
+        return {"status": "pending", "email_sent": False, "error": str(e)}
     
-    logger.info(f"Réponse Paystack: {result.get('status')} - {result.get('data', {}).get('status', 'N/A')}")
+    # 2. Vérifier si le paiement est réussi
+    paystack_ok = result.get("status") == True
+    payment_success = result.get("data", {}).get("status") == "success"
     
-    if result.get("status") and result["data"]["status"] == "success":
-        transaction = await db.fetchrow(
-            "SELECT * FROM payment_transactions WHERE session_id = $1",
+    logger.info(f"paystack_ok={paystack_ok}, payment_success={payment_success}")
+    
+    if not (paystack_ok and payment_success):
+        logger.info("Paiement pas encore confirmé par Paystack")
+        return {"status": "pending", "email_sent": False}
+    
+    # 3. Récupérer la transaction en base
+    transaction = await db.fetchrow(
+        "SELECT * FROM payment_transactions WHERE session_id = $1",
+        reference
+    )
+    
+    if not transaction:
+        logger.error(f"Transaction non trouvée pour reference: {reference}")
+        return {"status": "error", "email_sent": False, "message": "Transaction non trouvée"}
+    
+    logger.info(f"Transaction trouvée: id={transaction['id']}, payment_status={transaction['payment_status']}, access_code_sent={transaction['access_code_sent']}")
+    
+    # 4. Si déjà traité, retourner le statut
+    if transaction["payment_status"] == "paid" and transaction["access_code_sent"]:
+        logger.info("Transaction déjà traitée")
+        return {"status": "paid", "email_sent": True}
+    
+    # 5. Mettre à jour le statut en "paid"
+    await db.execute(
+        "UPDATE payment_transactions SET payment_status = 'paid' WHERE session_id = $1",
+        reference
+    )
+    logger.info("Statut mis à jour: paid")
+    
+    # 6. Si c'est un service, pas besoin d'envoyer de code
+    if transaction["is_service"]:
+        await db.execute(
+            "UPDATE payment_transactions SET access_code_sent = true WHERE session_id = $1",
             reference
         )
-        
-        logger.info(f"Transaction trouvée: {transaction is not None}, access_code_sent: {transaction['access_code_sent'] if transaction else 'N/A'}")
-        
-        if transaction and not transaction["access_code_sent"]:
-            product = await db.fetchrow(
-                "SELECT * FROM products WHERE id = $1",
-                transaction["product_id"]
-            )
-            
-            if product:
-                is_service = product["is_service"]
-                
-                if is_service:
-                    await db.execute(
-                        """UPDATE payment_transactions 
-                           SET payment_status = 'paid', access_code_sent = true 
-                           WHERE session_id = $1""",
-                        reference
-                    )
-                    return {"status": "paid", "is_service": True, "message": "Paiement confirmé"}
-                else:
-                    # Génère le code d'accès
-                    code = generate_access_code()
-                    expires_at = datetime.now(timezone.utc) + timedelta(hours=ACCESS_CODE_VALIDITY_HOURS)
-                    
-                    logger.info(f"Génération du code d'accès: {code} pour {transaction['email']}")
-                    
-                    access_code_id = str(uuid.uuid4())
-                    await db.execute(
-                        """INSERT INTO access_codes (id, code, product_id, email, order_id, created_at, expires_at, is_used)
-                           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)""",
-                        access_code_id, code, transaction["product_id"],
-                        transaction["email"], transaction["id"],
-                        datetime.now(timezone.utc), expires_at, False
-                    )
-                    
-                    email_sent = await send_access_code_email(
-                        transaction["email"], code, product["name"], ACCESS_CODE_VALIDITY_HOURS
-                    )
-                    
-                    logger.info(f"Email envoyé: {email_sent}")
-                    
-                    await db.execute(
-                        """UPDATE payment_transactions 
-                           SET payment_status = 'paid', access_code_sent = true 
-                           WHERE session_id = $1""",
-                        reference
-                    )
-                    
-                    return {"status": "paid", "email_sent": email_sent, "message": f"Code envoyé à {transaction['email']}"}
-        
-        return {"status": "paid", "email_sent": transaction["access_code_sent"] if transaction else False}
+        return {"status": "paid", "is_service": True, "email_sent": True}
     
-    return {"status": "pending", "email_sent": False}
+    # 7. Récupérer le produit
+    product = await db.fetchrow(
+        "SELECT * FROM products WHERE id = $1",
+        transaction["product_id"]
+    )
+    
+    if not product:
+        logger.error(f"Produit non trouvé: {transaction['product_id']}")
+        return {"status": "paid", "email_sent": False, "error": "Produit non trouvé"}
+    
+    # 8. Générer le code d'accès
+    code = generate_access_code()
+    expires_at = datetime.now(timezone.utc) + timedelta(hours=ACCESS_CODE_VALIDITY_HOURS)
+    
+    logger.info(f"Code généré: {code} pour {transaction['email']}")
+    
+    access_code_id = str(uuid.uuid4())
+    await db.execute(
+        """INSERT INTO access_codes (id, code, product_id, email, order_id, created_at, expires_at, is_used)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)""",
+        access_code_id, code, transaction["product_id"],
+        transaction["email"], transaction["id"],
+        datetime.now(timezone.utc), expires_at, False
+    )
+    logger.info("Code inséré en base")
+    
+    # 9. Envoyer l'email
+    try:
+        email_sent = await send_access_code_email(
+            transaction["email"], code, product["name"], ACCESS_CODE_VALIDITY_HOURS
+        )
+        logger.info(f"Email envoyé: {email_sent}")
+    except Exception as e:
+        logger.error(f"Erreur envoi email: {e}")
+        email_sent = False
+    
+    # 10. Marquer comme traité
+    await db.execute(
+        "UPDATE payment_transactions SET access_code_sent = true WHERE session_id = $1",
+        reference
+    )
+    
+    return {
+        "status": "paid",
+        "email_sent": email_sent,
+        "message": f"Code envoyé à {transaction['email']}" if email_sent else "Code généré mais email non envoyé"
+    }
 
 
 @router.post("/webhook")
@@ -210,6 +241,7 @@ async def paystack_webhook(request: Request, db: asyncpg.Connection = Depends(ge
     
     secret_key = os.environ.get('PAYSTACK_SECRET_KEY')
     if not secret_key:
+        logger.error("Webhook: PAYSTACK_SECRET_KEY non configuré")
         return {"status": "error"}
     
     # Récupère la signature et le body
@@ -224,17 +256,18 @@ async def paystack_webhook(request: Request, db: asyncpg.Connection = Depends(ge
     ).hexdigest()
     
     if not hmac.compare_digest(computed_signature, signature):
-        logger.warning("Webhook Paystack: signature invalide")
+        logger.warning("Webhook: signature invalide")
         raise HTTPException(status_code=401, detail="Signature invalide")
     
     # Parse l'événement
     event = await request.json()
     event_type = event.get("event")
     
-    logger.info(f"Paystack webhook reçu: {event_type}")
+    logger.info(f"=== Webhook Paystack reçu: {event_type} ===")
     
     if event_type == "charge.success":
         reference = event["data"]["reference"]
+        logger.info(f"Webhook charge.success pour: {reference}")
         
         # Met à jour la transaction
         await db.execute(
@@ -242,41 +275,8 @@ async def paystack_webhook(request: Request, db: asyncpg.Connection = Depends(ge
             reference
         )
         
-        # Génère le code d'accès si nécessaire
-        transaction = await db.fetchrow(
-            "SELECT * FROM payment_transactions WHERE session_id = $1",
-            reference
-        )
-        
-        if transaction and not transaction["access_code_sent"] and not transaction["is_service"]:
-            product = await db.fetchrow(
-                "SELECT * FROM products WHERE id = $1",
-                transaction["product_id"]
-            )
-            
-            if product:
-                code = generate_access_code()
-                expires_at = datetime.now(timezone.utc) + timedelta(hours=ACCESS_CODE_VALIDITY_HOURS)
-                
-                access_code_id = str(uuid.uuid4())
-                await db.execute(
-                    """INSERT INTO access_codes (id, code, product_id, email, order_id, created_at, expires_at, is_used)
-                       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)""",
-                    access_code_id, code, transaction["product_id"],
-                    transaction["email"], transaction["id"],
-                    datetime.now(timezone.utc), expires_at, False
-                )
-                
-                await send_access_code_email(
-                    transaction["email"], code, product["name"], ACCESS_CODE_VALIDITY_HOURS
-                )
-                
-                await db.execute(
-                    "UPDATE payment_transactions SET access_code_sent = true WHERE session_id = $1",
-                    reference
-                )
-        
-        logger.info(f"Paiement confirmé pour {reference}")
+        # Le reste sera géré par l'appel /status/{reference} du frontend
+        logger.info(f"Transaction {reference} marquée comme paid via webhook")
         return {"status": "success"}
     
     return {"status": "ok"}
