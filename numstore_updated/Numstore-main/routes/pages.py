@@ -90,14 +90,18 @@ async def product_page(request: Request, product_id: str, db: asyncpg.Connection
 @router.get("/access", response_class=HTMLResponse)
 async def access_page(request: Request):
     """Page d'accès avec code."""
-    session_id = request.query_params.get("session_id")
+    # Paystack renvoie 'reference', on accepte aussi 'session_id' pour compatibilité
+    reference = request.query_params.get("reference") or request.query_params.get("session_id")
     product_id = request.query_params.get("product_id")
 
     return templates.TemplateResponse(
         request=request,
         name="access.html",
         context={
-            "session_id": session_id,
+            "reference": reference,
+            "product_id": product_id
+        }
+    )
             "product_id": product_id
         }
     )

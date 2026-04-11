@@ -131,6 +131,8 @@ async def get_payment_status(
     if not secret_key:
         raise HTTPException(status_code=500, detail="Paystack non configuré")
     
+    logger.info(f"Vérification du paiement pour reference: {reference}")
+    
     # Vérifie le paiement via l'API Paystack
     async with httpx.AsyncClient() as client:
         response = await client.get(
@@ -139,11 +141,15 @@ async def get_payment_status(
         )
         result = response.json()
     
+    logger.info(f"Réponse Paystack: {result.get('status')} - {result.get('data', {}).get('status', 'N/A')}")
+    
     if result.get("status") and result["data"]["status"] == "success":
         transaction = await db.fetchrow(
             "SELECT * FROM payment_transactions WHERE session_id = $1",
             reference
         )
+        
+        logger.info(f"Transaction trouvée: {transaction is not None}, access_code_sent: {transaction['access_code_sent'] if transaction else 'N/A'}")
         
         if transaction and not transaction["access_code_sent"]:
             product = await db.fetchrow(
@@ -167,6 +173,8 @@ async def get_payment_status(
                     code = generate_access_code()
                     expires_at = datetime.now(timezone.utc) + timedelta(hours=ACCESS_CODE_VALIDITY_HOURS)
                     
+                    logger.info(f"Génération du code d'accès: {code} pour {transaction['email']}")
+                    
                     access_code_id = str(uuid.uuid4())
                     await db.execute(
                         """INSERT INTO access_codes (id, code, product_id, email, order_id, created_at, expires_at, is_used)
@@ -179,6 +187,8 @@ async def get_payment_status(
                     email_sent = await send_access_code_email(
                         transaction["email"], code, product["name"], ACCESS_CODE_VALIDITY_HOURS
                     )
+                    
+                    logger.info(f"Email envoyé: {email_sent}")
                     
                     await db.execute(
                         """UPDATE payment_transactions 

@@ -7,7 +7,7 @@
     <div id="main-container" class="max-w-md w-full bg-surface border border-white/5 p-8">
         
         <!-- View: Code Entry (default) -->
-        <div id="code-view" class="{% if session_id %}hidden{% endif %}">
+        <div id="code-view" class="{% if reference %}hidden{% endif %}">
             <div class="text-center mb-8">
                 <i data-lucide="key-round" class="w-14 h-14 text-champagne mx-auto mb-4"></i>
                 <h1 class="text-2xl font-heading font-semibold text-white mb-2">Entrez votre code</h1>
@@ -48,7 +48,7 @@
         </div>
 
         <!-- View: Payment Check -->
-        <div id="payment-view" class="{% if not session_id %}hidden{% endif %} text-center">
+        <div id="payment-view" class="{% if not reference %}hidden{% endif %} text-center">
             <i data-lucide="loader-2" class="w-12 h-12 text-champagne animate-spin mx-auto mb-6"></i>
             <h1 class="text-2xl font-heading font-semibold text-white mb-2">Vérification du paiement...</h1>
             <p class="text-zinc-500">Votre code d'accès sera envoyé par email.</p>
@@ -90,7 +90,7 @@
 
 {% block scripts %}
 <script>
-const sessionId = "{{ session_id or '' }}";
+const reference = "{{ reference or '' }}";
 const productId = "{{ product_id or '' }}";
 
 let downloadUrl = '';
@@ -108,29 +108,37 @@ function showView(view) {
     lucide.createIcons();
 }
 
-// Check payment status if session_id present
-if (sessionId) {
+// Check payment status if reference present
+if (reference) {
     checkPaymentStatus(0);
 }
 
 async function checkPaymentStatus(attempts) {
-    if (attempts >= 10) {
+    if (attempts >= 15) {
         showView(codeView);
         alert('Vérifiez vos emails pour le code d\'accès');
         return;
     }
     
     try {
-        const res = await fetch(`/api/payment/status/${sessionId}`);
+        const res = await fetch(`/api/payment/status/${reference}`);
         const data = await res.json();
         
-        if (data.status === 'paid' && data.email_sent) {
-            showView(successView);
+        console.log('Payment status:', data);
+        
+        if (data.status === 'paid') {
+            if (data.email_sent) {
+                showView(successView);
+            } else {
+                // Paiement confirmé mais email pas encore envoyé, on réessaye
+                setTimeout(() => checkPaymentStatus(attempts + 1), 2000);
+            }
         } else {
             setTimeout(() => checkPaymentStatus(attempts + 1), 2000);
         }
     } catch (err) {
-        if (attempts < 9) {
+        console.error('Error checking payment:', err);
+        if (attempts < 14) {
             setTimeout(() => checkPaymentStatus(attempts + 1), 2000);
         } else {
             showView(codeView);
