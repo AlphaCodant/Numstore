@@ -62,7 +62,7 @@ async def seed_products(db: asyncpg.Connection = Depends(get_db)):
             "price": 25000,
             "currency": "XOF",
             "category": "portfolio",
-            "image_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400",
+            "image_url": "https://images.unsplash.com/photo-1642257834579-eee89ff3e9fd?w=400",
             "is_service": True,
             "is_active": True,
             "created_at": datetime.now(timezone.utc)
@@ -74,7 +74,7 @@ async def seed_products(db: asyncpg.Connection = Depends(get_db)):
             "price": 50000,
             "currency": "XOF",
             "category": "portfolio",
-            "image_url": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400",
+            "image_url": "https://images.unsplash.com/photo-1763739528307-ad10867048b3?w=400",
             "is_service": True,
             "is_active": True,
             "created_at": datetime.now(timezone.utc)
@@ -86,7 +86,7 @@ async def seed_products(db: asyncpg.Connection = Depends(get_db)):
             "price": 95000,
             "currency": "XOF",
             "category": "portfolio",
-            "image_url": "https://static.prod-images.emergentagent.com/jobs/d92c6202-14d7-42b4-8759-6d0ad38d3b87/images/16027425fe7f4010eb33e27f710912ad6282ccd6141f0c28a8cc9161d05e3a70.png",
+            "image_url": "https://images.unsplash.com/photo-1632255657991-ce622acebecd?w=400",
             "is_service": True,
             "is_active": True,
             "created_at": datetime.now(timezone.utc)
@@ -98,7 +98,7 @@ async def seed_products(db: asyncpg.Connection = Depends(get_db)):
             "price": 15000,
             "currency": "XOF",
             "category": "portfolio",
-            "image_url": "https://images.unsplash.com/photo-1697292859784-c319e612ea15?w=400",
+            "image_url": "https://images.unsplash.com/photo-1678282342910-a135f7b900ae?w=400",
             "is_service": True,
             "is_active": True,
             "created_at": datetime.now(timezone.utc)
@@ -110,7 +110,7 @@ async def seed_products(db: asyncpg.Connection = Depends(get_db)):
             "price": 20000,
             "currency": "XOF",
             "category": "portfolio",
-            "image_url": "https://images.unsplash.com/photo-1611944212129-29977ae1398c?w=400",
+            "image_url": "https://images.unsplash.com/photo-1758519290311-7e6ddb194016?w=400",
             "is_service": True,
             "is_active": True,
             "created_at": datetime.now(timezone.utc)

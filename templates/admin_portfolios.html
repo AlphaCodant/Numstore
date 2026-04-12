@@ -5,7 +5,7 @@
 {% block content %}
 <div class="max-w-6xl mx-auto px-6 lg:px-12 py-8">
     <div class="flex items-center gap-4 mb-8">
-        <a href="/admin/dashboard" class="p-2 text-zinc-500 hover:text-champagne transition-colors">
+        <a href="/admin/dashboard" class="p-2 text-zinc-500 hover:text-accent transition-colors">
             <i data-lucide="arrow-left" class="w-5 h-5"></i>
         </a>
         <div>
@@ -21,8 +21,8 @@
         <div class="divide-y divide-white/5">
             {% for sub in submissions %}
             <div class="flex items-center gap-4 p-4 hover:bg-white/[0.02] cursor-pointer" onclick="showDetails({{ sub|tojson|safe }})">
-                <div class="w-10 h-10 bg-champagne/10 flex items-center justify-center">
-                    <i data-lucide="user" class="w-5 h-5 text-champagne"></i>
+                <div class="w-10 h-10 bg-accent/10 flex items-center justify-center">
+                    <i data-lucide="user" class="w-5 h-5 text-accent"></i>
                 </div>
                 <div class="flex-1 min-w-0">
                     <p class="font-semibold text-white text-sm">{{ sub.full_name }}</p>
@@ -32,7 +32,7 @@
                 <div class="text-right">
                     <span class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium 
                         {% if sub.status == 'completed' %}bg-emerald-500/10 text-emerald-400
-                        {% elif sub.status == 'in_progress' %}bg-champagne/10 text-champagne
+                        {% elif sub.status == 'in_progress' %}bg-accent/10 text-accent
                         {% else %}bg-amber-500/10 text-amber-400{% endif %}">
                         {% if sub.status == 'completed' %}<i data-lucide="check-circle" class="w-3 h-3"></i> Terminé
                         {% elif sub.status == 'in_progress' %}<i data-lucide="hourglass" class="w-3 h-3"></i> En cours
@@ -81,11 +81,11 @@ function showDetails(sub) {
             <div class="flex items-center gap-4 mb-4">
                 ${sub.photo_url ? 
                     `<img src="${sub.photo_url}" alt="${sub.full_name}" class="w-14 h-14 object-cover rounded-full border border-white/10">` :
-                    `<div class="w-14 h-14 bg-champagne/10 flex items-center justify-center rounded-full"><i data-lucide="user" class="w-7 h-7 text-champagne"></i></div>`
+                    `<div class="w-14 h-14 bg-accent/10 flex items-center justify-center rounded-full"><i data-lucide="user" class="w-7 h-7 text-accent"></i></div>`
                 }
                 <div>
                     <h3 class="text-lg font-semibold text-white">${sub.full_name}</h3>
-                    <p class="text-champagne text-sm">${sub.job_title}</p>
+                    <p class="text-accent text-sm">${sub.job_title}</p>
                 </div>
             </div>
             <p class="text-sm text-zinc-400">${sub.bio}</p>
@@ -101,7 +101,7 @@ function showDetails(sub) {
             <div>
                 <h4 class="font-semibold text-sm text-zinc-300 mb-2">Compétences</h4>
                 <div class="flex flex-wrap gap-2">
-                    ${sub.skills.map(s => `<span class="px-2 py-1 bg-champagne/10 text-champagne text-xs border border-champagne/20">${s}</span>`).join('')}
+                    ${sub.skills.map(s => `<span class="px-2 py-1 bg-accent/10 text-accent text-xs border border-accent/20">${s}</span>`).join('')}
                 </div>
             </div>
         `;
@@ -113,7 +113,7 @@ function showDetails(sub) {
                 <h4 class="font-semibold text-sm text-zinc-300 mb-2">Expériences</h4>
                 <div class="space-y-3">
                     ${sub.experiences.map(exp => `
-                        <div class="border-l-2 border-champagne/30 pl-3">
+                        <div class="border-l-2 border-accent/30 pl-3">
                             <p class="font-medium text-sm text-white">${exp.role || ''}</p>
                             <p class="text-xs text-zinc-500">${exp.company || ''} | ${exp.duration || ''}</p>
                             <p class="text-xs text-zinc-400 mt-1">${exp.description || ''}</p>
@@ -129,7 +129,7 @@ function showDetails(sub) {
     if (sub.linkedin_url) links.push(`<a href="${sub.linkedin_url}" target="_blank" class="text-[#0A66C2] hover:underline">LinkedIn</a>`);
     if (sub.twitter_url) links.push(`<a href="${sub.twitter_url}" target="_blank" class="text-zinc-300 hover:underline">Twitter</a>`);
     if (sub.github_url) links.push(`<a href="${sub.github_url}" target="_blank" class="text-zinc-300 hover:underline">GitHub</a>`);
-    if (sub.website_url) links.push(`<a href="${sub.website_url}" target="_blank" class="text-champagne hover:underline">Site web</a>`);
+    if (sub.website_url) links.push(`<a href="${sub.website_url}" target="_blank" class="text-accent hover:underline">Site web</a>`);
     
     if (links.length > 0) {
         html += `<div class="flex flex-wrap gap-3 text-xs">${links.join('')}</div>`;
@@ -146,7 +146,7 @@ function showDetails(sub) {
                 </div>
                 <div class="flex gap-2">
                     ${sub.status === 'pending' ? 
-                        `<button onclick="updateStatus('in_progress')" class="flex-1 h-10 border border-white/10 text-zinc-300 hover:border-champagne hover:text-champagne transition-colors text-sm">Marquer en cours</button>` : ''
+                        `<button onclick="updateStatus('in_progress')" class="flex-1 h-10 border border-white/10 text-zinc-300 hover:border-accent hover:text-accent transition-colors text-sm">Marquer en cours</button>` : ''
                     }
                     <button onclick="updateStatus('completed')" class="flex-1 h-10 bg-emerald-600 hover:bg-emerald-700 text-white text-sm">Marquer terminé</button>
                 </div>
@@ -158,7 +158,7 @@ function showDetails(sub) {
         html += `
             <div class="p-3 bg-emerald-500/10 border border-emerald-500/20 text-xs">
                 <p class="font-medium text-emerald-400">Portfolio livré:</p>
-                <a href="${sub.portfolio_url}" target="_blank" class="text-champagne hover:underline">${sub.portfolio_url}</a>
+                <a href="${sub.portfolio_url}" target="_blank" class="text-accent hover:underline">${sub.portfolio_url}</a>
             </div>
         `;
     }

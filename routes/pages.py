@@ -29,12 +29,13 @@ def record_to_dict(row) -> dict:
     result = {}
     for key in row.keys():
         value = row[key]
-        # Convertir Decimal en float pour éviter les problèmes de sérialisation
         if hasattr(value, '__float__'):
             try:
                 result[key] = float(value)
             except:
                 result[key] = value
+        elif hasattr(value, 'isoformat'):
+            result[key] = value.isoformat()
         else:
             result[key] = value
     return result
@@ -90,14 +91,15 @@ async def product_page(request: Request, product_id: str, db: asyncpg.Connection
 @router.get("/access", response_class=HTMLResponse)
 async def access_page(request: Request):
     """Page d'accès avec code."""
-    session_id = request.query_params.get("session_id")
+    # Paystack renvoie 'reference', on accepte aussi 'session_id' pour compatibilité
+    reference = request.query_params.get("reference") or request.query_params.get("session_id")
     product_id = request.query_params.get("product_id")
 
     return templates.TemplateResponse(
         request=request,
         name="access.html",
         context={
-            "session_id": session_id,
+            "reference": reference,
             "product_id": product_id
         }
     )

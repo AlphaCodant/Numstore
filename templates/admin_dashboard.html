@@ -17,9 +17,9 @@
     <!-- Stats -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <div class="bg-surface border border-white/5 p-6">
-            <i data-lucide="dollar-sign" class="w-8 h-8 text-champagne mb-4"></i>
+            <i data-lucide="dollar-sign" class="w-8 h-8 text-accent mb-4"></i>
             <p class="text-xs text-zinc-500 mb-1 uppercase tracking-wider">Revenus (FCFA)</p>
-            <p class="text-2xl font-heading font-bold text-champagne">{{ "{:,.0f}".format(total_revenue).replace(",", " ") }} FCFA</p>
+            <p class="text-2xl font-heading font-bold text-accent">{{ "{:,.0f}".format(total_revenue).replace(",", " ") }} FCFA</p>
         </div>
         <div class="bg-surface border border-white/5 p-6">
             <i data-lucide="shopping-bag" class="w-8 h-8 text-emerald-400 mb-4"></i>
@@ -40,15 +40,15 @@
 
     <!-- Quick Actions -->
     <div class="grid md:grid-cols-3 gap-4 mb-8">
-        <a href="/admin/products" class="flex items-center gap-4 bg-surface border border-white/5 p-6 hover:border-champagne/20 transition-all">
-            <i data-lucide="package" class="w-8 h-8 text-champagne"></i>
+        <a href="/admin/products" class="flex items-center gap-4 bg-surface border border-white/5 p-6 hover:border-accent/20 transition-all">
+            <i data-lucide="package" class="w-8 h-8 text-accent"></i>
             <div class="flex-1">
                 <p class="font-semibold text-white text-sm">Produits & Services</p>
                 <p class="text-xs text-zinc-500">Gérer le catalogue</p>
             </div>
             <i data-lucide="arrow-right" class="w-4 h-4 text-zinc-600"></i>
         </a>
-        <a href="/admin/portfolios" class="flex items-center gap-4 bg-surface border border-white/5 p-6 hover:border-champagne/20 transition-all">
+        <a href="/admin/portfolios" class="flex items-center gap-4 bg-surface border border-white/5 p-6 hover:border-accent/20 transition-all">
             <i data-lucide="user" class="w-8 h-8 text-amber-400"></i>
             <div class="flex-1">
                 <p class="font-semibold text-white text-sm">Demandes Portfolio</p>
@@ -56,7 +56,7 @@
             </div>
             <i data-lucide="arrow-right" class="w-4 h-4 text-zinc-600"></i>
         </a>
-        <a href="/" target="_blank" class="flex items-center gap-4 bg-surface border border-white/5 p-6 hover:border-champagne/20 transition-all">
+        <a href="/" target="_blank" class="flex items-center gap-4 bg-surface border border-white/5 p-6 hover:border-accent/20 transition-all">
             <i data-lucide="shopping-bag" class="w-8 h-8 text-emerald-400"></i>
             <div class="flex-1">
                 <p class="font-semibold text-white text-sm">Voir la boutique</p>
@@ -91,12 +91,22 @@
                     <tr class="border-b border-white/5 hover:bg-white/[0.02]">
                         <td class="px-4 py-3 text-sm text-zinc-300">{{ t.email }}</td>
                         <td class="px-4 py-3 text-sm">
-                            <span class="px-2 py-0.5 text-xs font-medium {% if t.is_service %}bg-amber-500/10 text-amber-400{% else %}bg-champagne/10 text-champagne{% endif %}">
+                            <span class="px-2 py-0.5 text-xs font-medium {% if t.is_service %}bg-amber-500/10 text-amber-400{% else %}bg-accent/10 text-accent{% endif %}">
                                 {{ 'Portfolio' if t.is_service else 'Produit' }}
                             </span>
                         </td>
-                        <td class="px-4 py-3 text-sm font-medium text-champagne">{{ format_price(t.amount, t.currency) }}</td>
-                        <td class="px-4 py-3 text-sm text-zinc-500">{{ t.created_at.strftime('%d/%m/%Y') }}</td>
+                        <td class="px-4 py-3 text-sm font-medium text-accent">{{ format_price(t.amount, t.currency) }}</td>
+                        <td class="px-4 py-3 text-sm text-zinc-500">
+                            {% if t.created_at %}
+                                {% if t.created_at is string %}
+                                    {{ t.created_at[:10] }}
+                                {% else %}
+                                    {{ t.created_at.strftime('%d/%m/%Y') }}
+                                {% endif %}
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                     {% endif %}

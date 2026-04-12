@@ -4,17 +4,17 @@
 
 {% block content %}
 <div class="min-h-[80vh] flex items-center justify-center px-4">
-    <div id="main-container" class="max-w-md w-full bg-surface border border-white/5 p-8">
+    <div id="main-container" class="max-w-md w-full bg-surface border p-8">
         
         <!-- View: Code Entry (default) -->
-        <div id="code-view" class="{% if session_id %}hidden{% endif %}">
+        <div id="code-view" class="{% if reference %}hidden{% endif %}">
             <div class="text-center mb-8">
-                <i data-lucide="key-round" class="w-14 h-14 text-champagne mx-auto mb-4"></i>
-                <h1 class="text-2xl font-heading font-semibold text-white mb-2">Entrez votre code</h1>
-                <p class="text-zinc-400 text-sm">Saisissez le code reçu par email pour accéder à votre produit.</p>
+                <i data-lucide="key-round" class="w-14 h-14 text-accent mx-auto mb-4"></i>
+                <h1 class="text-2xl font-heading mb-2">Entrez votre code</h1>
+                <p class="text-muted text-sm">Saisissez le code reçu par email pour accéder à votre produit.</p>
             </div>
             <div class="space-y-4">
-                <input type="text" id="access-code" maxlength="6" placeholder="EX: A1B2C3" class="w-full h-16 text-center text-2xl tracking-[0.3em] font-mono uppercase bg-noir border border-white/10 text-white placeholder:text-zinc-600 focus:ring-1 focus:ring-champagne focus:outline-none">
+                <input type="text" id="access-code" maxlength="6" placeholder="EX: A1B2C3" class="w-full h-16 text-center text-2xl tracking-[0.3em] font-mono uppercase input-field">
                 <div id="code-error" class="hidden flex items-center gap-2 text-red-400 text-sm">
                     <i data-lucide="x-circle" class="w-4 h-4"></i>
                     <span id="error-message"></span>
@@ -23,10 +23,10 @@
                     Vérifier
                 </button>
             </div>
-            <div class="mt-8 pt-6 border-t border-white/5 text-center">
-                <p class="text-sm text-zinc-600 mb-3">Code expiré ou perdu ?</p>
-                <button id="show-resend-btn" class="text-sm font-medium text-champagne hover:text-champagne-hover transition-colors">
-                    <i data-lucide="refresh-cw" class="w-4 h-4 inline mr-1"></i> Renvoyer le code
+            <div class="mt-8 pt-6 border-t text-center">
+                <p class="text-sm text-muted mb-3">Code expiré ou perdu ?</p>
+                <button id="show-resend-btn" class="text-sm font-medium text-accent transition-colors">
+                    Renvoyer le code
                 </button>
             </div>
         </div>
@@ -34,55 +34,55 @@
         <!-- View: Resend Code -->
         <div id="resend-view" class="hidden">
             <div class="text-center mb-8">
-                <i data-lucide="mail" class="w-14 h-14 text-champagne mx-auto mb-4"></i>
-                <h1 class="text-2xl font-heading font-semibold text-white mb-2">Renvoyer le code</h1>
-                <p class="text-zinc-400 text-sm">Entrez l'email utilisé lors de l'achat.</p>
+                <i data-lucide="mail" class="w-14 h-14 text-accent mx-auto mb-4"></i>
+                <h1 class="text-2xl font-heading mb-2">Renvoyer le code</h1>
+                <p class="text-muted text-sm">Entrez l'email utilisé lors de l'achat.</p>
             </div>
             <div class="space-y-4">
-                <input type="email" id="resend-email" placeholder="votre@email.com" class="w-full h-12 px-4 bg-noir border border-white/10 text-white placeholder:text-zinc-600 focus:ring-1 focus:ring-champagne focus:outline-none">
+                <input type="email" id="resend-email" placeholder="votre@email.com" class="input-field">
                 <button id="resend-btn" class="w-full h-12 btn-gold">
-                    <i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i> Renvoyer le code
+                    Renvoyer le code
                 </button>
             </div>
-            <button id="back-to-code-btn" class="text-sm text-zinc-500 hover:text-champagne mt-6 transition-colors w-full text-center">Retour</button>
+            <button id="back-to-code-btn" class="text-sm text-muted mt-6 w-full text-center">Retour</button>
         </div>
 
         <!-- View: Payment Check -->
-        <div id="payment-view" class="{% if not session_id %}hidden{% endif %} text-center">
-            <i data-lucide="loader-2" class="w-12 h-12 text-champagne animate-spin mx-auto mb-6"></i>
-            <h1 class="text-2xl font-heading font-semibold text-white mb-2">Vérification du paiement...</h1>
-            <p class="text-zinc-500">Votre code d'accès sera envoyé par email.</p>
+        <div id="payment-view" class="{% if not reference %}hidden{% endif %} text-center">
+            <i data-lucide="loader-2" class="w-12 h-12 text-accent animate-spin mx-auto mb-6"></i>
+            <h1 class="text-2xl font-heading mb-2">Vérification du paiement...</h1>
+            <p class="text-muted">Votre code d'accès sera envoyé par email.</p>
         </div>
 
         <!-- View: Success (code sent) -->
         <div id="success-view" class="hidden text-center">
-            <i data-lucide="check-circle" class="w-16 h-16 text-champagne mx-auto mb-6"></i>
-            <h1 class="text-2xl font-heading font-semibold text-white mb-2">Code envoyé !</h1>
-            <p class="text-zinc-400 mb-8">Consultez votre boîte email pour récupérer votre code d'accès.</p>
+            <i data-lucide="check-circle" class="w-16 h-16 text-accent mx-auto mb-6"></i>
+            <h1 class="text-2xl font-heading mb-2">Code envoyé !</h1>
+            <p class="text-muted mb-8">Consultez votre boîte email pour récupérer votre code d'accès.</p>
             <button id="enter-code-btn" class="w-full h-12 btn-gold">
-                <i data-lucide="key-round" class="w-5 h-5 mr-2"></i> Entrer mon code
+                Entrer mon code
             </button>
         </div>
 
         <!-- View: Download -->
         <div id="download-view" class="hidden">
             <div class="text-center mb-8">
-                <i data-lucide="check-circle" class="w-14 h-14 text-champagne mx-auto mb-4"></i>
-                <h1 class="text-2xl font-heading font-semibold text-white mb-2">Accès autorisé !</h1>
-                <div class="flex items-center justify-center gap-2 text-zinc-400">
+                <i data-lucide="check-circle" class="w-14 h-14 text-accent mx-auto mb-4"></i>
+                <h1 class="text-2xl font-heading mb-2">Accès autorisé !</h1>
+                <div class="flex items-center justify-center gap-2 text-muted">
                     <i data-lucide="clock" class="w-4 h-4"></i>
-                    <span class="text-sm">Expire dans: <strong id="expires-in" class="text-champagne"></strong></span>
+                    <span class="text-sm">Expire dans: <strong id="expires-in" class="text-accent"></strong></span>
                 </div>
             </div>
-            <div class="border border-white/5 p-6 mb-6 bg-noir">
-                <h2 id="product-name" class="font-heading text-lg font-semibold text-white mb-2"></h2>
-                <p id="product-description" class="text-sm text-zinc-400 mb-3"></p>
-                <p id="product-size" class="text-xs text-zinc-600"></p>
+            <div class="border p-6 mb-6 bg-noir">
+                <h2 id="product-name" class="font-heading text-lg mb-2"></h2>
+                <p id="product-description" class="text-sm text-muted mb-3"></p>
+                <p id="product-size" class="text-xs text-muted"></p>
             </div>
             <button id="download-btn" class="w-full h-14 btn-gold text-base">
-                <i data-lucide="download" class="w-5 h-5 mr-2"></i> Télécharger
+                Télécharger
             </button>
-            <p class="text-xs text-center text-zinc-600 mt-4">Après expiration, vous pourrez demander un nouveau code.</p>
+            <p class="text-xs text-center text-muted mt-4">Après expiration, vous pourrez demander un nouveau code.</p>
         </div>
     </div>
 </div>
@@ -90,7 +90,8 @@
 
 {% block scripts %}
 <script>
-const sessionId = "{{ session_id or '' }}";
+// Récupère la reference depuis le contexte Jinja
+const reference = "{{ reference or '' }}";
 const productId = "{{ product_id or '' }}";
 
 let downloadUrl = '';
@@ -108,34 +109,47 @@ function showView(view) {
     lucide.createIcons();
 }
 
-// Check payment status if session_id present
-if (sessionId) {
+// Si on a une reference, vérifier le paiement
+if (reference) {
+    console.log('Reference détectée:', reference);
     checkPaymentStatus(0);
 }
 
 async function checkPaymentStatus(attempts) {
-    if (attempts >= 10) {
+    console.log('Vérification paiement, tentative:', attempts);
+    
+    if (attempts >= 20) {
         showView(codeView);
-        alert('Vérifiez vos emails pour le code d\'accès');
+        alert('Temps écoulé. Vérifiez vos emails pour le code d\'accès.');
         return;
     }
     
     try {
-        const res = await fetch(`/api/payment/status/${sessionId}`);
+        const res = await fetch(`/api/payment/status/${reference}`);
         const data = await res.json();
         
-        if (data.status === 'paid' && data.email_sent) {
-            showView(successView);
+        console.log('Réponse:', data);
+        
+        if (data.status === 'paid') {
+            if (data.email_sent) {
+                showView(successView);
+            } else if (data.is_service) {
+                // C'est un service, rediriger vers le formulaire portfolio
+                window.location.href = `/portfolio/form?reference=${reference}&product_id=${productId}`;
+            } else {
+                // Paiement ok mais email pas encore envoyé, réessayer
+                setTimeout(() => checkPaymentStatus(attempts + 1), 2000);
+            }
+        } else if (data.status === 'error') {
+            showView(codeView);
+            alert(data.message || 'Erreur lors de la vérification');
         } else {
+            // Toujours pending, réessayer
             setTimeout(() => checkPaymentStatus(attempts + 1), 2000);
         }
     } catch (err) {
-        if (attempts < 9) {
-            setTimeout(() => checkPaymentStatus(attempts + 1), 2000);
-        } else {
-            showView(codeView);
-            alert('Erreur de vérification. Vérifiez vos emails.');
-        }
+        console.error('Erreur:', err);
+        setTimeout(() => checkPaymentStatus(attempts + 1), 2000);
     }
 }
 
@@ -149,8 +163,7 @@ document.getElementById('verify-btn').addEventListener('click', async () => {
     
     const btn = document.getElementById('verify-btn');
     btn.disabled = true;
-    btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>';
-    lucide.createIcons();
+    btn.textContent = 'Vérification...';
     
     try {
         const res = await fetch('/api/access/verify', {
@@ -185,7 +198,6 @@ document.getElementById('verify-btn').addEventListener('click', async () => {
 function showError(message) {
     document.getElementById('error-message').textContent = message;
     document.getElementById('code-error').classList.remove('hidden');
-    lucide.createIcons();
 }
 
 // Resend code
@@ -198,8 +210,7 @@ document.getElementById('resend-btn').addEventListener('click', async () => {
     
     const btn = document.getElementById('resend-btn');
     btn.disabled = true;
-    btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 animate-spin"></i>';
-    lucide.createIcons();
+    btn.textContent = 'Envoi...';
     
     try {
         const payload = { email };
@@ -222,17 +233,19 @@ document.getElementById('resend-btn').addEventListener('click', async () => {
         alert('Erreur de connexion');
     } finally {
         btn.disabled = false;
-        btn.innerHTML = '<i data-lucide="refresh-cw" class="w-4 h-4 mr-2"></i> Renvoyer le code';
-        lucide.createIcons();
+        btn.textContent = 'Renvoyer le code';
     }
 });
 
 // Download button
 document.getElementById('download-btn').addEventListener('click', () => {
-    if (downloadUrl) window.open(downloadUrl, '_blank');
+    if (downloadUrl) {
+        // For local files, trigger download via the secure endpoint
+        window.location.href = downloadUrl;
+    }
 });
 
-// Navigation buttons
+// Navigation
 document.getElementById('show-resend-btn').addEventListener('click', () => showView(resendView));
 document.getElementById('back-to-code-btn').addEventListener('click', () => showView(codeView));
 document.getElementById('enter-code-btn').addEventListener('click', () => showView(codeView));

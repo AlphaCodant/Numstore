@@ -5,35 +5,43 @@
 {% block content %}
 <div class="max-w-6xl mx-auto px-6 lg:px-12 py-8">
     <div class="flex items-center gap-4 mb-8">
-        <a href="/admin/dashboard" class="p-2 text-zinc-500 hover:text-champagne transition-colors">
+        <a href="/admin/dashboard" class="p-2 text-zinc-500 hover:text-accent transition-colors">
             <i data-lucide="arrow-left" class="w-5 h-5"></i>
         </a>
         <div class="flex-1">
             <h1 class="text-3xl font-heading font-semibold text-white">Produits</h1>
             <p class="text-zinc-500 text-sm">{{ products|length }} produits</p>
         </div>
-        <button id="add-product-btn" class="btn-gold gap-2 px-4 py-2 flex items-center">
+        <button id="add-product-btn" data-testid="add-product-btn" class="btn-gold gap-2 px-4 py-2 flex items-center">
             <i data-lucide="plus" class="w-4 h-4"></i> Ajouter
         </button>
     </div>
 
     <div class="bg-surface border border-white/5">
         {% if not products %}
-        <div class="p-12 text-center text-zinc-600">Aucun produit. Cliquez sur "Ajouter" pour créer.</div>
+        <div class="p-12 text-center text-zinc-600">Aucun produit. Cliquez sur "Ajouter" pour creer.</div>
         {% else %}
         <div class="divide-y divide-white/5">
             {% for p in products %}
-            <div class="flex items-center gap-4 p-4 hover:bg-white/[0.02]">
-                <img src="{{ p.image_url or 'https://images.unsplash.com/photo-1697292859784-c319e612ea15?w=100' }}" alt="{{ p.name }}" class="w-14 h-14 object-cover border border-white/5">
+            <div class="flex items-center gap-4 p-4 hover:bg-white/[0.02]" data-testid="product-row-{{ p.id }}">
+                <img src="{{ p.image_url or 'https://images.unsplash.com/photo-1690808652695-82424c4adf25?w=100' }}" alt="{{ p.name }}" class="w-14 h-14 object-cover border border-white/5">
                 <div class="flex-1 min-w-0">
                     <p class="font-semibold text-white text-sm truncate">{{ p.name }}</p>
-                    <p class="text-xs text-zinc-500">{{ p.category }} | {{ format_price(p.price, p.currency) }} {{ '| Service' if p.is_service else '' }}</p>
+                    <div class="flex items-center gap-2 text-xs text-zinc-500">
+                        <span>{{ p.category }} | {{ format_price(p.price, p.currency) }}</span>
+                        {% if p.is_service %}<span class="text-accent">| Service</span>{% endif %}
+                        {% if p.download_url and p.download_url.startswith('/api/admin/files/') %}
+                        <span class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-accent-10 text-accent text-xs">
+                            <i data-lucide="file" class="w-3 h-3"></i> Fichier
+                        </span>
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="flex items-center gap-1">
-                    <button onclick="editProduct('{{ p.id }}', '{{ p.name|e }}', '{{ p.description|e }}', {{ p.price }}, '{{ p.currency }}', '{{ p.category }}', '{{ p.image_url or '' }}', '{{ p.download_url or '' }}', '{{ p.file_size or '' }}', {{ 'true' if p.is_service else 'false' }})" class="p-2 text-zinc-500 hover:text-champagne transition-colors">
+                    <button onclick="openEditProduct('{{ p.id }}')" class="p-2 text-zinc-500 hover:text-accent transition-colors" data-testid="edit-product-{{ p.id }}">
                         <i data-lucide="pencil" class="w-4 h-4"></i>
                     </button>
-                    <button onclick="deleteProduct('{{ p.id }}')" class="p-2 text-zinc-500 hover:text-red-400 transition-colors">
+                    <button onclick="deleteProduct('{{ p.id }}')" class="p-2 text-zinc-500 hover:text-red-400 transition-colors" data-testid="delete-product-{{ p.id }}">
                         <i data-lucide="trash-2" class="w-4 h-4"></i>
                     </button>
                 </div>
@@ -46,26 +54,26 @@
 
 <!-- Modal -->
 <div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-noir/80">
-    <div class="max-w-lg w-full bg-surface border border-white/10 p-6">
+    <div class="max-w-lg w-full bg-surface border border-white/10 p-6 overflow-y-auto" style="max-height:90vh">
         <h2 id="modal-title" class="font-heading text-xl text-white mb-4">Nouveau produit</h2>
         <form id="product-form" class="space-y-4">
             <input type="hidden" id="product-id">
             <div>
                 <label class="text-sm font-medium text-zinc-300 block mb-1">Nom *</label>
-                <input type="text" id="p-name" required placeholder="Nom du produit" class="input-field">
+                <input type="text" id="p-name" required placeholder="Nom du produit" class="input-field" data-testid="product-name-input">
             </div>
             <div>
                 <label class="text-sm font-medium text-zinc-300 block mb-1">Description *</label>
-                <textarea id="p-description" required placeholder="Description" class="textarea-field" rows="3"></textarea>
+                <textarea id="p-description" required placeholder="Description" class="textarea-field" rows="3" data-testid="product-desc-input"></textarea>
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="text-sm font-medium text-zinc-300 block mb-1">Prix (FCFA) *</label>
-                    <input type="number" id="p-price" required min="0" placeholder="25000" class="input-field">
+                    <input type="number" id="p-price" required min="0" placeholder="25000" class="input-field" data-testid="product-price-input">
                 </div>
                 <div>
-                    <label class="text-sm font-medium text-zinc-300 block mb-1">Catégorie</label>
-                    <select id="p-category" class="input-field">
+                    <label class="text-sm font-medium text-zinc-300 block mb-1">Categorie</label>
+                    <select id="p-category" class="input-field" data-testid="product-category-select">
                         <option value="ebook">E-book</option>
                         <option value="template">Template</option>
                         <option value="software">Logiciel</option>
@@ -78,21 +86,52 @@
                 <label class="text-sm font-medium text-zinc-300 block mb-1">URL Image</label>
                 <input type="url" id="p-image" placeholder="https://..." class="input-field">
             </div>
-            <div>
-                <label class="text-sm font-medium text-zinc-300 block mb-1">URL Téléchargement</label>
-                <input type="url" id="p-download" placeholder="https://..." class="input-field">
+
+            <!-- File Upload Section -->
+            <div class="border border-white/10 p-4 space-y-3">
+                <label class="text-sm font-medium text-zinc-300 block">Fichier telechargeable</label>
+                
+                <!-- Current file info -->
+                <div id="current-file-info" class="hidden flex items-center gap-3 p-3 bg-noir border border-white/5">
+                    <i data-lucide="file-check" class="w-5 h-5 text-accent flex-shrink-0"></i>
+                    <div class="flex-1 min-w-0">
+                        <p id="current-file-name" class="text-sm text-white truncate"></p>
+                        <p id="current-file-size" class="text-xs text-zinc-500"></p>
+                    </div>
+                    <button type="button" id="remove-file-btn" class="p-1 text-zinc-500 hover:text-red-400">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                
+                <!-- Upload area -->
+                <div id="upload-area" class="relative">
+                    <input type="file" id="p-file" accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx,.zip,.rar,.epub,.txt,.csv" class="absolute inset-0 opacity-0 cursor-pointer z-10" data-testid="product-file-input">
+                    <div id="upload-zone" class="border-2 border-dashed border-white/10 p-6 text-center hover:border-accent/50 transition-colors cursor-pointer">
+                        <i data-lucide="upload" class="w-8 h-8 text-zinc-500 mx-auto mb-2"></i>
+                        <p class="text-sm text-zinc-400">Cliquez ou glissez un fichier ici</p>
+                        <p class="text-xs text-zinc-600 mt-1">PDF, PPT, DOCX, ZIP... (max 50 MB)</p>
+                    </div>
+                </div>
+                
+                <!-- Upload progress -->
+                <div id="upload-progress" class="hidden">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="loader-2" class="w-5 h-5 text-accent animate-spin"></i>
+                        <span class="text-sm text-zinc-300">Upload en cours...</span>
+                    </div>
+                    <div class="h-1 bg-white/5 mt-2">
+                        <div id="progress-bar-upload" class="h-full bg-accent transition-all" style="width: 0%"></div>
+                    </div>
+                </div>
             </div>
-            <div>
-                <label class="text-sm font-medium text-zinc-300 block mb-1">Taille fichier</label>
-                <input type="text" id="p-size" placeholder="15 MB" class="input-field">
-            </div>
+
             <div class="flex items-center gap-2">
                 <input type="checkbox" id="p-service" class="w-4 h-4">
                 <label for="p-service" class="text-sm text-zinc-300">C'est un service (Portfolio)</label>
             </div>
             <div class="flex gap-3 pt-4">
-                <button type="button" onclick="closeModal()" class="flex-1 h-12 border border-white/10 text-zinc-300 hover:border-champagne hover:text-champagne transition-colors">Annuler</button>
-                <button type="submit" id="save-btn" class="flex-1 h-12 btn-gold">Enregistrer</button>
+                <button type="button" onclick="closeModal()" class="flex-1 h-12 border border-white/10 text-zinc-300 hover:border-accent hover:text-accent transition-colors">Annuler</button>
+                <button type="submit" id="save-btn" data-testid="save-product-btn" class="flex-1 h-12 btn-gold">Enregistrer</button>
             </div>
         </form>
     </div>
@@ -102,27 +141,120 @@
 {% block scripts %}
 <script>
 const modal = document.getElementById('modal');
+let uploadedFileUrl = '';
+let uploadedFileSize = '';
+
+// Store all products data in JS (avoids tojson in HTML attributes)
+const productsData = {};
+{% for p in products %}
+productsData['{{ p.id }}'] = {{ p|tojson }};
+{% endfor %}
 
 document.getElementById('add-product-btn').addEventListener('click', () => {
     document.getElementById('modal-title').textContent = 'Nouveau produit';
     document.getElementById('product-id').value = '';
     document.getElementById('product-form').reset();
+    resetFileUpload();
     modal.classList.remove('hidden');
+    lucide.createIcons();
 });
 
-function editProduct(id, name, description, price, currency, category, imageUrl, downloadUrl, fileSize, isService) {
-    document.getElementById('modal-title').textContent = 'Modifier le produit';
-    document.getElementById('product-id').value = id;
-    document.getElementById('p-name').value = name;
-    document.getElementById('p-description').value = description;
-    document.getElementById('p-price').value = price;
-    document.getElementById('p-category').value = category;
-    document.getElementById('p-image').value = imageUrl;
-    document.getElementById('p-download').value = downloadUrl;
-    document.getElementById('p-size').value = fileSize;
-    document.getElementById('p-service').checked = isService;
-    modal.classList.remove('hidden');
+function openEditProduct(productId) {
+    const product = productsData[productId];
+    if (!product) return;
+    editProduct(product);
 }
+
+function editProduct(product) {
+    document.getElementById('modal-title').textContent = 'Modifier le produit';
+    document.getElementById('product-id').value = product.id;
+    document.getElementById('p-name').value = product.name || '';
+    document.getElementById('p-description').value = product.description || '';
+    document.getElementById('p-price').value = product.price || 0;
+    document.getElementById('p-category').value = product.category || 'ebook';
+    document.getElementById('p-image').value = product.image_url || '';
+    document.getElementById('p-service').checked = product.is_service || false;
+    
+    resetFileUpload();
+    
+    // Show current file if exists
+    if (product.download_url && product.download_url.startsWith('/api/admin/files/')) {
+        uploadedFileUrl = product.download_url;
+        uploadedFileSize = product.file_size || '';
+        showCurrentFile(product.download_url.split('/').pop(), product.file_size || 'Fichier uploade');
+    }
+    
+    modal.classList.remove('hidden');
+    lucide.createIcons();
+}
+
+function resetFileUpload() {
+    uploadedFileUrl = '';
+    uploadedFileSize = '';
+    document.getElementById('current-file-info').classList.add('hidden');
+    document.getElementById('upload-area').classList.remove('hidden');
+    document.getElementById('upload-progress').classList.add('hidden');
+    document.getElementById('p-file').value = '';
+}
+
+function showCurrentFile(name, size) {
+    document.getElementById('current-file-name').textContent = name;
+    document.getElementById('current-file-size').textContent = size;
+    document.getElementById('current-file-info').classList.remove('hidden');
+    document.getElementById('upload-area').classList.add('hidden');
+    lucide.createIcons();
+}
+
+document.getElementById('remove-file-btn').addEventListener('click', () => {
+    resetFileUpload();
+    lucide.createIcons();
+});
+
+// File upload handler
+document.getElementById('p-file').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    if (file.size > 50 * 1024 * 1024) {
+        alert('Fichier trop volumineux (max 50 MB)');
+        e.target.value = '';
+        return;
+    }
+    
+    const progressEl = document.getElementById('upload-progress');
+    const uploadArea = document.getElementById('upload-area');
+    
+    progressEl.classList.remove('hidden');
+    uploadArea.classList.add('hidden');
+    lucide.createIcons();
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    try {
+        const res = await fetch('/api/admin/upload', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok && data.success) {
+            uploadedFileUrl = data.download_url;
+            uploadedFileSize = data.file_size;
+            showCurrentFile(data.original_name, data.file_size);
+            progressEl.classList.add('hidden');
+        } else {
+            alert(data.detail || 'Erreur lors de l\'upload');
+            resetFileUpload();
+        }
+    } catch (err) {
+        alert('Erreur de connexion');
+        resetFileUpload();
+    }
+    
+    lucide.createIcons();
+});
 
 function closeModal() {
     modal.classList.add('hidden');
@@ -160,8 +292,8 @@ document.getElementById('product-form').addEventListener('submit', async (e) => 
         currency: 'XOF',
         category: document.getElementById('p-category').value,
         image_url: document.getElementById('p-image').value || null,
-        download_url: document.getElementById('p-download').value || null,
-        file_size: document.getElementById('p-size').value || null,
+        download_url: uploadedFileUrl || null,
+        file_size: uploadedFileSize || null,
         is_service: document.getElementById('p-service').checked
     };
     

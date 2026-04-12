@@ -9,18 +9,33 @@ import resend
 
 logger = logging.getLogger(__name__)
 
-RESEND_API_KEY = os.getenv("RESEND_API_KEY")
-SENDER_EMAIL = os.getenv("SENDER_EMAIL", "onboarding@resend.dev")
 
-if RESEND_API_KEY:
-    resend.api_key = RESEND_API_KEY
+def get_resend_api_key():
+    """Récupère la clé API Resend en nettoyant les guillemets."""
+    key = os.getenv("RESEND_API_KEY")
+    # Enlever les guillemets si présents
+    return key
+
+
+def get_sender_email():
+    """Récupère l'email expéditeur en nettoyant les guillemets."""
+    email = os.getenv("SENDER_EMAIL")
+    return email
 
 
 async def send_access_code_email(email: str, code: str, product_name: str, expires_in_hours: int = 6) -> bool:
     """Envoie le code d'accès par email."""
-    if not RESEND_API_KEY:
+    api_key = get_resend_api_key()
+    sender_email = get_sender_email()
+    
+    if not api_key:
         logger.warning("RESEND_API_KEY non configuré, email ignoré")
         return False
+    
+    # Configure Resend avec la clé
+    resend.api_key = api_key
+    
+    logger.info(f"Envoi email à {email} avec clé: {api_key[:10]}...")
     
     html_content = f"""
     <!DOCTYPE html>
@@ -40,7 +55,10 @@ async def send_access_code_email(email: str, code: str, product_name: str, expir
                 <h1 style="color: #C9A227; font-size: 42px; letter-spacing: 8px; margin: 0; font-family: monospace;">{code}</h1>
             </div>
             <p style="color: #52525b; font-size: 14px; line-height: 1.6;">
-                ⏰ <strong>Ce code est valide pendant {expires_in_hours} heures.</strong>
+                Ce code est valide pendant <strong>{expires_in_hours} heures</strong>.
+            </p>
+            <p style="color: #52525b; font-size: 14px; line-height: 1.6;">
+                Rendez-vous sur notre site et entrez ce code pour accéder à votre produit.
             </p>
         </div>
     </body>
@@ -49,24 +67,29 @@ async def send_access_code_email(email: str, code: str, product_name: str, expir
     
     try:
         params = {
-            "from": SENDER_EMAIL,
+            "from": sender_email,
             "to": [email],
-            "subject": f"🔐 Votre code d'accès NumStore - {product_name}",
+            "subject": f"Votre code d'accès NumStore - {product_name}",
             "html": html_content
         }
-        await asyncio.to_thread(resend.Emails.send, params)
-        logger.info(f"Email envoyé à {email}")
+        result = await asyncio.to_thread(resend.Emails.send, params)
+        logger.info(f"Email envoyé à {email}, résultat: {result}")
         return True
     except Exception as e:
-        logger.error(f"Échec envoi email: {e}")
+        logger.error(f"Échec envoi email à {email}: {e}")
         return False
 
 
 async def send_portfolio_completion_email(email: str, full_name: str, portfolio_url: str) -> bool:
     """Envoie l'email de confirmation quand le portfolio est terminé."""
-    if not RESEND_API_KEY:
+    api_key = get_resend_api_key()
+    sender_email = get_sender_email()
+    
+    if not api_key:
         logger.warning("RESEND_API_KEY non configuré, email ignoré")
         return False
+    
+    resend.api_key = api_key
     
     html_content = f"""
     <!DOCTYPE html>
@@ -77,7 +100,7 @@ async def send_portfolio_completion_email(email: str, full_name: str, portfolio_
             <div style="text-align: center; margin-bottom: 30px;">
                 <h1 style="color: #C9A227; margin: 0; font-size: 28px;">NumStore</h1>
             </div>
-            <h2 style="color: #0a0a0a; margin-bottom: 20px;">🎉 Votre portfolio est prêt !</h2>
+            <h2 style="color: #0a0a0a; margin-bottom: 20px;">Votre portfolio est prêt !</h2>
             <p style="color: #52525b; font-size: 16px; line-height: 1.6;">
                 Bonjour {full_name},
             </p>
@@ -99,13 +122,13 @@ async def send_portfolio_completion_email(email: str, full_name: str, portfolio_
     
     try:
         params = {
-            "from": SENDER_EMAIL,
+            "from": sender_email,
             "to": [email],
-            "subject": "🎉 Votre portfolio est prêt !",
+            "subject": "Votre portfolio est prêt !",
             "html": html_content
         }
-        await asyncio.to_thread(resend.Emails.send, params)
-        logger.info(f"Email portfolio envoyé à {email}")
+        result = await asyncio.to_thread(resend.Emails.send, params)
+        logger.info(f"Email portfolio envoyé à {email}, résultat: {result}")
         return True
     except Exception as e:
         logger.error(f"Échec envoi email portfolio: {e}")

@@ -5,9 +5,12 @@ Routes API admin.
 import os
 import uuid
 import json
+import shutil
+import logging
+from pathlib import Path
 from datetime import datetime, timezone
-from fastapi import APIRouter, Depends, HTTPException, Request, Response
-from fastapi.responses import RedirectResponse
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, UploadFile, File
+from fastapi.responses import RedirectResponse, FileResponse
 import asyncpg
 
 from database import get_db
@@ -15,9 +18,15 @@ from models import AdminLogin, ProductCreate
 from auth import create_access_token, get_admin_user
 from email_utils import send_portfolio_completion_email
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
 ADMIN_PASSWORD = os.environ.get('ADMIN_PASSWORD', 'admin123')
+UPLOADS_DIR = Path(__file__).parent.parent / "uploads"
+UPLOADS_DIR.mkdir(exist_ok=True)
+
+MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
+ALLOWED_EXTENSIONS = {'.pdf', '.ppt', '.pptx', '.doc', '.docx', '.xls', '.xlsx', '.zip', '.rar', '.epub', '.txt', '.csv'}
 
 
 @router.post("/login")
@@ -143,8 +152,80 @@ async def admin_delete_product(product_id: str, request: Request, db: asyncpg.Co
     if not admin:
         raise HTTPException(status_code=401, detail="Non autorisé")
     
-    result = await db.execute("DELETE FROM products WHERE id = $1", product_id)
+    # Delete associated file if exists
+    product = await db.fetchrow("SELECT download_url FROM products WHERE id = $1", product_id)
+    if product and product["download_url"] and product["download_url"].startswith("/api/admin/files/"):
+        filename = product["download_url"].split("/")[-1]
+        filepath = UPLOADS_DIR / filename
+        if filepath.exists():
+            filepath.unlink()
+    
+    await db.execute("DELETE FROM products WHERE id = $1", product_id)
     return {"success": True}
+
+
+@router.post("/upload")
+async def admin_upload_file(request: Request, file: UploadFile = File(...), db: asyncpg.Connection = Depends(get_db)):
+    """Upload un fichier pour un produit numerique."""
+    admin = get_admin_user(request)
+    if not admin:
+        raise HTTPException(status_code=401, detail="Non autorise")
+    
+    # Validate extension
+    original_name = file.filename or "fichier"
+    ext = Path(original_name).suffix.lower()
+    if ext not in ALLOWED_EXTENSIONS:
+        raise HTTPException(status_code=400, detail=f"Type de fichier non autorise. Extensions acceptees: {', '.join(ALLOWED_EXTENSIONS)}")
+    
+    # Read file content
+    content = await file.read()
+    
+    # Validate size
+    if len(content) > MAX_FILE_SIZE:
+        raise HTTPException(status_code=400, detail="Fichier trop volumineux (max 50 MB)")
+    
+    # Generate unique filename
+    unique_name = f"{uuid.uuid4().hex}{ext}"
+    filepath = UPLOADS_DIR / unique_name
+    
+    # Save file
+    with open(filepath, "wb") as f:
+        f.write(content)
+    
+    # Calculate human-readable size
+    size_bytes = len(content)
+    if size_bytes < 1024:
+        file_size = f"{size_bytes} B"
+    elif size_bytes < 1024 * 1024:
+        file_size = f"{size_bytes / 1024:.0f} KB"
+    else:
+        file_size = f"{size_bytes / (1024 * 1024):.1f} MB"
+    
+    download_url = f"/api/admin/files/{unique_name}"
+    
+    logger.info(f"File uploaded: {original_name} -> {unique_name} ({file_size})")
+    
+    return {
+        "success": True,
+        "filename": unique_name,
+        "original_name": original_name,
+        "download_url": download_url,
+        "file_size": file_size
+    }
+
+
+@router.get("/files/{filename}")
+async def admin_serve_file(filename: str, request: Request):
+    """Sert un fichier uploade (acces admin uniquement pour preview)."""
+    admin = get_admin_user(request)
+    if not admin:
+        raise HTTPException(status_code=401, detail="Non autorise")
+    
+    filepath = UPLOADS_DIR / filename
+    if not filepath.exists():
+        raise HTTPException(status_code=404, detail="Fichier non trouve")
+    
+    return FileResponse(filepath, filename=filename)
 
 
 @router.get("/portfolio-submissions")

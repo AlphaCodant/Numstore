@@ -6,6 +6,7 @@ Paiement via Paystack.
 import os
 import uuid
 import json
+import logging
 import httpx
 from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, Request
@@ -13,6 +14,8 @@ import asyncpg
 
 from database import get_db
 from models import PortfolioSubmissionCreate
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/portfolio", tags=["portfolio"])
 
@@ -43,11 +46,11 @@ async def submit_portfolio(data: PortfolioSubmissionCreate, db: asyncpg.Connecti
             skills, experiences, education, projects,
             linkedin_url, twitter_url, github_url, website_url,
             product_id, payment_status, status, created_at, updated_at)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)""",
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb, $10::jsonb, $11::jsonb, $12::jsonb, $13, $14, $15, $16, $17, $18, $19, $20, $21)""",
         submission_id, data.email, data.full_name, data.job_title, data.bio,
         data.phone, data.location, data.photo_url,
-        json.dumps(data.skills), json.dumps(data.experiences),
-        json.dumps(data.education), json.dumps(data.projects),
+        json.dumps(data.skills), json.dumps([dict(e) for e in data.experiences]),
+        json.dumps([dict(e) for e in data.education]), json.dumps([dict(p) for p in data.projects]),
         data.linkedin_url, data.twitter_url, data.github_url, data.website_url,
         data.product_id, "pending", "pending", now, now
     )
@@ -63,11 +66,14 @@ async def submit_portfolio(data: PortfolioSubmissionCreate, db: asyncpg.Connecti
 async def pay_for_portfolio(submission_id: str, request: Request, db: asyncpg.Connection = Depends(get_db)):
     """Crée une session de paiement Paystack pour le portfolio."""
     
+    logger.info(f"=== Payment request for submission: {submission_id} ===")
+    
     submission = await db.fetchrow(
         "SELECT * FROM portfolio_submissions WHERE id = $1",
         submission_id
     )
     if not submission:
+        logger.error(f"Submission not found: {submission_id}")
         raise HTTPException(status_code=404, detail="Soumission non trouvée")
     
     if submission["payment_status"] == "paid":
@@ -78,49 +84,63 @@ async def pay_for_portfolio(submission_id: str, request: Request, db: asyncpg.Co
         submission["product_id"]
     )
     if not product:
+        logger.error(f"Product not found: {submission['product_id']}")
         raise HTTPException(status_code=404, detail="Service non trouvé")
     
     secret_key = os.environ.get('PAYSTACK_SECRET_KEY')
     if not secret_key:
+        logger.error("PAYSTACK_SECRET_KEY not configured")
         raise HTTPException(status_code=500, detail="Paystack non configuré")
     
-    # Montant en plus petite unité (XOF * 100)
     amount_smallest_unit = int(float(product["price"]) * 100)
     
-    host_url = str(request.base_url).rstrip('/')
-    origin_url = request.headers.get("origin", host_url)
+    # Build the origin URL robustly
+    origin_url = request.headers.get("origin")
+    if not origin_url:
+        proto = request.headers.get("x-forwarded-proto", "https")
+        host = request.headers.get("x-forwarded-host") or request.headers.get("host")
+        if host:
+            origin_url = f"{proto}://{host}"
+        else:
+            origin_url = str(request.base_url).rstrip('/')
     
-    # Génère une référence unique
     reference = generate_reference()
-    
     success_url = f"{origin_url}/portfolio/success?submission_id={submission_id}&reference={reference}"
     
-    # Appel API Paystack
-    async with httpx.AsyncClient() as client:
-        response = await client.post(
-            f"{PAYSTACK_API_URL}/transaction/initialize",
-            headers={
-                "Authorization": f"Bearer {secret_key}",
-                "Content-Type": "application/json"
-            },
-            json={
-                "email": submission["email"],
-                "amount": amount_smallest_unit,
-                "currency": "XOF",
-                "reference": reference,
-                "callback_url": success_url,
-                "metadata": {
-                    "submission_id": submission_id,
-                    "product_name": product["name"],
-                    "type": "portfolio",
-                    "custom_fields": [
-                        {"display_name": "Service", "variable_name": "service", "value": product["name"]},
-                        {"display_name": "Client", "variable_name": "client", "value": submission["full_name"]}
-                    ]
+    logger.info(f"Creating Paystack session: email={submission['email']}, amount={amount_smallest_unit}, ref={reference}")
+    logger.info(f"Callback URL: {success_url}")
+    
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            response = await client.post(
+                f"{PAYSTACK_API_URL}/transaction/initialize",
+                headers={
+                    "Authorization": f"Bearer {secret_key}",
+                    "Content-Type": "application/json"
+                },
+                json={
+                    "email": submission["email"],
+                    "amount": amount_smallest_unit,
+                    "currency": "XOF",
+                    "reference": reference,
+                    "callback_url": success_url,
+                    "metadata": {
+                        "submission_id": submission_id,
+                        "product_name": product["name"],
+                        "type": "portfolio",
+                        "custom_fields": [
+                            {"display_name": "Service", "variable_name": "service", "value": product["name"]},
+                            {"display_name": "Client", "variable_name": "client", "value": submission["full_name"]}
+                        ]
+                    }
                 }
-            }
-        )
-        result = response.json()
+            )
+            result = response.json()
+    except Exception as e:
+        logger.error(f"Paystack API error: {e}")
+        raise HTTPException(status_code=502, detail=f"Erreur de connexion avec Paystack: {str(e)}")
+    
+    logger.info(f"Paystack response: status={result.get('status')}, message={result.get('message')}")
     
     if not result.get("status"):
         raise HTTPException(status_code=400, detail=result.get("message", "Erreur Paystack"))

@@ -1,20 +1,26 @@
 """
-Routes API pour les codes d'accès.
+Routes API pour les codes d'acces.
 """
 
+import os
 import uuid
 import secrets
+import logging
+from pathlib import Path
 from datetime import datetime, timezone, timedelta
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import FileResponse
 import asyncpg
 
 from database import get_db
 from models import AccessRequest, ResendCodeRequest
 from email_utils import send_access_code_email
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/access", tags=["access"])
 
 ACCESS_CODE_VALIDITY_HOURS = 6
+UPLOADS_DIR = Path(__file__).parent.parent / "uploads"
 
 
 def generate_access_code() -> str:
@@ -56,14 +62,22 @@ async def verify_access_code(data: AccessRequest, db: asyncpg.Connection = Depen
     remaining_hours = int(remaining_seconds // 3600)
     remaining_minutes = int((remaining_seconds % 3600) // 60)
     
+    # Build download URL - use secure endpoint
+    has_local_file = product["download_url"] and product["download_url"].startswith("/api/admin/files/")
+    if has_local_file:
+        download_url = f"/api/access/download/{product['id']}?code={data.code.upper()}"
+    else:
+        download_url = product["download_url"] or ""
+    
     return {
         "valid": True,
         "product": {
             "id": product["id"],
             "name": product["name"],
             "description": product["description"],
-            "download_url": product["download_url"] or "https://example.com/download",
-            "file_size": product["file_size"]
+            "download_url": download_url,
+            "file_size": product["file_size"],
+            "has_local_file": has_local_file
         },
         "expires_in": f"{remaining_hours}h {remaining_minutes}min",
         "expires_at": expires_at.isoformat()
@@ -118,3 +132,54 @@ async def resend_access_code(data: ResendCodeRequest, db: asyncpg.Connection = D
         raise HTTPException(status_code=500, detail="Erreur lors de l'envoi de l'email")
     
     return {"success": True, "message": f"Nouveau code envoyé à {data.email}", "product_name": product["name"]}
+
+
+
+@router.get("/download/{product_id}")
+async def download_product_file(product_id: str, code: str, db: asyncpg.Connection = Depends(get_db)):
+    """Telecharge un fichier produit apres verification du code d'acces."""
+    
+    # Verify access code
+    access_code = await db.fetchrow(
+        "SELECT * FROM access_codes WHERE code = $1 AND product_id = $2",
+        code.upper(), product_id
+    )
+    
+    if not access_code:
+        raise HTTPException(status_code=403, detail="Code d'acces invalide")
+    
+    # Check expiration
+    expires_at = access_code["expires_at"]
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+    
+    if datetime.now(timezone.utc) > expires_at:
+        raise HTTPException(status_code=410, detail="Code expire")
+    
+    # Get product
+    product = await db.fetchrow("SELECT * FROM products WHERE id = $1", product_id)
+    if not product:
+        raise HTTPException(status_code=404, detail="Produit non trouve")
+    
+    download_url = product["download_url"]
+    if not download_url or not download_url.startswith("/api/admin/files/"):
+        raise HTTPException(status_code=404, detail="Aucun fichier disponible pour ce produit")
+    
+    # Extract filename and serve file
+    filename = download_url.split("/")[-1]
+    filepath = UPLOADS_DIR / filename
+    
+    if not filepath.exists():
+        raise HTTPException(status_code=404, detail="Fichier non trouve sur le serveur")
+    
+    # Use original product name as download filename
+    ext = Path(filename).suffix
+    safe_name = product["name"].replace(" ", "_").replace("/", "-") + ext
+    
+    logger.info(f"Download: {safe_name} by code {code}")
+    
+    return FileResponse(
+        filepath,
+        filename=safe_name,
+        media_type="application/octet-stream"
+    )

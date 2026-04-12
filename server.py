@@ -1,24 +1,18 @@
 """
-NumStore — Backend FastAPI (Restructuré façon gestrebFastapi)
-Boutique de produits numériques et services portfolio.
-
-Lancement :
-    uvicorn server:app --host 0.0.0.0 --port 8000 --reload
-
-Variables d'environnement requises (.env) :
-    DB_HOST, DB_USER, DB_PORT, DB_PWD, DB_NAME  → PostgreSQL
-    SECRET_KEY      → signature JWT admin
-    STRIPE_API_KEY  → Stripe pour paiements
-    RESEND_API_KEY  → Resend pour emails
-    SENDER_EMAIL    → Email expéditeur
+NumStore - Backend FastAPI
+Boutique de produits numeriques et services portfolio.
+Paiement via Paystack.
 """
 
 import os
 import logging
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from dotenv import load_dotenv
-load_dotenv()
+
+ROOT_DIR = Path(__file__).parent
+load_dotenv(ROOT_DIR / '.env')
 
 from fastapi import FastAPI, Request
 from fastapi.responses import RedirectResponse
@@ -34,31 +28,23 @@ from routes.access import router as access_router
 from routes.portfolio import router as portfolio_router
 from routes.admin import router as admin_router
 
-logging.basicConfig(level=logging.INFO, format="%(levelname)s  %(name)s — %(message)s")
+logging.basicConfig(level=logging.INFO, format="%(levelname)s  %(name)s - %(message)s")
 logger = logging.getLogger(__name__)
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-#  Lifespan : démarrage / arrêt
-# ──────────────────────────────────────────────────────────────────────────────
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("Initialisation du pool PostgreSQL…")
+    logger.info("Initialisation du pool PostgreSQL...")
     await get_pool()
-    logger.info("✅  Pool PostgreSQL prêt.")
+    logger.info("Pool PostgreSQL pret.")
     yield
-    logger.info("Fermeture du pool PostgreSQL…")
+    logger.info("Fermeture du pool PostgreSQL...")
     await close_pool()
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-#  Application
-# ──────────────────────────────────────────────────────────────────────────────
-
 app = FastAPI(
     title="NumStore",
-    description="Boutique de produits numériques & Services Portfolio Premium",
+    description="Boutique de produits numeriques & Services Portfolio Premium",
     version="3.0.0",
     lifespan=lifespan,
 )
@@ -78,33 +64,23 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ──────────────────────────────────────────────────────────────────────────────
-#  Fichiers statiques
-# ──────────────────────────────────────────────────────────────────────────────
+# Static files
+static_dir = ROOT_DIR / "static"
+app.mount("/css", StaticFiles(directory=str(static_dir / "css")), name="css")
+app.mount("/js", StaticFiles(directory=str(static_dir / "js")), name="js")
+app.mount("/img", StaticFiles(directory=str(static_dir / "img")), name="img")
+app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
-app.mount("/css", StaticFiles(directory="static/css"), name="css")
-app.mount("/js", StaticFiles(directory="static/js"), name="js")
-app.mount("/img", StaticFiles(directory="static/img"), name="img")
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-
-# ──────────────────────────────────────────────────────────────────────────────
-#  Routeurs
-# ──────────────────────────────────────────────────────────────────────────────
-
-app.include_router(pages_router)       # Pages templates Jinja2
-app.include_router(products_router)    # /api/products
-app.include_router(payments_router)    # /api/payment
-app.include_router(access_router)      # /api/access
-app.include_router(portfolio_router)   # /api/portfolio
-app.include_router(admin_router)       # /api/admin
+# Routers
+app.include_router(pages_router)
+app.include_router(products_router)
+app.include_router(payments_router)
+app.include_router(access_router)
+app.include_router(portfolio_router)
+app.include_router(admin_router)
 
 
-# ──────────────────────────────────────────────────────────────────────────────
-#  Routes utilitaires
-# ──────────────────────────────────────────────────────────────────────────────
-
-@app.get("/health")
+@app.get("/api/health")
 async def health():
     return {"status": "ok", "app": "NumStore FastAPI v3"}
 
@@ -112,8 +88,3 @@ async def health():
 @app.get("/api")
 async def api_root():
     return {"message": "NumStore API v3.0", "status": "running"}
-
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True)
