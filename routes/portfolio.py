@@ -14,6 +14,8 @@ import asyncpg
 
 from database import get_db
 from models import PortfolioSubmissionCreate
+from dotenv import load_dotenv
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
@@ -87,7 +89,7 @@ async def pay_for_portfolio(submission_id: str, request: Request, db: asyncpg.Co
         logger.error(f"Product not found: {submission['product_id']}")
         raise HTTPException(status_code=404, detail="Service non trouvé")
     
-    secret_key = os.environ.get('PAYSTACK_SECRET_KEY')
+    secret_key = os.getenv('PAYSTACK_SECRET_KEY')
     if not secret_key:
         logger.error("PAYSTACK_SECRET_KEY not configured")
         raise HTTPException(status_code=500, detail="Paystack non configuré")

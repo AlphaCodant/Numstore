@@ -6,6 +6,8 @@ import os
 import asyncio
 import logging
 import resend
+from dotenv import load_dotenv
+load_dotenv()
 
 logger = logging.getLogger(__name__)
 
@@ -14,6 +16,7 @@ def get_resend_api_key():
     """Récupère la clé API Resend en nettoyant les guillemets."""
     key = os.getenv("RESEND_API_KEY")
     # Enlever les guillemets si présents
+    print(f"API KEY: {key}")
     return key
 
 
